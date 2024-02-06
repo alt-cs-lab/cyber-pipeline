@@ -1,0 +1,8 @@
+# Ignore bundled vue files
+public
+
+# Ignore submodule
+vue
+
+# Ignore coverage
+coverage

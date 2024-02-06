@@ -1,0 +1,35 @@
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    restart: unless-stopped
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: cyberpipeline
+      MYSQL_USER: cyberpipeline
+      MYSQL_PASSWORD: password
+      MYSQL_RANDOM_ROOT_PASSWORD: fact
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mysqladmin',
+          'ping',
+          '-h',
+          'localhost',
+          '-ucyberpipeline',
+          '-ppassword',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    environment:
+      PMA_ARBITRARY: 1

@@ -1,0 +1,8 @@
+# Ignore build files
+public
+
+# Ignore submodule
+vue
+
+# Ignore coverate
+coverage
