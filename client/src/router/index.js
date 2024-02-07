@@ -7,6 +7,9 @@ import ProfileView from '../views/ProfileView.vue'
 import AdminView from '../views/AdminView.vue'
 import UserEditView from '../views/UserEditView.vue'
 import TeacherListView from '../views/TeacherListView.vue'
+import TeacherEditView from '../views/TeacherEditView.vue'
+import DistrictListView from '../views/DistrictListView.vue'
+import DistrictEditView from '../views/DistrictEditView.vue'
 
 // Stores
 import { useTokenStore } from '@/stores/Token'
@@ -50,6 +53,25 @@ const router = createRouter({
       path: '/teachers',
       name: 'teachers',
       component: TeacherListView,
+    },
+    {
+      path: '/teachers/:id/edit',
+      name: 'teacher_edit',
+      component: TeacherEditView,
+      props: true,
+      beforeEnter: requireAdmin,
+    },
+    {
+      path: '/districts',
+      name: 'districts',
+      component: DistrictListView,
+    },
+    {
+      path: '/districts/:id/edit',
+      name: 'district_edit',
+      component: DistrictEditView,
+      props: true,
+      beforeEnter: requireAdmin,
     },
     {
       path: '/admin',

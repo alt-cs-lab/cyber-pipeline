@@ -1,8 +1,9 @@
 <script setup>
+import TeacherList from '@/components/teachers/TeacherList.vue'
 </script>
 
 <template>
   <main>
-    Coming Soon
+    <TeacherList />
   </main>
 </template>

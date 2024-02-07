@@ -15,7 +15,10 @@ const tokenStore = useTokenStore()
     <br />
     <div v-if="tokenStore.token">
       <RouterLink to="/teachers" class="btn btn-success"
-        >Click Here to See Available Options</RouterLink
+        >Teachers</RouterLink
+      >
+      <RouterLink to="/districts" class="btn btn-success"
+        >Districts</RouterLink
       >
     </div>
     <div v-else>

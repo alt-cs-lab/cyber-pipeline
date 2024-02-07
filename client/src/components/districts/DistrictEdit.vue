@@ -1,15 +1,13 @@
 <script setup>
 // Imports
-import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { setErrors } from '@formkit/vue'
 import VueMultiselect from 'vue-multiselect'
-import EasyMDE from 'easymde'
 
 // Stores
-import { useUsersStore } from '@/stores/Users'
-import { useRolesStore } from '@/stores/Roles'
+import { useDistrictsStore } from '@/stores/Districts'
+import { useTeachersStore } from '@/stores/Teachers'
 
 // Configure Router
 const router = useRouter()
@@ -22,47 +20,34 @@ const props = defineProps({
   },
 })
 
-// Users Store
-const usersStore = useUsersStore()
-await usersStore.hydrate()
-const user = usersStore.users.find((user) => user.id === parseInt(props.id))
+// Districts Store
+const districtsStore = useDistrictsStore()
+await districtsStore.hydrate()
+const district = districtsStore.districts.find((district) => district.id === parseInt(props.id))
 
-console.log(props.id)
+// Teachers Store
+const teacherStore = useTeachersStore()
+teacherStore.hydrate()
+const { teachers } = storeToRefs(teacherStore)
 
-// Roles Store
-const rolesStore = useRolesStore()
-rolesStore.hydrate()
-const { roles } = storeToRefs(rolesStore)
-
-// Configure EasyMDE
-// var easyMDE
-// onMounted(() => {
-//   easyMDE = new EasyMDE({
-//     autoDownloadFontAwesome: false,
-//     blockStyles: {
-//       italic: '_',
-//     },
-//     status: false,
-//     spellChecker: false,
-//   })
-// })
-
-// Save User
+// Save District
 const save = async (data) => {
-  data = (({ id, name }) => ({
+  data = (({ id, name, usd, url }) => ({
     id,
     name,
+    usd,
+    url
   }))(data)
-  // only send role ids of related roles
-  data['roles'] = []
-  for (const role of user.roles) {
-    data['roles'].push({
-      id: role.id,
+  // only send role ids of related teachers
+  data['teachers'] = []
+  for (const teacher of district.teachers) {
+    data['teachers'].push({
+      id: teacher.id,
     })
   }
   try {
-    await usersStore.update(data)
-    router.push('/admin/')
+    await districtsStore.update(data)
+    router.push('/districts/')
   } catch (error) {
     if (error.response && error.response.status === 422) {
       let errors = {}
@@ -74,14 +59,14 @@ const save = async (data) => {
           }
         }
         setErrors(
-          'usersForm',
+          'districtsForm',
           [
             'The server rejected this submission. Please correct errors listed above',
           ],
           errors // (optional) input level errors
         )
       } else {
-        setErrors('usersForm', [
+        setErrors('districtsForm', [
           'The server rejected this submission due to an SQL Error. Refresh and try again',
         ])
       }
@@ -94,51 +79,57 @@ const save = async (data) => {
 
 <template>
   <main>
-    <h1 class="display-5 text-center">Edit User</h1>
+    <h1 class="display-5 text-center">Edit District</h1>
     <hr />
     <FormKit
-      id="userform"
+      id="districtsForm"
       type="form"
-      :value="user"
+      :value="district"
       :actions="false"
       @submit="save"
     >
       <FormKit
         type="text"
-        name="eid"
-        label="eID"
+        name="usd"
+        label="USD"
         :disabled="true"
-        help="The user's K-State eID (cannot be changed)"
+        help="The district's USD Number"
         validation="required"
       />
       <FormKit
         type="text"
         name="name"
         label="Name"
-        help="The user's full name as you'd like it displayed on the site"
+        help="The district's full name"
         validation="required"
       />
+      <FormKit
+        type="text"
+        name="url"
+        label="URL"
+        help="The district's website URL"
+      />
       <div class="mb-3">
-        <label for="multiselect-roles" class="form-label">Roles</label>
+        <label for="multiselect-teachers" class="form-label">Teachers</label>
         <VueMultiselect
-          id="multiselect-roles"
-          v-model="user.roles"
+          id="multiselect-teachers"
+          v-model="district.teachers"
           class="form-control"
-          :options="roles"
+          :options="teachers"
           :multiple="true"
-          tag-placeholder="Add this as new role"
-          placeholder="Type to search or add role"
+          tag-placeholder="Add this as new teacher"
+          placeholder="Type to search or add teacher"
           label="name"
           track-by="id"
         />
-        <div class="form-text">Roles assigned to this user</div>
+        <div class="form-text">Teachers assigned to this district</div>
       </div>
       <div class="row row-cols-1 row-cols-md-2">
         <div class="col d-grid mb-2">
           <button class="btn btn-success">Save</button>
         </div>
         <div class="col d-grid mb-2">
-          <router-link :to="{ name: 'admin' }" class="btn btn-secondary">
+          <router-link :to="{ name: 'districts' }" class="btn btn-secondary">
             Cancel</router-link
           >
         </div>

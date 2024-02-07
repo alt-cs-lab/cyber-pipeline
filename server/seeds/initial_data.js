@@ -41,4 +41,41 @@ exports.seed = async function(knex) {
     },
   ])
 
+  // Districts
+  await knex('districts').del()
+  await knex('districts').insert([
+    {
+      id: 1,
+      usd: "380",
+      name: "Vermillion",
+      url: "https://www.usd380.com/",
+      created_at: now,
+      updated_at: now,
+    }
+  ])
+
+  // Teachers
+  await knex('teachers').del()
+  await knex('teachers').insert([
+    {
+      id: 1,
+      name: "Russell Feldhausen",
+      email: "russfeld_2166@yahoo.com",
+      eid: "russfeld",
+      wid: "835203884",
+    }
+  ])
+
+  // Teacher Districts
+  await knex('teacher_districts').del()
+  await knex('teacher_districts').insert([
+    {
+      teacher_id: '1',
+      district_id: '1',
+      created_at: now,
+      updated_at: now,
+    },
+  ])
+
+
 };

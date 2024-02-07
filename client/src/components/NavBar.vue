@@ -28,6 +28,16 @@ const tokenStore = useTokenStore()
       <div id="navbarCollapse" class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
+            <RouterLink to="/teachers" active-class="active" class="nav-link"
+              >Teachers</RouterLink
+            >
+          </li>
+          <li class="nav-item">
+            <RouterLink to="/districts" active-class="active" class="nav-link"
+              >Districts</RouterLink
+            >
+          </li>
+          <li class="nav-item">
             <RouterLink to="/about" active-class="active" class="nav-link"
               >About</RouterLink
             >
