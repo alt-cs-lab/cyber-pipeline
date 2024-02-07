@@ -22,13 +22,43 @@ router.get('/', async function (req, res, next) {
     .modifyGraph('districts', (builder) => {
       builder.select('districts.id', 'districts.usd', 'districts.name')
     })
-    res.json(teachers)
+  res.json(teachers)
+})
+
+/* New Teacher */
+router.post('/', adminOnly, async function (req, res, next) {
+  try {
+    // strip out other data from districts
+    const districts = req.body.teacher.districts.map(({ id, ...next }) => {
+      return {
+        id: id,
+      }
+    })
+    await Teacher.query().upsertGraph(
+      {
+        name: req.body.teacher.name,
+        email: req.body.teacher.email,
+        eid: req.body.teacher.eid,
+        wid: req.body.teacher.wid,
+        districts: districts,
+      },
+      {
+        relate: true,
+        unrelate: true,
+      }
+    )
+    res.status(200)
+    res.json({ message: 'Teacher Saved' })
+  } catch (error) {
+    res.status(422)
+    res.json(error)
+  }
 })
 
 router.post('/:id', adminOnly, async function (req, res, next) {
   try {
     // strip out other data from districts
-    const teachers = req.body.teacher.districts.map(({ id, ...next }) => {
+    const districts = req.body.teacher.districts.map(({ id, ...next }) => {
       return {
         id: id,
       }
@@ -55,7 +85,7 @@ router.post('/:id', adminOnly, async function (req, res, next) {
   }
 })
 
-/* Delete Single District */
+/* Delete Single Teacher */
 router.delete('/:id', adminOnly, async function (req, res, next) {
   try {
     var deleted = await Teacher.query().deleteById(req.params.id)

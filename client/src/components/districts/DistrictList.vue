@@ -34,7 +34,7 @@ const removeDistrict = function (district) {
 
 // Confirm District Removal
 const confirmDistrict = async function (id) {
-  await districtsStore.deleteDistrict(id)
+  await districtsStore.delete(id)
   districtModal.hide()
 }
 
@@ -87,10 +87,13 @@ const confirmDistrict = async function (id) {
     </div>
   </div>
 
-  <button type="button" class="btn btn-success float-end" @click="addDistrict">
-    <font-awesome-icon icon="plus" /> District
-  </button>
-  <h1 class="text-center">Districts</h1>
+  <router-link
+    v-if="tokenStore.is_admin"
+    :to="{ name: 'district_new' }"
+    class="btn btn-success float-end"
+  >
+  <font-awesome-icon icon="plus" /> District
+  </router-link>
   
   <table class="table table-striped table-hover">
     <thead>

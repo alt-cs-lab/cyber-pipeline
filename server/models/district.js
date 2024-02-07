@@ -38,11 +38,11 @@ class District extends Model {
   }
 
   static get virtualAttributes() {
-    return ['usdName'];
+    return ['usdName']
   }
 
   usdName() {
-    return `${this.usd} - ${this.name}`;
+    return `${this.usd} - ${this.name}`
   }
 
   // This object defines the relations to other models.

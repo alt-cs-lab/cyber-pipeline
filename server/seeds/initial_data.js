@@ -1,8 +1,8 @@
 /**
  * @param { import("knex").Knex } knex
- * @returns { Promise<void> } 
+ * @returns { Promise<void> }
  */
-exports.seed = async function(knex) {
+exports.seed = async function (knex) {
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   var then = new Date(now)
   then.setMinutes(then.getMinutes() - 5)
@@ -46,12 +46,12 @@ exports.seed = async function(knex) {
   await knex('districts').insert([
     {
       id: 1,
-      usd: "380",
-      name: "Vermillion",
-      url: "https://www.usd380.com/",
+      usd: '380',
+      name: 'Vermillion',
+      url: 'https://www.usd380.com/',
       created_at: now,
       updated_at: now,
-    }
+    },
   ])
 
   // Teachers
@@ -59,11 +59,11 @@ exports.seed = async function(knex) {
   await knex('teachers').insert([
     {
       id: 1,
-      name: "Russell Feldhausen",
-      email: "russfeld_2166@yahoo.com",
-      eid: "russfeld",
-      wid: "835203884",
-    }
+      name: 'Russell Feldhausen',
+      email: 'russfeld_2166@yahoo.com',
+      eid: 'russfeld',
+      wid: '835203884',
+    },
   ])
 
   // Teacher Districts
@@ -76,6 +76,4 @@ exports.seed = async function(knex) {
       updated_at: now,
     },
   ])
-
-
-};
+}

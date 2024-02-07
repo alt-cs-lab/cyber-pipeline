@@ -8,8 +8,10 @@ import AdminView from '../views/AdminView.vue'
 import UserEditView from '../views/UserEditView.vue'
 import TeacherListView from '../views/TeacherListView.vue'
 import TeacherEditView from '../views/TeacherEditView.vue'
+import TeacherNewView from '../views/TeacherNewView.vue'
 import DistrictListView from '../views/DistrictListView.vue'
 import DistrictEditView from '../views/DistrictEditView.vue'
+import DistrictNewView from '../views/DistrictNewView.vue'
 
 // Stores
 import { useTokenStore } from '@/stores/Token'
@@ -50,9 +52,9 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/teachers',
-      name: 'teachers',
-      component: TeacherListView,
+      path: '/teachers/new',
+      name: 'teacher_new',
+      component: TeacherNewView,
     },
     {
       path: '/teachers/:id/edit',
@@ -62,9 +64,14 @@ const router = createRouter({
       beforeEnter: requireAdmin,
     },
     {
-      path: '/districts',
-      name: 'districts',
-      component: DistrictListView,
+      path: '/teachers',
+      name: 'teachers',
+      component: TeacherListView,
+    },
+    {
+      path: '/districts/new',
+      name: 'district_new',
+      component: DistrictNewView,
     },
     {
       path: '/districts/:id/edit',
@@ -72,6 +79,11 @@ const router = createRouter({
       component: DistrictEditView,
       props: true,
       beforeEnter: requireAdmin,
+    },
+    {
+      path: '/districts',
+      name: 'districts',
+      component: DistrictListView,
     },
     {
       path: '/admin',

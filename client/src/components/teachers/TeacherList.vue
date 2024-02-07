@@ -34,7 +34,7 @@ const removeTeacher = function (teacher) {
 
 // Confirm Teacher Removal
 const confirmTeacher = async function (id) {
-  await teachersStore.deleteTeacher(id)
+  await teachersStore.delete(id)
   teacherModal.hide()
 }
 
@@ -87,10 +87,13 @@ const confirmTeacher = async function (id) {
     </div>
   </div>
 
-  <button type="button" class="btn btn-success float-end" @click="addTeacher">
-    <font-awesome-icon icon="plus" /> Teacher
-  </button>
-  <h1 class="text-center">Teachers</h1>
+  <router-link
+    v-if="tokenStore.is_admin"
+    :to="{ name: 'teacher_new' }"
+    class="btn btn-success float-end"
+  >
+  <font-awesome-icon icon="plus" /> Teacher
+  </router-link>
   
   <table class="table table-striped table-hover">
     <thead>

@@ -32,7 +32,16 @@ export const useDistrictsStore = defineStore('districts', {
           await this.hydrate()
         })
     },
-    async deleteDistrict(id) {
+    async new(district) {
+      await api
+        .post('/api/v1/districts', {
+          district: district,
+        })
+        .then(async () => {
+          await this.hydrate()
+        })
+    },
+    async delete(id) {
       await api.delete('/api/v1/districts/' + id).then(async () => {
         await this.hydrate()
       })

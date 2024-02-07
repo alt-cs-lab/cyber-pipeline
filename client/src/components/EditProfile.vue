@@ -1,10 +1,8 @@
 <script setup>
 // Imports
-import { onMounted } from 'vue'
 import { setErrors } from '@formkit/vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import EasyMDE from 'easymde'
 
 // Stores
 import { useProfileStore } from '@/stores/Profile'

@@ -8,22 +8,15 @@ import VueMultiselect from 'vue-multiselect'
 // Stores
 import { useDistrictsStore } from '@/stores/Districts'
 import { useTeachersStore } from '@/stores/Teachers'
+import { reactive } from 'vue'
 
 // Configure Router
 const router = useRouter()
 
-// Properties
-const props = defineProps({
-  id: {
-    type: Number,
-    default: -1,
-  },
-})
-
 // Districts Store
 const districtsStore = useDistrictsStore()
 await districtsStore.hydrate()
-const district = districtsStore.districts.find((district) => district.id === parseInt(props.id))
+var districtTeachers = reactive([]);
 
 // Teachers Store
 const teacherStore = useTeachersStore()
@@ -32,21 +25,20 @@ const { teachers } = storeToRefs(teacherStore)
 
 // Save District
 const save = async (data) => {
-  data = (({ id, name, usd, url }) => ({
-    id,
+  data = (({ name, usd, url }) => ({
     name,
     usd,
     url
   }))(data)
   // only send role ids of related teachers
   data['teachers'] = []
-  for (const teacher of district.teachers) {
+  for (const teacher of districtTeachers) {
     data['teachers'].push({
       id: teacher.id,
     })
   }
   try {
-    await districtsStore.update(data)
+    await districtsStore.new(data)
     router.push('/districts/')
   } catch (error) {
     if (error.response && error.response.status === 422) {
@@ -79,7 +71,7 @@ const save = async (data) => {
 
 <template>
   <main>
-    <h1 class="display-5 text-center">Edit District</h1>
+    <h1 class="display-5 text-center">New District</h1>
     <hr />
     <FormKit
       id="districtsForm"
@@ -112,7 +104,7 @@ const save = async (data) => {
         <label for="multiselect-teachers" class="form-label">Teachers</label>
         <VueMultiselect
           id="multiselect-teachers"
-          v-model="district.teachers"
+          v-model="districtTeachers"
           class="form-control"
           :options="teachers"
           :multiple="true"

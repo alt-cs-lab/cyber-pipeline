@@ -1,11 +1,9 @@
 <script setup>
 // Imports
-import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { setErrors } from '@formkit/vue'
 import VueMultiselect from 'vue-multiselect'
-import EasyMDE from 'easymde'
 
 // Stores
 import { useUsersStore } from '@/stores/Users'

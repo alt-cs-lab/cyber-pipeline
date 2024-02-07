@@ -8,46 +8,39 @@ import VueMultiselect from 'vue-multiselect'
 // Stores
 import { useDistrictsStore } from '@/stores/Districts'
 import { useTeachersStore } from '@/stores/Teachers'
+import { reactive } from 'vue'
 
 // Configure Router
 const router = useRouter()
 
-// Properties
-const props = defineProps({
-  id: {
-    type: Number,
-    default: -1,
-  },
-})
+// Teachers Store
+const teachersStore = useTeachersStore()
+await teachersStore.hydrate()
+var teacherDistricts = reactive([]);
 
 // Districts Store
-const districtsStore = useDistrictsStore()
-await districtsStore.hydrate()
-const district = districtsStore.districts.find((district) => district.id === parseInt(props.id))
+const districtStore = useDistrictsStore()
+districtStore.hydrate()
+const { districts } = storeToRefs(districtStore)
 
-// Teachers Store
-const teacherStore = useTeachersStore()
-teacherStore.hydrate()
-const { teachers } = storeToRefs(teacherStore)
-
-// Save District
+// Save Teacher
 const save = async (data) => {
-  data = (({ id, name, usd, url }) => ({
-    id,
+  data = (({ name, email, eid, wid }) => ({
     name,
-    usd,
-    url
+    email,
+    eid,
+    wid
   }))(data)
   // only send role ids of related teachers
-  data['teachers'] = []
-  for (const teacher of district.teachers) {
-    data['teachers'].push({
-      id: teacher.id,
+  data['districts'] = []
+  for (const district of teacherDistricts) {
+    data['districts'].push({
+      id: district.id,
     })
   }
   try {
-    await districtsStore.update(data)
-    router.push('/districts/')
+    await teachersStore.new(data)
+    router.push('/teachers/')
   } catch (error) {
     if (error.response && error.response.status === 422) {
       let errors = {}
@@ -59,14 +52,14 @@ const save = async (data) => {
           }
         }
         setErrors(
-          'districtsForm',
+          'teachersForm',
           [
             'The server rejected this submission. Please correct errors listed above',
           ],
           errors // (optional) input level errors
         )
       } else {
-        setErrors('districtsForm', [
+        setErrors('teachersForm', [
           'The server rejected this submission due to an SQL Error. Refresh and try again',
         ])
       }
@@ -79,56 +72,62 @@ const save = async (data) => {
 
 <template>
   <main>
-    <h1 class="display-5 text-center">Edit District</h1>
+    <h1 class="display-5 text-center">New Teacher</h1>
     <hr />
     <FormKit
-      id="districtsForm"
+      id="teachersForm"
       type="form"
-      :value="district"
+      :value="teacher"
       :actions="false"
       @submit="save"
     >
       <FormKit
         type="text"
-        name="usd"
-        label="USD"
-        help="The district's USD Number"
-        validation="required"
-      />
-      <FormKit
-        type="text"
         name="name"
         label="Name"
-        help="The district's full name"
+        help="The teacher's full name"
         validation="required"
       />
       <FormKit
         type="text"
-        name="url"
-        label="URL"
-        help="The district's website URL"
+        name="email"
+        label="Email"
+        help="The teacher's school email"
+        validation="required"
+      />
+      <FormKit
+        type="text"
+        name="eid"
+        label="eID"
+        help="The teacher's K-State eID"
+      />
+      <FormKit
+        type="text"
+        name="wid"
+        label="WID"
+        help="The teacher's Wildcat ID"
       />
       <div class="mb-3">
-        <label for="multiselect-teachers" class="form-label">Teachers</label>
+        <label for="multiselect-districts" class="form-label">Districts</label>
         <VueMultiselect
-          id="multiselect-teachers"
-          v-model="district.teachers"
+          id="multiselect-districts"
+          v-model="teacherDistricts"
           class="form-control"
-          :options="teachers"
+          :options="districts"
           :multiple="true"
-          tag-placeholder="Add this as new teacher"
-          placeholder="Type to search or add teacher"
-          label="name"
+          tag-placeholder="Add this as new district"
+          placeholder="Type to search or add district"
+          label="usdName"
           track-by="id"
         />
-        <div class="form-text">Teachers assigned to this district</div>
+        <div class="form-text">Districts assigned to this teacher</div>
       </div>
       <div class="row row-cols-1 row-cols-md-2">
         <div class="col d-grid mb-2">
           <button class="btn btn-success">Save</button>
         </div>
         <div class="col d-grid mb-2">
-          <router-link :to="{ name: 'districts' }" class="btn btn-secondary">
+          <router-link :to="{ name: 'teachers' }" class="btn btn-secondary">
             Cancel</router-link
           >
         </div>

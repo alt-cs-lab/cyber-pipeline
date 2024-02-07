@@ -32,7 +32,16 @@ export const useTeachersStore = defineStore('teachers', {
           await this.hydrate()
         })
     },
-    async deleteTeacher(id) {
+    async new(teacher) {
+      await api
+        .post('/api/v1/teachers', {
+          teacher: teacher,
+        })
+        .then(async () => {
+          await this.hydrate()
+        })
+    },
+    async delete(id) {
       await api.delete('/api/v1/teachers/' + id).then(async () => {
         await this.hydrate()
       })

@@ -3,7 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www --ignore vue",
+    "start": "NODE_ENV=production node ./bin/www",
+    "reset": "knex migrate:rollback --all && knex migrate:latest && knex seed:run",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "lint:check": "eslint .",
+    "lint": "eslint --fix .",
+    "test": "mocha --require test/hooks.js --recursive --timeout 2000 --exit",
+    "cov": "nyc --reporter=html mocha --require test/hooks.js --recursive --timeout 2000 --exit",
+    "test-json": "mocha --require test/hooks.js --recursive --timeout 2000 --exit --reporter json > test-results.json"
   },
   "dependencies": {
     "axios": "^1.6.7",
@@ -27,5 +36,12 @@
     "objection": "^3.1.3",
     "pug": "^3.0.2",
     "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "chai": "^5.0.3",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "mocha": "^10.2.0",
+    "prettier": "^3.2.5"
   }
 }

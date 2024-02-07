@@ -32,17 +32,18 @@ const { districts } = storeToRefs(districtStore)
 
 // Save Teacher
 const save = async (data) => {
-  data = (({ id, name, usd, url }) => ({
+  data = (({ id, name, email, eid, wid }) => ({
     id,
     name,
-    usd,
-    url
+    email,
+    eid,
+    wid
   }))(data)
   // only send role ids of related teachers
-  data['teachers'] = []
-  for (const teacher of teacher.teachers) {
-    data['teachers'].push({
-      id: teacher.id,
+  data['districts'] = []
+  for (const district of teacher.districts) {
+    data['districts'].push({
+      id: district.id,
     })
   }
   try {
@@ -107,14 +108,12 @@ const save = async (data) => {
         name="eid"
         label="eID"
         help="The teacher's K-State eID"
-        validation="required"
       />
       <FormKit
         type="text"
         name="wid"
         label="WID"
         help="The teacher's Wildcat ID"
-        validation="required"
       />
       <div class="mb-3">
         <label for="multiselect-districts" class="form-label">Districts</label>
