@@ -1,3 +1,19 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Authentication API
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *   responses:
+ *     UnauthorizedError:
+ *       description: JWT is missing or invalid
+ */
+
 // Load Libraries
 const express = require('express')
 const router = express.Router()
@@ -13,7 +29,19 @@ const User = require('../models/user')
 // Configure Logging
 router.use(requestLogger)
 
-/* Handle Logins */
+/**
+ * @swagger
+ * /auth/login:
+ *   get:
+ *     summary: login
+ *     description: log in the current user by redirecting to CAS or using force authentication if enabled
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       301:
+ *         description: user is logged in, redirect to homepage
+ */
 router.get('/login', async function (req, res, next) {
   if (!req.session.user_id) {
     let eid = ''
@@ -45,7 +73,26 @@ router.get('/login', async function (req, res, next) {
   res.redirect('/')
 })
 
-/* Request New JWT */
+/**
+ * @swagger
+ * /auth/token:
+ *   get:
+ *     summary: get JWT
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: JWT for user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               token:
+ *                 type: string
+ *                 format: JWT
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
 router.get('/token', async function (req, res, next) {
   if (req.session.user_id) {
     const token = await User.getToken(req.session.user_id)
@@ -58,7 +105,35 @@ router.get('/token', async function (req, res, next) {
   }
 })
 
-/* Use Refresh Token to Update JWT */
+/**
+ * @swagger
+ * /auth/token:
+ *   post:
+ *     summary: use refresh token to get new JWT
+ *     tags: [Auth]
+ *     requestBody:
+ *       description: refresh token
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refresh_token:
+ *                 type: string
+ *                 format: JWT
+ *     responses:
+ *       200:
+ *         description: JWT for user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               token:
+ *                 type: string
+ *                 format: JWT
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
 router.post('/token', async function (req, res, next) {
   if (req.body.refresh_token) {
     jwt.verify(
@@ -101,6 +176,19 @@ router.post('/token', async function (req, res, next) {
   }
 })
 
+/**
+ * @swagger
+ * /auth/logout:
+ *   get:
+ *     summary: logout
+ *     description: log out the current user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       301:
+ *         description: user is logged out, redirect to home page
+ */
 router.get('/logout', async function (req, res, next) {
   if (req.session.user_id) {
     await User.clearRefreshToken(req.session.user_id)

@@ -43,7 +43,7 @@ exports.up = function (knex) {
       table.increments('id')
       table.string('name', 255).notNullable()
       table.string('email', 255).notNullable()
-      table.string('eid', 255)
+      table.string('eid', 20)
       table.string('wid', 9)
       table.timestamps()
     })

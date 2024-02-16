@@ -69,8 +69,17 @@ app.use(compression())
 // Add Helmet Protection
 app.use(helmet())
 
+// Add Index router and OpenAPI spec in development
 if (process.env.NODE_ENV == 'development') {
   app.use('/', indexRouter)
+
+  const openapi = require('./configs/openapi')
+  const swaggerUi = require('swagger-ui-express')
+  app.use(
+    '/docs',
+    swaggerUi.serve,
+    swaggerUi.setup(openapi, { explorer: true })
+  )
 }
 
 // Routers

@@ -1,3 +1,10 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Users API
+ */
+
 // Load Libraries
 const express = require('express')
 const router = express.Router()
@@ -11,7 +18,24 @@ const User = require('../../models/user')
 // Require Admin Role on All Routes
 router.use(adminOnly)
 
-/* Get Users List */
+/**
+ * @swagger
+ * /api/v1/users:
+ *   get:
+ *     summary: <admin> list all the users
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: the list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ */
 router.get('/', async function (req, res, next) {
   let users = await User.query()
     .select('users.id', 'users.eid', 'users.name')
@@ -22,10 +46,45 @@ router.get('/', async function (req, res, next) {
   res.json(users)
 })
 
-/* Update Single User */
+/**
+ * @swagger
+ * /api/v1/users/{id}:
+ *   post:
+ *     summary: <admin> update user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: user ID
+ *     requestBody:
+ *       description: user
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               roles:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/Role'
+ *     responses:
+ *       200:
+ *         $ref: '#/components/responses/Success'
+ *       422:
+ *         $ref: '#/components/responses/UpdateError'
+ */
 router.post('/:id', async function (req, res, next) {
   try {
-    // strip out other data from users
+    // strip out other data from roles
     const roles = req.body.user.roles.map(({ id, ...next }) => {
       return {
         id: id,
@@ -50,7 +109,34 @@ router.post('/:id', async function (req, res, next) {
   }
 })
 
-/* Create New User */
+/**
+ * @swagger
+ * /api/v1/users:
+ *   put:
+ *     summary: <admin> create user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: user
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               eid:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       422:
+ *         $ref: '#/components/responses/UpdateError'
+ */
 router.put('/', async function (req, res, next) {
   try {
     const user = await User.findOrCreate(req.body.eid)
@@ -62,7 +148,28 @@ router.put('/', async function (req, res, next) {
   }
 })
 
-/* Delete Single User */
+/**
+ * @swagger
+ * /api/v1/users/{id}:
+ *   delete:
+ *     summary: <admin> delete user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: user ID
+ *     responses:
+ *       200:
+ *         $ref: '#/components/responses/Success'
+ *       422:
+ *         $ref: '#/components/responses/UpdateError'
+ */
 router.delete('/:id', async function (req, res, next) {
   if (req.params.id == req.user_id) {
     res.status(422)
