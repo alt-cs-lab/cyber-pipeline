@@ -34,7 +34,7 @@ export const useTeachersStore = defineStore('teachers', {
     },
     async new(teacher) {
       await api
-        .post('/api/v1/teachers', {
+        .put('/api/v1/teachers', {
           teacher: teacher,
         })
         .then(async () => {

@@ -52,6 +52,14 @@ exports.seed = async function (knex) {
       created_at: now,
       updated_at: now,
     },
+    {
+      id: 2,
+      usd: '501',
+      name: 'Topeka',
+      url: 'https://www.topekapublicschools.net/',
+      created_at: now,
+      updated_at: now,
+    },
   ])
 
   // Teachers
@@ -63,6 +71,19 @@ exports.seed = async function (knex) {
       email: 'russfeld_2166@yahoo.com',
       eid: 'russfeld',
       wid: '835203884',
+      district_id: 1,
+      created_at: now,
+      updated_at: now,
+    },
+    {
+      id: 2,
+      name: 'Joshua Weese',
+      email: 'weeser@ksu.edu',
+      eid: 'weeser',
+      wid: '123456789',
+      district_id: 2,
+      created_at: now,
+      updated_at: now,
     },
   ])
 
@@ -72,6 +93,18 @@ exports.seed = async function (knex) {
     {
       teacher_id: '1',
       district_id: '1',
+      created_at: now,
+      updated_at: now,
+    },
+    {
+      teacher_id: '1',
+      district_id: '2',
+      created_at: now,
+      updated_at: now,
+    },
+    {
+      teacher_id: '2',
+      district_id: '2',
       created_at: now,
       updated_at: now,
     },

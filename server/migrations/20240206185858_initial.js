@@ -45,6 +45,13 @@ exports.up = function (knex) {
       table.string('email', 255).notNullable()
       table.string('eid', 20)
       table.string('wid', 9)
+      table
+        .integer('district_id')
+        .unsigned()
+        .nullable()
+        .references('id')
+        .inTable('districts')
+        .onDelete('SET NULL')
       table.timestamps()
     })
     .createTable('teacher_districts', function (table) {

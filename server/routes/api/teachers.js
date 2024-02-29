@@ -40,7 +40,8 @@ router.get('/', async function (req, res, next) {
       'teachers.name',
       'teachers.email',
       'teachers.eid',
-      'teachers.wid'
+      'teachers.wid',
+      'teachers.district_id'
     )
     .withGraphJoined('districts')
     .modifyGraph('districts', (builder) => {
@@ -52,7 +53,7 @@ router.get('/', async function (req, res, next) {
 /**
  * @swagger
  * /api/v1/teachers:
- *   post:
+ *   put:
  *     summary: <admin> create teacher
  *     tags: [Teachers]
  *     security:
@@ -86,6 +87,9 @@ router.get('/', async function (req, res, next) {
  *                 minLength: 9
  *                 maxLength: 9
  *                 description: the K-State Wildcat ID of the teacher
+ *               district_id:
+ *                 type: integer
+ *                 description: id of primary district for the teacher
  *               districts:
  *                 type: array
  *                 items:
@@ -99,6 +103,7 @@ router.get('/', async function (req, res, next) {
  *               email: test@distrct.com
  *               eid: test-teacher
  *               wid: "000000000"
+ *               district_id: 1
  *               districts:
  *                 - id: 1
  *     responses:
@@ -107,7 +112,7 @@ router.get('/', async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.post('/', adminOnly, async function (req, res, next) {
+router.put('/', adminOnly, async function (req, res, next) {
   try {
     // strip out other data from districts
     const districts = req.body.teacher.districts.map(({ id, ...next }) => {
@@ -121,6 +126,7 @@ router.post('/', adminOnly, async function (req, res, next) {
         email: req.body.teacher.email,
         eid: req.body.teacher.eid,
         wid: req.body.teacher.wid,
+        district_id: req.body.teacher.district_id,
         districts: districts,
       },
       {
@@ -184,6 +190,9 @@ router.post('/', adminOnly, async function (req, res, next) {
  *                 minLength: 9
  *                 maxLength: 9
  *                 description: the K-State Wildcat ID of the teacher
+ *               district_id:
+ *                 type: integer
+ *                 description: id of primary district for the teacher
  *               districts:
  *                 type: array
  *                 items:
@@ -198,6 +207,7 @@ router.post('/', adminOnly, async function (req, res, next) {
  *               email: test@distrct.com
  *               eid: test-teacher
  *               wid: "000000000"
+ *               district_id: 1
  *               districts:
  *                 - id: 1
  *     responses:
@@ -221,6 +231,7 @@ router.post('/:id', adminOnly, async function (req, res, next) {
         email: req.body.teacher.email,
         eid: req.body.teacher.eid,
         wid: req.body.teacher.wid,
+        district_id: req.body.teacher.district_id,
         districts: districts,
       },
       {

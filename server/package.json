@@ -15,6 +15,7 @@
     "test-json": "mocha --require test/hooks.js --recursive --timeout 2000 --exit --reporter json > test-results.json"
   },
   "dependencies": {
+    "ajv-formats": "^2.1.1",
     "axios": "^1.6.7",
     "compression": "^1.7.4",
     "connect-history-api-fallback": "^2.0.0",

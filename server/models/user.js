@@ -5,6 +5,7 @@ const logger = require('../configs/logger')
 const axios = require('axios')
 const { parseStringPromise } = require('xml2js')
 const util = require('node:util')
+const objection = require('objection')
 
 /**
  * @swagger
@@ -197,6 +198,24 @@ class User extends Model {
           to: 'roles.id',
         },
       },
+    }
+  }
+
+  async $beforeInsert() {
+    let user = await User.query().where('eid', this.eid).limit(1)
+    // user not found - create user
+    if (user.length !== 0) {
+      throw new objection.ValidationError({
+        message: 'eid should be unique',
+        type: 'ModelValidation',
+        data: {
+          "eid": [
+            {
+                "message": "this eID is already in use",
+            }
+        ]
+        }
+      });
     }
   }
 }

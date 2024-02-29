@@ -9,7 +9,7 @@ const requestLogger = require('../middlewares/request-logger')
 const User = require('../models/user')
 
 // Configure Logging
-router.use(requestLogger)
+// router.use(requestLogger)
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {

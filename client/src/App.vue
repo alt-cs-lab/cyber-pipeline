@@ -1,25 +1,38 @@
 <script setup>
-// Imports
 import { RouterView } from 'vue-router'
+import TopMenu from '@/components/topmenu/TopMenu.vue'
+// Stores
+import { useTokenStore } from '@/stores/Token'
+import Toast from 'primevue/toast';
 
-// Components
-import NavBar from './components/NavBar.vue'
+// Token Store
+const tokenStore = useTokenStore()
+tokenStore.tryToken()
 </script>
 
 <template>
   <header>
-    <NavBar />
+    
   </header>
 
-  <div id="main" class="container px-4 py-5">
-    <Suspense>
+  <nav>
+    <TopMenu />
+  </nav>
+
+  <aside>
+
+  </aside>
+
+  <main>
+    <div class="my-2">
       <RouterView />
-    </Suspense>
-  </div>
+    </div>
+  </main>
+
+  <footer>
+
+  </footer>
+  <Toast position="bottom-right" />
+
 </template>
 
-<style scoped>
-#main {
-  margin-top: 20px;
-}
-</style>

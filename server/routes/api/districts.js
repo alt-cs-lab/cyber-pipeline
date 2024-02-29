@@ -46,7 +46,7 @@ router.get('/', async function (req, res, next) {
 /**
  * @swagger
  * /api/v1/districts:
- *   post:
+ *   put:
  *     summary: <admin> create district
  *     tags: [Districts]
  *     security:
@@ -91,7 +91,7 @@ router.get('/', async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.post('/', adminOnly, async function (req, res, next) {
+router.put('/', adminOnly, async function (req, res, next) {
   try {
     // strip out other data from teachers
     const teachers = req.body.district.teachers.map(({ id, ...next }) => {

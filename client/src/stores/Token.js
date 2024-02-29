@@ -76,10 +76,10 @@ export const useTokenStore = defineStore('token', {
         .catch(async (err) => {
           if (err.response && err.response.status === 401) {
             Logger.info('token:try login failed - trying refresh token')
-            await this.refreshToken()
+            await this.tryRefreshToken()
           } else {
-            Logger.error('token:try error' + err)
             this.token = ''
+            Logger.error('token:try error' + err)
           }
         })
     },
@@ -103,6 +103,26 @@ export const useTokenStore = defineStore('token', {
           } else {
             Logger.error('token:refresh error' + err)
             this.token = ''
+          }
+        })
+    },
+
+    async tryRefreshToken() {
+      Logger.info('token:tryrefresh')
+      await api
+        .post('/auth/token', {
+          refresh_token: this.refresh_token,
+        })
+        .then((response) => {
+          this.token = response.data.token
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 401) {
+            this.token = ''
+            Logger.info('token:tryrefresh login failed')
+          } else {
+            this.token = ''
+            Logger.error('token:tryrefresh error' + err)
           }
         })
     },

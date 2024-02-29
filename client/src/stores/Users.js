@@ -32,13 +32,13 @@ export const useUsersStore = defineStore('users', {
           await this.hydrate()
         })
     },
-    async deleteUser(id) {
+    async delete(id) {
       await api.delete('/api/v1/users/' + id).then(async () => {
         await this.hydrate()
       })
     },
-    async addUser(eid) {
-      await api.put('/api/v1/users/', { eid: eid }).then(async () => {
+    async new(user) {
+      await api.put('/api/v1/users/', { user:user }).then(async () => {
         await this.hydrate()
       })
     },

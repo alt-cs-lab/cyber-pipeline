@@ -34,6 +34,9 @@ const Model = require('./base')
  *           minLength: 9
  *           maxLength: 9
  *           description: the K-State Wildcat ID of the teacher
+ *         district_id:
+ *           type: integer
+ *           description: id of primary district for the teacher
  *         districts:
  *           type: array
  *           items:
@@ -92,7 +95,7 @@ class Teacher extends Model {
 
       properties: {
         name: { type: 'string', minLength: 1, maxLength: 255 },
-        email: { type: 'string', minLength: 1, maxLength: 255 },
+        email: { type: 'string', minLength: 1, maxLength: 255, format: 'email' },
         eid: { type: 'string', minLength: 3, maxLength: 20 },
         wid: { type: 'string', minLength: 9, maxLength: 9 },
       },

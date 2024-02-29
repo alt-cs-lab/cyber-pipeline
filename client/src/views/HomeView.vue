@@ -1,7 +1,8 @@
 <script setup>
-import LoginMessage from '@/components/LoginMessage.vue'
 </script>
 
 <template>
-  <LoginMessage />
+  <main>
+    <p> Main Page</p>
+  </main>
 </template>

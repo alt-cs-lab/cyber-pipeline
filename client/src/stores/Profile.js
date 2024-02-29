@@ -18,10 +18,10 @@ export const useProfileStore = defineStore('profile', {
         this.user = response.data
       })
     },
-    async update(user) {
+    async update() {
       await api
         .post('/api/v1/profile/', {
-          user: user,
+          user: this.user,
         })
         .then(async () => {
           await this.hydrate()

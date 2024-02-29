@@ -34,7 +34,7 @@ export const useDistrictsStore = defineStore('districts', {
     },
     async new(district) {
       await api
-        .post('/api/v1/districts', {
+        .put('/api/v1/districts', {
           district: district,
         })
         .then(async () => {

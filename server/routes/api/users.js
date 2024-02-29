@@ -125,8 +125,12 @@ router.post('/:id', async function (req, res, next) {
  *           schema:
  *             type: object
  *             properties:
- *               eid:
+ *               name:
  *                 type: string
+ *               roles:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/Role'
  *     responses:
  *       201:
  *         description: success
@@ -139,9 +143,25 @@ router.post('/:id', async function (req, res, next) {
  */
 router.put('/', async function (req, res, next) {
   try {
-    const user = await User.findOrCreate(req.body.eid)
-    res.status(201)
-    res.json(user)
+    // strip out other data from roles
+    const roles = req.body.user.roles.map(({ id, ...next }) => {
+      return {
+        id: id,
+      }
+    })
+    await User.query().upsertGraph(
+      {
+        eid: req.body.user.eid,
+        name: req.body.user.name,
+        roles: roles,
+      },
+      {
+        relate: true,
+        unrelate: true,
+      }
+    )
+    res.status(200)
+    res.json({ message: 'User Saved' })
   } catch (error) {
     res.status(422)
     res.json(error)
@@ -174,19 +194,20 @@ router.delete('/:id', async function (req, res, next) {
   if (req.params.id == req.user_id) {
     res.status(422)
     res.json({ error: 'Cannot Delete Yourself' })
-  }
-  try {
-    var deleted = await User.query().deleteById(req.params.id)
-    if (deleted === 1) {
-      res.status(200)
-      res.json({ message: 'User Deleted' })
-    } else {
+  }else {
+    try {
+      var deleted = await User.query().deleteById(req.params.id)
+      if (deleted === 1) {
+        res.status(200)
+        res.json({ message: 'User Deleted' })
+      } else {
+        res.status(422)
+        res.json({ error: 'User Not Found' })
+      }
+    } catch (error) {
       res.status(422)
-      res.json({ error: 'User Not Found' })
+      res.json(error)
     }
-  } catch (error) {
-    res.status(422)
-    res.json(error)
   }
 })
 
