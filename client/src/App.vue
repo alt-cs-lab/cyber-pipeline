@@ -1,12 +1,18 @@
 <script setup>
+// Libraries
 import { RouterView } from 'vue-router'
-import TopMenu from '@/components/topmenu/TopMenu.vue'
-// Stores
-import { useTokenStore } from '@/stores/Token'
+
+// PrimeVue Components
 import Toast from 'primevue/toast'
 
-// Token Store
+// Custom Components
+import TopMenu from '@/components/topmenu/TopMenu.vue'
+
+// Stores
+import { useTokenStore } from '@/stores/Token'
 const tokenStore = useTokenStore()
+
+// Setup Stores
 tokenStore.tryToken()
 </script>
 
@@ -14,6 +20,7 @@ tokenStore.tryToken()
   <header></header>
 
   <nav>
+    <!-- Navigation Menu-->
     <TopMenu />
   </nav>
 
@@ -21,10 +28,13 @@ tokenStore.tryToken()
 
   <main>
     <div class="my-2">
+      <!-- Main Application View-->
       <RouterView />
     </div>
   </main>
 
   <footer></footer>
+
+  <!-- Toast Library -->
   <Toast position="bottom-right" />
 </template>
