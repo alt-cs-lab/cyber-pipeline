@@ -79,7 +79,7 @@ class District extends Model {
       properties: {
         name: { type: 'string', minLength: 1, maxLength: 255 },
         url: { type: 'string', minLength: 1, maxLength: 255, format: 'uri' },
-        usd: { type: 'integer'}
+        usd: { type: 'integer' },
       },
     }
   }

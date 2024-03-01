@@ -2,9 +2,6 @@
 const express = require('express')
 const router = express.Router()
 
-// Load Configs
-const requestLogger = require('../middlewares/request-logger')
-
 // Load Models
 const User = require('../models/user')
 

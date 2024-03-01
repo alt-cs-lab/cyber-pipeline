@@ -8,7 +8,7 @@ import api from '@/services/api'
 export const useProfileStore = defineStore('profile', {
   state: () => {
     return {
-      user: {},
+      user: {}
     }
   },
   actions: {
@@ -21,11 +21,11 @@ export const useProfileStore = defineStore('profile', {
     async update() {
       await api
         .post('/api/v1/profile/', {
-          user: this.user,
+          user: this.user
         })
         .then(async () => {
           await this.hydrate()
         })
-    },
-  },
+    }
+  }
 })

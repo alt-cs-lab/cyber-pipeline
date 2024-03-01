@@ -8,7 +8,7 @@ import api from '@/services/api'
 export const useTeachersStore = defineStore('teachers', {
   state: () => {
     return {
-      teachers: [],
+      teachers: []
     }
   },
   getters: {
@@ -26,7 +26,7 @@ export const useTeachersStore = defineStore('teachers', {
     async update(teacher) {
       await api
         .post('/api/v1/teachers/' + teacher.id, {
-          teacher: teacher,
+          teacher: teacher
         })
         .then(async () => {
           await this.hydrate()
@@ -35,7 +35,7 @@ export const useTeachersStore = defineStore('teachers', {
     async new(teacher) {
       await api
         .put('/api/v1/teachers', {
-          teacher: teacher,
+          teacher: teacher
         })
         .then(async () => {
           await this.hydrate()
@@ -46,5 +46,5 @@ export const useTeachersStore = defineStore('teachers', {
         await this.hydrate()
       })
     }
-  },
+  }
 })

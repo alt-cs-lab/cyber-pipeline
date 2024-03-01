@@ -8,7 +8,7 @@ import api from '@/services/api'
 export const useDistrictsStore = defineStore('districts', {
   state: () => {
     return {
-      districts: [],
+      districts: []
     }
   },
   getters: {
@@ -26,7 +26,7 @@ export const useDistrictsStore = defineStore('districts', {
     async update(district) {
       await api
         .post('/api/v1/districts/' + district.id, {
-          district: district,
+          district: district
         })
         .then(async () => {
           await this.hydrate()
@@ -35,7 +35,7 @@ export const useDistrictsStore = defineStore('districts', {
     async new(district) {
       await api
         .put('/api/v1/districts', {
-          district: district,
+          district: district
         })
         .then(async () => {
           await this.hydrate()
@@ -46,5 +46,5 @@ export const useDistrictsStore = defineStore('districts', {
         await this.hydrate()
       })
     }
-  },
+  }
 })

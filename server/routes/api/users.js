@@ -194,7 +194,7 @@ router.delete('/:id', async function (req, res, next) {
   if (req.params.id == req.user_id) {
     res.status(422)
     res.json({ error: 'Cannot Delete Yourself' })
-  }else {
+  } else {
     try {
       var deleted = await User.query().deleteById(req.params.id)
       if (deleted === 1) {

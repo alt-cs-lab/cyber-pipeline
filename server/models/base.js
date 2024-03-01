@@ -18,21 +18,21 @@ class BaseModel extends Model {
   }
 
   static createValidator() {
-		return new AjvValidator({
-			onCreateAjv: (ajv) => {
-				addFormats(ajv);
-			},
+    return new AjvValidator({
+      onCreateAjv: (ajv) => {
+        addFormats(ajv)
+      },
       options: {
-        coerceTypes: true
-      }
-			/* options: {
+        coerceTypes: true,
+      },
+      /* options: {
 				allErrors: true,
 				validateSchema: false,
 				ownProperties: true,
 				v5: true,
 			}, */
-		});
-	}
+    })
+  }
 }
 
 module.exports = BaseModel

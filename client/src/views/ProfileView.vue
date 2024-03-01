@@ -10,6 +10,6 @@ profileStore.hydrate()
 
 <template>
   <main>
-      <ProfileEdit />
+    <ProfileEdit />
   </main>
 </template>

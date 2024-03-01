@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router'
 import TopMenu from '@/components/topmenu/TopMenu.vue'
 // Stores
 import { useTokenStore } from '@/stores/Token'
-import Toast from 'primevue/toast';
+import Toast from 'primevue/toast'
 
 // Token Store
 const tokenStore = useTokenStore()
@@ -11,17 +11,13 @@ tokenStore.tryToken()
 </script>
 
 <template>
-  <header>
-    
-  </header>
+  <header></header>
 
   <nav>
     <TopMenu />
   </nav>
 
-  <aside>
-
-  </aside>
+  <aside></aside>
 
   <main>
     <div class="my-2">
@@ -29,10 +25,6 @@ tokenStore.tryToken()
     </div>
   </main>
 
-  <footer>
-
-  </footer>
+  <footer></footer>
   <Toast position="bottom-right" />
-
 </template>
-

@@ -1,8 +1,7 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
   <main>
-    <p> Main Page</p>
+    <p>Main Page</p>
   </main>
 </template>

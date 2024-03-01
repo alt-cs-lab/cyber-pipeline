@@ -8,13 +8,13 @@ import api from '@/services/api'
 export const useUsersStore = defineStore('users', {
   state: () => {
     return {
-      users: [],
+      users: []
     }
   },
   getters: {
     getUser: (state) => {
       return (id) => state.users.find((user) => user.id === id)
-    },
+    }
   },
   actions: {
     async hydrate() {
@@ -26,7 +26,7 @@ export const useUsersStore = defineStore('users', {
     async update(user) {
       await api
         .post('/api/v1/users/' + user.id, {
-          user: user,
+          user: user
         })
         .then(async () => {
           await this.hydrate()
@@ -38,9 +38,9 @@ export const useUsersStore = defineStore('users', {
       })
     },
     async new(user) {
-      await api.put('/api/v1/users/', { user:user }).then(async () => {
+      await api.put('/api/v1/users/', { user: user }).then(async () => {
         await this.hydrate()
       })
-    },
-  },
+    }
+  }
 })

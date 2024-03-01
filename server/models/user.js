@@ -209,13 +209,13 @@ class User extends Model {
         message: 'eid should be unique',
         type: 'ModelValidation',
         data: {
-          "eid": [
+          eid: [
             {
-                "message": "this eID is already in use",
-            }
-        ]
-        }
-      });
+              message: 'this eID is already in use',
+            },
+          ],
+        },
+      })
     }
   }
 }
