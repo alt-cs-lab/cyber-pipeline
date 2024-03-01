@@ -1,43 +1,53 @@
 <script setup>
+// Libraries
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import ConfirmDialog from 'primevue/confirmdialog'
 
+// PrimeVue Components
+import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
 const confirm = useConfirm()
+import { useToast } from 'primevue/usetoast'
+const toast = useToast()
 
+// Custom Components
+import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
+import DropDownField from '../forms/DropDownField.vue'
+
+// Stores
 import { useTeachersStore } from '@/stores/Teachers'
-import { useDistrictsStore } from '@/stores/Districts'
-import { ref } from 'vue'
-
 const teachersStore = useTeachersStore()
+import { useDistrictsStore } from '@/stores/Districts'
+const districtsStore = useDistrictsStore()
+
+// Setup Stores
 teachersStore.hydrate()
 const { teachers } = storeToRefs(teachersStore)
-
-// Roles Store
-const districtsStore = useDistrictsStore()
 districtsStore.hydrate()
 const { districts, getDistrict } = storeToRefs(districtsStore)
 
-// Toast
-import { useToast } from 'primevue/usetoast'
-import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
-import DropDownField from '../forms/DropDownField.vue'
-const toast = useToast()
+// Variables
+const teacherDialog = ref(false) // controls opening the dialog
+const teacherDialogHeader = ref('') // controls header for dialog
+const loading = ref(false) // controls loading message
+const message = ref('') // error message on dialog form
+const teacher = ref({}) // item to be edited
+const errors = ref({}) // form errors
+const dt = ref() // datatable reference
 
-const teacherDialog = ref(false)
-const teacherDialogHeader = ref('')
-const loading = ref(false)
-const message = ref('')
-const teacher = ref({})
-const errors = ref({})
-const dt = ref()
-
+/**
+ * Click handler to edit an item in the datatable
+ * @param {Teacher} aTeacher
+ */
 const editTeacher = (aTeacher) => {
   teacher.value = { ...aTeacher }
   teacherDialogHeader.value = 'Edit Teacher'
   teacherDialog.value = true
 }
 
+/**
+ * Click handler for new button
+ */
 const newTeacher = () => {
   teacher.value = {
     name: '',
@@ -50,6 +60,11 @@ const newTeacher = () => {
   teacherDialog.value = true
 }
 
+/**
+ * Click handler to delete an item in the datatable
+ *
+ * @param {Teacher} aTeacher
+ */
 const deleteTeacher = (aTeacher) => {
   confirm.require({
     message: 'Are you sure you want to delete ' + aTeacher.name + '?',
@@ -83,6 +98,9 @@ const deleteTeacher = (aTeacher) => {
   })
 }
 
+/**
+ * Save button handler in edit form dialog
+ */
 const save = async () => {
   loading.value = true
   errors.value = {}
@@ -110,10 +128,18 @@ const save = async () => {
   loading.value = false
 }
 
+/**
+ * Export datatable to CSV
+ */
 const exportCSV = () => {
   dt.value.exportCSV()
 }
 
+/**
+ * Custom export function to handle exporting datatable data
+ *
+ * @param {Teacher} row
+ */
 const exportFunction = (row) => {
   if (Array.isArray(row.data)) {
     var output = '"'
@@ -130,7 +156,10 @@ const exportFunction = (row) => {
 </script>
 
 <template>
+  <!-- Location for confirmation dialog to be inserted -->
   <ConfirmDialog></ConfirmDialog>
+
+  <!-- Main datatable for items -->
   <Panel header="Manage Teachers">
     <DataTable
       ref="dt"
@@ -142,7 +171,10 @@ const exportFunction = (row) => {
       :exportFunction="exportFunction"
     >
       <template #header>
-        <Toolbar class="mb-2" style="border: none">
+        <Toolbar
+          class="mb-2"
+          style="border: none"
+        >
           <template #start>
             <Button
               label="New"
@@ -153,20 +185,48 @@ const exportFunction = (row) => {
             />
           </template>
           <template #end>
-            <Button label="Export" icon="pi pi-upload" severity="help" @click="exportCSV($event)" />
+            <Button
+              label="Export"
+              icon="pi pi-upload"
+              severity="help"
+              @click="exportCSV($event)"
+            />
           </template>
         </Toolbar>
       </template>
-      <Column field="name" sortable header="Name"></Column>
-      <Column field="email" sortable header="Email"></Column>
-      <Column field="eid" sortable header="eID"></Column>
-      <Column field="wid" sortable header="WID"></Column>
-      <Column field="district_id" sortable header="District">
+      <Column
+        field="name"
+        sortable
+        header="Name"
+      ></Column>
+      <Column
+        field="email"
+        sortable
+        header="Email"
+      ></Column>
+      <Column
+        field="eid"
+        sortable
+        header="eID"
+      ></Column>
+      <Column
+        field="wid"
+        sortable
+        header="WID"
+      ></Column>
+      <Column
+        field="district_id"
+        sortable
+        header="District"
+      >
         <template #body="slotProps">
           <p>{{ getDistrict(slotProps.data.district_id)?.usdName }}</p>
         </template>
       </Column>
-      <Column field="districts" header="Districts">
+      <Column
+        field="districts"
+        header="Districts"
+      >
         <template #body="slotProps">
           <Tag
             v-for="district in slotProps.data.districts"
@@ -176,7 +236,11 @@ const exportFunction = (row) => {
           />
         </template>
       </Column>
-      <Column header="Actions" :exportable="false" style="min-width: 8rem">
+      <Column
+        header="Actions"
+        :exportable="false"
+        style="min-width: 8rem"
+      >
         <template #body="slotProps">
           <Button
             icon="pi pi-pencil"
@@ -199,6 +263,7 @@ const exportFunction = (row) => {
     </DataTable>
   </Panel>
 
+  <!-- Edit item dialog -->
   <Dialog
     v-model:visible="teacherDialog"
     :style="{ width: '450px' }"
@@ -207,7 +272,11 @@ const exportFunction = (row) => {
     class="p-fluid"
     :closeOnEscape="true"
   >
-    <Message v-if="message" severity="error">{{ message }}</Message>
+    <Message
+      v-if="message"
+      severity="error"
+      >{{ message }}</Message
+    >
     <div
       class="flex flex-column align-items-center row-gap-5 w-full pt-3 mt-1"
       v-focustrap
@@ -227,8 +296,20 @@ const exportFunction = (row) => {
         icon="pi pi-envelope"
         :errors="errors"
       />
-      <TextField v-model="teacher.eid" field="eid" label="eID" icon="pi pi-at" :errors="errors" />
-      <TextField v-model="teacher.wid" field="wid" label="WID" icon="pi pi-key" :errors="errors" />
+      <TextField
+        v-model="teacher.eid"
+        field="eid"
+        label="eID"
+        icon="pi pi-at"
+        :errors="errors"
+      />
+      <TextField
+        v-model="teacher.wid"
+        field="wid"
+        label="WID"
+        icon="pi pi-key"
+        :errors="errors"
+      />
       <DropDownField
         v-model="teacher.district_id"
         field="district_id"
@@ -247,7 +328,12 @@ const exportFunction = (row) => {
         :values="districts"
         valueLabel="usdName"
       />
-      <Button label="Save" icon="pi pi-check" @click="save" :loading="loading" />
+      <Button
+        label="Save"
+        icon="pi pi-check"
+        @click="save"
+        :loading="loading"
+      />
     </div>
   </Dialog>
 </template>

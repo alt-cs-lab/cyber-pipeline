@@ -1,4 +1,7 @@
+// Libraries
 import { createRouter, createWebHistory } from 'vue-router'
+
+// Views
 import HomeView from '../views/HomeView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import DistrictView from '../views/DistrictView.vue'
@@ -8,37 +11,56 @@ import UserView from '../views/UserView.vue'
 // Stores
 import { useTokenStore } from '@/stores/Token'
 
-// Route Guard - Confirm User Is Admin
+/**
+ * Route guard to confirm the user is an administrator
+ *
+ * @returns Boolean: true if the user is an admin, otherwise false
+ */
 const requireAdmin = () => {
   const tokenStore = useTokenStore()
   return tokenStore.is_admin
 }
 
+/**
+ * Router factory method
+ */
 const router = createRouter({
+  // Enable virtual history
   history: createWebHistory(import.meta.env.BASE_URL),
+
+  // List of routes
   routes: [
+    // Homepage
     {
       path: '/',
       name: 'home',
       component: HomeView
     },
+
+    // Profile page
     {
       path: '/profile',
       name: 'profile',
       component: ProfileView
     },
+
+    // Teachers page
     {
       path: '/teachers',
       name: 'teachers',
       component: TeacherView,
       beforeEnter: requireAdmin
     },
+
+    // Districts page
     {
       path: '/districts',
       name: 'districts',
       component: DistrictView,
       beforeEnter: requireAdmin
     },
+
+    // Users page
     {
       path: '/users',
       name: 'users',
@@ -48,7 +70,9 @@ const router = createRouter({
   ]
 })
 
-// Global Route Guard - User Must Log In!
+/**
+ * Global route guard - user must be logged in to view any page other than home
+ */
 router.beforeEach(async function (to) {
   if (to.name !== 'home') {
     const tokenStore = useTokenStore()

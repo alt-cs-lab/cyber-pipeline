@@ -8,10 +8,13 @@ import api from '@/services/api'
 export const useRolesStore = defineStore('roles', {
   state: () => {
     return {
-      roles: []
+      roles: [] // list of roles
     }
   },
   actions: {
+    /**
+     * Hydrate the store by querying the API for data
+     */
     async hydrate() {
       Logger.info('roles:hydrate')
       await api.get('/api/v1/roles').then((response) => {

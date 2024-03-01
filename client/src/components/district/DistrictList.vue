@@ -1,42 +1,53 @@
 <script setup>
+// Libraries
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import ConfirmDialog from 'primevue/confirmdialog'
 
+// PrimeVue Components
+import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
 const confirm = useConfirm()
+import { useToast } from 'primevue/usetoast'
+const toast = useToast()
 
+// Custom Components
+import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
+
+// Stores
 import { useDistrictsStore } from '@/stores/Districts'
-import { useTeachersStore } from '@/stores/Teachers'
-import { ref } from 'vue'
-
 const districtsStore = useDistrictsStore()
+import { useTeachersStore } from '@/stores/Teachers'
+const teachersStore = useTeachersStore()
+
+// Setup Stores
 districtsStore.hydrate()
 const { districts } = storeToRefs(districtsStore)
-
-// Roles Store
-const teachersStore = useTeachersStore()
 teachersStore.hydrate()
 const { teachers } = storeToRefs(teachersStore)
 
-// Toast
-import { useToast } from 'primevue/usetoast'
-import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
-const toast = useToast()
+// Variables
+const districtDialog = ref(false) // controls opening the dialog
+const districtDialogHeader = ref('') // controls header for dialog
+const loading = ref(false) // controls loading message
+const message = ref('') // error message on dialog form
+const district = ref({}) // item to be edited
+const errors = ref({}) // form errors
+const dt = ref() // datatable reference
 
-const districtDialog = ref(false)
-const districtDialogHeader = ref('')
-const loading = ref(false)
-const message = ref('')
-const district = ref({})
-const errors = ref({})
-const dt = ref()
-
+/**
+ * Click handler to edit an item in the datatable
+ *
+ * @param {District} aDistrict item to edit
+ */
 const editDistrict = (aDistrict) => {
   district.value = { ...aDistrict }
   districtDialogHeader.value = 'Edit District'
   districtDialog.value = true
 }
 
+/**
+ * Click handler for new button
+ */
 const newDistrict = () => {
   district.value = {
     name: '',
@@ -48,6 +59,11 @@ const newDistrict = () => {
   districtDialog.value = true
 }
 
+/**
+ * Click handler to delete an item in the datatable
+ *
+ * @param {District} aDistrict item to delete
+ */
 const deleteDistrict = (aDistrict) => {
   confirm.require({
     message: 'Are you sure you want to delete ' + aDistrict.name + '?',
@@ -81,6 +97,9 @@ const deleteDistrict = (aDistrict) => {
   })
 }
 
+/**
+ * Save button handler in edit form dialog
+ */
 const save = async () => {
   loading.value = true
   errors.value = {}
@@ -108,10 +127,18 @@ const save = async () => {
   loading.value = false
 }
 
+/**
+ * Export datatable to CSV
+ */
 const exportCSV = () => {
   dt.value.exportCSV()
 }
 
+/**
+ * Custom export function to handle exporting datatable data
+ *
+ * @param {District} row
+ */
 const exportFunction = (row) => {
   if (Array.isArray(row.data)) {
     var output = '"'
@@ -128,7 +155,10 @@ const exportFunction = (row) => {
 </script>
 
 <template>
+  <!-- Location for confirmation dialog to be inserted -->
   <ConfirmDialog></ConfirmDialog>
+
+  <!-- Main datatable for items -->
   <Panel header="Manage Districts">
     <DataTable
       ref="dt"
@@ -140,7 +170,10 @@ const exportFunction = (row) => {
       :exportFunction="exportFunction"
     >
       <template #header>
-        <Toolbar class="mb-2" style="border: none">
+        <Toolbar
+          class="mb-2"
+          style="border: none"
+        >
           <template #start>
             <Button
               label="New"
@@ -151,18 +184,38 @@ const exportFunction = (row) => {
             />
           </template>
           <template #end>
-            <Button label="Export" icon="pi pi-upload" severity="help" @click="exportCSV($event)" />
+            <Button
+              label="Export"
+              icon="pi pi-upload"
+              severity="help"
+              @click="exportCSV($event)"
+            />
           </template>
         </Toolbar>
       </template>
-      <Column field="usd" sortable header="usd"></Column>
-      <Column field="name" sortable header="Name"></Column>
-      <Column field="url" sortable header="URL">
+      <Column
+        field="usd"
+        sortable
+        header="usd"
+      ></Column>
+      <Column
+        field="name"
+        sortable
+        header="Name"
+      ></Column>
+      <Column
+        field="url"
+        sortable
+        header="URL"
+      >
         <template #body="slotProps">
           <a :href="slotProps.data.url">{{ slotProps.data.url }}</a>
         </template>
       </Column>
-      <Column field="teachers" header="Teachers">
+      <Column
+        field="teachers"
+        header="Teachers"
+      >
         <template #body="slotProps">
           <Tag
             v-for="teacher in slotProps.data.teachers"
@@ -172,7 +225,11 @@ const exportFunction = (row) => {
           />
         </template>
       </Column>
-      <Column header="Actions" :exportable="false" style="min-width: 8rem">
+      <Column
+        header="Actions"
+        :exportable="false"
+        style="min-width: 8rem"
+      >
         <template #body="slotProps">
           <Button
             icon="pi pi-pencil"
@@ -195,6 +252,7 @@ const exportFunction = (row) => {
     </DataTable>
   </Panel>
 
+  <!-- Edit item dialog -->
   <Dialog
     v-model:visible="districtDialog"
     :style="{ width: '450px' }"
@@ -203,7 +261,11 @@ const exportFunction = (row) => {
     class="p-fluid"
     :closeOnEscape="true"
   >
-    <Message v-if="message" severity="error">{{ message }}</Message>
+    <Message
+      v-if="message"
+      severity="error"
+      >{{ message }}</Message
+    >
     <div
       class="flex flex-column align-items-center row-gap-5 w-full pt-3 mt-1"
       v-focustrap
@@ -216,8 +278,20 @@ const exportFunction = (row) => {
         icon="pi pi-user"
         :errors="errors"
       />
-      <TextField v-model="district.usd" field="usd" label="USD" icon="pi pi-key" :errors="errors" />
-      <TextField v-model="district.url" field="url" label="URL" icon="pi pi-at" :errors="errors" />
+      <TextField
+        v-model="district.usd"
+        field="usd"
+        label="USD"
+        icon="pi pi-key"
+        :errors="errors"
+      />
+      <TextField
+        v-model="district.url"
+        field="url"
+        label="URL"
+        icon="pi pi-at"
+        :errors="errors"
+      />
       <AutocompleteMultiple
         v-model="district.teachers"
         field="teachers"
@@ -227,7 +301,12 @@ const exportFunction = (row) => {
         :values="teachers"
         valueLabel="name"
       />
-      <Button label="Save" icon="pi pi-check" @click="save" :loading="loading" />
+      <Button
+        label="Save"
+        icon="pi pi-check"
+        @click="save"
+        :loading="loading"
+      />
     </div>
   </Dialog>
 </template>

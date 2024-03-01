@@ -1,23 +1,30 @@
 <script setup>
+// Libraries
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
+
+// PrimeVue Components
+import { useToast } from 'primevue/usetoast'
+const toast = useToast()
+
+// Custom Components
 import TextField from '@/components/forms/TextField.vue'
 
 // Stores
 import { useProfileStore } from '@/stores/Profile'
-import { ref } from 'vue'
-
-// Toast
-import { useToast } from 'primevue/usetoast'
-const toast = useToast()
-
-// Token Store
 const profileStore = useProfileStore()
+
+// Setup Stores
 const { user } = storeToRefs(profileStore)
 
-const loading = ref(false)
-const errors = ref({})
-const message = ref('')
+// Variables
+const loading = ref(false) // controls loading message
+const errors = ref({}) // form errors
+const message = ref('') // error message on dialog form
 
+/**
+ * Click handler for save button
+ */
 const save = async () => {
   loading.value = true
   errors.value = {}
@@ -40,7 +47,11 @@ const save = async () => {
 
 <template>
   <Panel header="Profile Settings">
-    <Message v-if="message" severity="error">{{ message }}</Message>
+    <Message
+      v-if="message"
+      severity="error"
+      >{{ message }}</Message
+    >
     <div
       class="flex flex-column align-items-center row-gap-5 w-full pt-3"
       v-focustrap
@@ -54,8 +65,19 @@ const save = async () => {
         :errors="errors"
         :disabled="true"
       />
-      <TextField v-model="user.name" field="name" label="Name" icon="pi pi-user" :errors="errors" />
-      <Button label="Save" icon="pi pi-check" @click="save" :loading="loading" />
+      <TextField
+        v-model="user.name"
+        field="name"
+        label="Name"
+        icon="pi pi-user"
+        :errors="errors"
+      />
+      <Button
+        label="Save"
+        icon="pi pi-check"
+        @click="save"
+        :loading="loading"
+      />
     </div>
   </Panel>
 </template>

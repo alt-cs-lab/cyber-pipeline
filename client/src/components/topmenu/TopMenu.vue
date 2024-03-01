@@ -1,16 +1,18 @@
 <script setup>
+// Libraries
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+// Custom Components
 import ThemeToggle from '@/components/topmenu/ThemeToggle.vue'
 import LoginProfile from '@/components/topmenu/LoginProfile.vue'
-import { useRouter } from 'vue-router'
 
 // Stores
 import { useTokenStore } from '@/stores/Token'
 const tokenStore = useTokenStore()
 
-// Router
-const router = useRouter()
-
+// Menu items
 const items = ref([
   {
     label: 'Home',
@@ -18,7 +20,11 @@ const items = ref([
   }
 ])
 
+/**
+ * Watch for changes in token and update menu
+ */
 tokenStore.$subscribe(() => {
+  // If the user is an admin, display full menu
   if (tokenStore.is_admin) {
     items.value = [
       {
@@ -50,6 +56,8 @@ tokenStore.$subscribe(() => {
         }
       }
     ]
+
+    // If user is not admin, show simple menu only
   } else {
     items.value = [
       {
@@ -65,7 +73,11 @@ tokenStore.$subscribe(() => {
   <Menubar :model="items">
     <template #start>
       <RouterLink :to="{ name: 'home' }">
-        <img src="../../assets/logo.png" height="46px" alt="CyberPipeline Logo" />
+        <img
+          src="../../assets/logo.png"
+          height="46px"
+          alt="CyberPipeline Logo"
+        />
       </RouterLink>
     </template>
     <template #end>

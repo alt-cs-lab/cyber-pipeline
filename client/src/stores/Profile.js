@@ -8,16 +8,22 @@ import api from '@/services/api'
 export const useProfileStore = defineStore('profile', {
   state: () => {
     return {
-      user: {}
+      user: {} // user object
     }
   },
   actions: {
+    /**
+     * Hydrate the store by querying the API for data
+     */
     async hydrate() {
       Logger.info('profile:hydrate')
       await api.get('/api/v1/profile').then((response) => {
         this.user = response.data
       })
     },
+    /**
+     * Update the current user's profile
+     */
     async update() {
       await api
         .post('/api/v1/profile/', {
