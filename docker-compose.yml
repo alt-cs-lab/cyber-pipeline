@@ -1,35 +1,141 @@
 services:
-  mysql:
-    image: mysql:5.7
-    container_name: mysql
+
+  cyberpipeline:
+    # ***************************************************************************
+    # Cyber Pipeline Management App
+    #
+    # Repository:
+    # https://github.com/alt-cs-lab/cyber-pipeline
+    container_name: cyberpipeline
+
+    # Build Container
+    build:
+      context: .
+
+    # Restart Container Unless Stopped
     restart: unless-stopped
+
+    # Networks
+    networks:
+      # Internal Database Network
+      - mysql
+      # Default Network
+      - default
+
     ports:
-      - '3306:3306'
+      - "3000:3000"
+    
+    # Environment Variables
+    # from .env file
     environment:
-      MYSQL_DATABASE: cyberpipeline
-      MYSQL_USER: cyberpipeline
-      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: 
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
+      MYSQL_HOST:
+      APP_SECRET:
+      TOKEN_SECRET:
+      CAS_URL:
+      CAS_SERVICE_URL:
+      CAS_DEV_MODE:
+      CAS_DEV_USER:
+      CAS_REDIRECT_URL:
+      FORCE_AUTH:
+      NODE_ENV:
+
+    # Dependencies
+    depends_on:
+      - mysql
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+
+    # Container Labels
+    labels:
+      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      # Traefik Labels - see https://doc.traefik.io/traefik/routing/providers/docker/
+      # Traefik Enable
+      - "traefik.enable=true"
+      # Docker Network
+      - "traefik.docker.network=traefik"
+      # Routing Rule
+      - "traefik.http.routers.cyberpipeline.rule=Host(`cyberpipeline.cs.ksu.edu`)"
+      # Enable TLS
+      - "traefik.http.routers.cyberpipeline.tls=true"
+      # TLS Certificate Resolver
+      - "traefik.http.routers.cyberpipeline.tls.certresolver=letsencrypt"
+      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      # Watchtower Labels - see https://containrrr.dev/watchtower/running-multiple-instances/
+      # Watchtower Scope - Update on Webhook Ping
+      - "com.centurylinklabs.watchtower.scope=webhook"
+      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+  mysql:
+    # ***************************************************************************
+    # MySQL
+    #
+    # Relational Database
+    #
+    # Repository:
+    # https://github.com/mysql/mysql-server
+    container_name: mysql
+
+    # Package Stored on Docker Hub
+    # https://hub.docker.com/_/mysql
+    image: mysql:5.7
+
+    # Restart Container Unless Stopped
+    restart: unless-stopped
+
+    # Networks
+    networks:
+      # Internal Database Network
+      - mysql
+
+    # Storage Volumes
+    #volumes:
+      # Data Directory
+      #- mysql_data:/var/lib/mysql:rw
+
+    # Environment Variables
+    # from .env file
+    environment:
+      MYSQL_DATABASE: 
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
+      # Set a random root password
       MYSQL_RANDOM_ROOT_PASSWORD: fact
+
+    # Health Check
     healthcheck:
-      test:
-        [
-          'CMD',
-          'mysqladmin',
-          'ping',
-          '-h',
-          'localhost',
-          '-ucyberpipeline',
-          '-ppassword',
-        ]
+      test: ["CMD-SHELL", "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD ping -h localhost || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 20
 
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: phpmyadmin
-    restart: unless-stopped
-    ports:
-      - '8080:80'
-    environment:
-      PMA_ARBITRARY: 1
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+
+    # Container Labels
+    labels:
+      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      # Traefik Labels - see https://doc.traefik.io/traefik/routing/providers/docker/
+      # Disable Traefik Discovery
+      - "traefik.enable=false"
+      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      # Watchtower Labels - see https://containrrr.dev/watchtower/running-multiple-instances/
+      # Watchtower Scope - Update Daily
+      - "com.centurylinklabs.watchtower.scope=daily"
+      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # ***************************************************************************%
+
+networks:
+  mysql:
+    name: mysql
+    internal: true
