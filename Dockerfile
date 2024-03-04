@@ -30,8 +30,6 @@ RUN --mount=type=bind,source=client/package.json,target=package.json \
 # Copy the rest of the source files into the image.
 COPY ./client .
 
-RUN cat /usr/src/app/vite.config.js
-
 RUN npm run build
 
 FROM node:${NODE_VERSION}-alpine as server

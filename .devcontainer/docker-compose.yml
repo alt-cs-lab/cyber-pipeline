@@ -23,6 +23,7 @@ services:
     container_name: mysql
     restart: unless-stopped
     environment:
+      MYSQL_HOST: mysql
       MYSQL_DATABASE: cyberpipeline
       MYSQL_USER: cyberpipeline
       MYSQL_PASSWORD: password
