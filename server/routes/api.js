@@ -24,6 +24,7 @@ const router = express.Router()
 
 // Load Middleware
 var token = require('../middlewares/token')
+var { dbAudit } = require('../middlewares/db-audit')
 const requestLogger = require('../middlewares/request-logger')
 
 // Load Routers
@@ -35,6 +36,9 @@ const teacherRouter = require('./api/teachers')
 
 // Load Token Middleware
 router.use(token)
+
+// Load DB Audit Middleware
+router.use(dbAudit)
 
 // Configure Logging (after token)
 router.use(requestLogger)

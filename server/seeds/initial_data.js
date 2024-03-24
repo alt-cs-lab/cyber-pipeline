@@ -16,6 +16,8 @@ exports.seed = async function (knex) {
       name: 'Test Administrator',
       created_at: now,
       updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
     },
   ])
 
@@ -27,6 +29,8 @@ exports.seed = async function (knex) {
       name: 'admin',
       created_at: now,
       updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
     },
   ])
 
@@ -38,6 +42,8 @@ exports.seed = async function (knex) {
       role_id: '1',
       created_at: now,
       updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
     },
   ])
 
@@ -51,6 +57,8 @@ exports.seed = async function (knex) {
       url: 'https://www.usd380.com/',
       created_at: now,
       updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
     },
     {
       id: 2,
@@ -59,6 +67,8 @@ exports.seed = async function (knex) {
       url: 'https://www.topekapublicschools.net/',
       created_at: now,
       updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
     },
   ])
 
@@ -74,6 +84,8 @@ exports.seed = async function (knex) {
       district_id: 1,
       created_at: now,
       updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
     },
     {
       id: 2,
@@ -84,6 +96,8 @@ exports.seed = async function (knex) {
       district_id: 2,
       created_at: now,
       updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
     },
   ])
 
@@ -95,18 +109,24 @@ exports.seed = async function (knex) {
       district_id: '1',
       created_at: now,
       updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
     },
     {
       teacher_id: '1',
       district_id: '2',
       created_at: now,
       updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
     },
     {
       teacher_id: '2',
       district_id: '2',
       created_at: now,
       updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
     },
   ])
 }
