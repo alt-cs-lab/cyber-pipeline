@@ -215,6 +215,24 @@ const exportFunction = (row) => {
         header="WID"
       ></Column>
       <Column
+        header="Status"
+      >
+        <template #body="slotProps">
+          <Tag
+            v-if="slotProps.data.status != '0'"
+            :value="slotProps.data.status == '1' ? 'Active' : 'Inactive'"
+            :severity="slotProps.data.status == '1' ? 'success' : 'danger'"
+            :icon="slotProps.data.status == '1' ? 'pi pi-check' : 'pi-pi-times'"
+          />
+          <Tag
+            v-else
+            value="New"
+            severity="warning"
+            icon="pi pi-star"
+          />
+        </template>
+      </Column>
+      <Column
         field="district_id"
         sortable
         header="District"

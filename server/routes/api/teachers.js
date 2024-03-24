@@ -41,7 +41,11 @@ router.get('/', async function (req, res, next) {
       'teachers.email',
       'teachers.eid',
       'teachers.wid',
-      'teachers.district_id'
+      'teachers.district_id',
+      'teachers.status',
+      'teachers.pd_status',
+      'teachers.cert_status',
+      'teachers.ms_status'
     )
     .withGraphJoined('districts')
     .modifyGraph('districts', (builder) => {

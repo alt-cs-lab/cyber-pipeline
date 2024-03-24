@@ -10,11 +10,15 @@ exports.up = function (knex) {
       table.string('name', 255).notNullable()
       table.string('refresh_token', 255)
       table.timestamps()
+      table.string('created_by', 20)
+      table.string('updated_by', 20)
     })
     .createTable('roles', function (table) {
       table.increments('id')
       table.string('name', 255).unique().notNullable()
       table.timestamps()
+      table.string('created_by', 20)
+      table.string('updated_by', 20)
     })
     .createTable('user_roles', function (table) {
       table
@@ -31,13 +35,21 @@ exports.up = function (knex) {
         .onDelete('CASCADE')
       table.primary(['user_id', 'role_id'])
       table.timestamps()
+      table.string('created_by', 20)
+      table.string('updated_by', 20)
     })
     .createTable('districts', function (table) {
       table.increments('id')
       table.string('name', 255).unique().notNullable()
       table.integer('usd').unsigned().nullable()
       table.string('url', 255)
+      table.boolean('rural').defaultTo(false)
+      table.boolean('urban').defaultTo(false)
+      table.boolean('suburban').defaultTo(false)
+      table.boolean('town').defaultTo(false)
       table.timestamps()
+      table.string('created_by', 20)
+      table.string('updated_by', 20)
     })
     .createTable('teachers', function (table) {
       table.increments('id')
@@ -45,6 +57,11 @@ exports.up = function (knex) {
       table.string('email', 255).notNullable()
       table.string('eid', 20)
       table.string('wid', 9)
+      table.integer('status').defaultTo(0)
+      table.integer('pd_status').defaultTo(0)
+      table.integer('cert_status').defaultTo(0)
+      table.integer('ms_status').defaultTo(0)
+      table.text('notes').nullable()
       table
         .integer('district_id')
         .unsigned()
@@ -53,6 +70,8 @@ exports.up = function (knex) {
         .inTable('districts')
         .onDelete('SET NULL')
       table.timestamps()
+      table.string('created_by', 20)
+      table.string('updated_by', 20)
     })
     .createTable('teacher_districts', function (table) {
       table
@@ -69,6 +88,62 @@ exports.up = function (knex) {
         .onDelete('CASCADE')
       table.primary(['teacher_id', 'district_id'])
       table.timestamps()
+      table.string('created_by', 20)
+      table.string('updated_by', 20)
+    })
+    .createTable('cohorts', function (table) {
+      table.increments('id')
+      table.string('name', 255).notNullable()
+      table.timestamps()
+      table.string('created_by', 20)
+      table.string('updated_by', 20)
+    })
+    .createTable('courses', function (table) {
+      table.increments('id')
+      table.string('name', 255).notNullable()
+      table.timestamps()
+      table.string('created_by', 20)
+      table.string('updated_by', 20)
+    })
+    .createTable('teacher_cohorts', function (table) {
+      table
+        .integer('teacher_id')
+        .unsigned()
+        .references('id')
+        .inTable('teachers')
+        .onDelete('CASCADE')
+      table
+        .integer('cohort_id')
+        .unsigned()
+        .references('id')
+        .inTable('cohorts')
+        .onDelete('CASCADE')
+      table.primary(['teacher_id', 'cohort_id'])
+      table.text('notes').nullable()
+      table.timestamps()
+      table.string('created_by', 20)
+      table.string('updated_by', 20)
+    })
+    .createTable('teacher_courses', function (table) {
+      table
+        .integer('teacher_id')
+        .unsigned()
+        .references('id')
+        .inTable('teachers')
+        .onDelete('CASCADE')
+      table
+        .integer('course_id')
+        .unsigned()
+        .references('id')
+        .inTable('courses')
+        .onDelete('CASCADE')
+      table.primary(['teacher_id', 'course_id'])
+      table.boolean('incomplete').defaultTo(false)
+      table.string('grade', 2).nullable()
+      table.text('notes').nullable()
+      table.timestamps()
+      table.string('created_by', 20)
+      table.string('updated_by', 20)
     })
 }
 
@@ -78,6 +153,10 @@ exports.up = function (knex) {
  */
 exports.down = function (knex) {
   return knex.schema
+    .dropTable('teacher_courses')
+    .dropTable('teacher_cohorts')
+    .dropTable('courses')
+    .dropTable('cohorts')
     .dropTable('teacher_districts')
     .dropTable('teachers')
     .dropTable('districts')

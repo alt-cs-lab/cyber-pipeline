@@ -24,6 +24,18 @@ const Model = require('./base')
  *           type: string
  *           format: uri
  *           description: the district's website URL
+ *         rural:
+ *           type: boolean
+ *           description: is the district rural?
+ *         urban:
+ *           type: boolean
+ *           description: is the district urban?
+ *         suburban:
+ *           type: boolean
+ *           description: is the district suburban?
+ *         town:
+ *           type: boolean
+ *           description: is the district a town?
  *         teachers:
  *           type: array
  *           items:
@@ -40,6 +52,10 @@ const Model = require('./base')
  *         name: School District
  *         usd: 123
  *         url: https://www.usd123.local/
+ *         rural: 0
+ *         urban: 1
+ *         suburban: 0
+ *         town: 0
  *         teachers:
  *           - id: 1
  *             name: Test Teacher

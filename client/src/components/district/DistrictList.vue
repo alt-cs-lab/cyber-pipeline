@@ -222,9 +222,40 @@ const exportFunction = (row) => {
             :key="teacher.id"
             :value="teacher.name"
             severity="secondary"
+            class="m-1"
           />
         </template>
-      </Column>
+      </Column> 
+      <Column
+        header="Locales"
+      >
+        <template #body="slotProps">
+          <Tag
+            v-if="slotProps.data.rural == '1'"
+            :value="'Rural'"
+            severity="success"
+            class="m-1"
+          />
+          <Tag
+            v-if="slotProps.data.town == '1'"
+            :value="'Town'"
+            severity="primary"
+            class="m-1"
+          />
+          <Tag
+            v-if="slotProps.data.suburban == '1'"
+            :value="'Suburban'"
+            severity="secondary"
+            class="m-1"
+          />
+          <Tag
+            v-if="slotProps.data.urban == '1'"
+            :value="'Urban'"
+            severity="secondary"
+            class="m-1"
+          />
+        </template>
+      </Column>    
       <Column
         header="Actions"
         :exportable="false"
@@ -292,6 +323,7 @@ const exportFunction = (row) => {
         icon="pi pi-at"
         :errors="errors"
       />
+      <!-- TODO: Add Locales to Edit/Save-->
       <AutocompleteMultiple
         v-model="district.teachers"
         field="teachers"

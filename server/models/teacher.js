@@ -34,6 +34,21 @@ const Model = require('./base')
  *           minLength: 9
  *           maxLength: 9
  *           description: the K-State Wildcat ID of the teacher
+ *         status:
+ *           type: integer
+ *           description: status of the teacher (0 new, 1 active, 2 inactive)
+ *         pd_status:
+ *           type: integer
+ *           description: status of the teacher's professional development (0 new, 1 active, 2 inactive, 3 complete)
+ *         cert_status:
+ *           type: integer
+ *           description: status of the teacher's certification (0 new, 1 active, 2 inactive, 3 complete)
+ *         ms_status:
+ *           type: integer
+ *           description: status of the teacher's master's degree (0 new, 1 active, 2 inactive, 3 complete)
+ *         notes:
+ *           type: string
+ *           description: notes about the teacher
  *         district_id:
  *           type: integer
  *           description: id of primary district for the teacher
@@ -57,6 +72,11 @@ const Model = require('./base')
  *         email: test@distrct.com
  *         eid: test-teacher
  *         wid: "000000000"
+ *         status: 1
+ *         pd_status: 1
+ *         cert_status: 0
+ *         ms_status: 0
+ *         notes: "This is a test teacher"
  *         districts:
  *           - id: 1
  *             name: School District
@@ -103,6 +123,10 @@ class Teacher extends Model {
         },
         eid: { type: 'string', minLength: 3, maxLength: 20 },
         wid: { type: 'string', minLength: 9, maxLength: 9 },
+        status: { type: 'integer', minimum: 0, maximum: 2 },
+        pd_status: { type: 'integer', minimum: 0, maximum: 3 },
+        cert_status: { type: 'integer', minimum: 0, maximum: 3 },
+        ms_status: { type: 'integer', minimum: 0, maximum: 3 },
       },
     }
   }

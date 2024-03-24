@@ -35,7 +35,7 @@ const District = require('../../models/district')
  */
 router.get('/', async function (req, res, next) {
   let districts = await District.query()
-    .select('districts.id', 'districts.name', 'districts.usd', 'districts.url')
+    .select('districts.id', 'districts.name', 'districts.usd', 'districts.url', 'districts.rural', 'districts.urban', 'districts.suburban', 'districts.town')
     .withGraphJoined('teachers')
     .modifyGraph('teachers', (builder) => {
       builder.select('teachers.id', 'teachers.name')
