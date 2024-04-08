@@ -54,7 +54,11 @@ const newTeacher = () => {
     email: '',
     eid: '',
     wid: '',
-    districts: []
+    districts: [],
+    status: 0,
+    pd_status: 0,
+    cert_status: 0,
+    ms_status: 0
   }
   teacherDialogHeader.value = 'New Teacher'
   teacherDialog.value = true
@@ -135,6 +139,13 @@ const exportCSV = () => {
   dt.value.exportCSV()
 }
 
+const statuses = [
+  { label: 'New', id: 0, severity: 'warning', icon: 'pi pi-star' },
+  { label: 'Active', id: 1, severity: 'primary', icon: 'pi pi-sync' },
+  { label: 'Inactive', id: 2, severity: 'secondary', icon: 'pi pi-times' },
+  { label: 'Complete', id: 3, severity: 'success', icon: 'pi pi-check' }
+]
+
 /**
  * Custom export function to handle exporting datatable data
  *
@@ -144,11 +155,14 @@ const exportFunction = (row) => {
   if (Array.isArray(row.data)) {
     var output = '"'
     for (const item of row.data) {
-      output += item.name + ','
+      output += item.usdName + ','
     }
     output += '"'
-    console.log(output)
     return output
+  } else if (row.field == 'district_id') {
+    return getDistrict.value(row.data)?.usdName
+  } else if (row.field.endsWith('status')) {
+    return statuses[row.data].label
   } else {
     return row.data
   }
@@ -194,6 +208,11 @@ const exportFunction = (row) => {
           </template>
         </Toolbar>
       </template>
+      <template #empty>
+        <div class="p-text-center">
+          <p>No Teachers Found</p>
+        </div>
+      </template>
       <Column
         field="name"
         sortable
@@ -216,19 +235,57 @@ const exportFunction = (row) => {
       ></Column>
       <Column
         header="Status"
+        field="status"
+        sortable
       >
         <template #body="slotProps">
           <Tag
-            v-if="slotProps.data.status != '0'"
-            :value="slotProps.data.status == '1' ? 'Active' : 'Inactive'"
-            :severity="slotProps.data.status == '1' ? 'success' : 'danger'"
-            :icon="slotProps.data.status == '1' ? 'pi pi-check' : 'pi-pi-times'"
+            :value="statuses[slotProps.data.status].label"
+            :severity="statuses[slotProps.data.status].severity"
+            :icon="statuses[slotProps.data.status].icon"
+            class="m-1"
           />
+        </template>
+      </Column>
+      <Column
+        header="PD"
+        field="pd_status"
+        sortable
+      >
+        <template #body="slotProps">
           <Tag
-            v-else
-            value="New"
-            severity="warning"
-            icon="pi pi-star"
+            :value="statuses[slotProps.data.pd_status].label"
+            :severity="statuses[slotProps.data.pd_status].severity"
+            :icon="statuses[slotProps.data.pd_status].icon"
+            class="m-1"
+          />
+        </template>
+      </Column>
+      <Column
+        header="Cert"
+        field="cert_status"
+        sortable
+      >
+        <template #body="slotProps">
+          <Tag
+            :value="statuses[slotProps.data.cert_status].label"
+            :severity="statuses[slotProps.data.cert_status].severity"
+            :icon="statuses[slotProps.data.cert_status].icon"
+            class="m-1"
+          />
+        </template>
+      </Column>
+      <Column
+        header="MS"
+        field="ms_status"
+        sortable
+      >
+        <template #body="slotProps">
+          <Tag
+            :value="statuses[slotProps.data.ms_status].label"
+            :severity="statuses[slotProps.data.ms_status].severity"
+            :icon="statuses[slotProps.data.ms_status].icon"
+            class="m-1"
           />
         </template>
       </Column>
@@ -251,6 +308,7 @@ const exportFunction = (row) => {
             :key="district.id"
             :value="district.usdName"
             :severity="district.id == slotProps.data.district_id ? 'success' : 'secondary'"
+            class="m-1"
           />
         </template>
       </Column>
@@ -327,6 +385,42 @@ const exportFunction = (row) => {
         label="WID"
         icon="pi pi-key"
         :errors="errors"
+      />
+      <DropDownField
+        v-model="teacher.status"
+        field="status"
+        label="Status"
+        icon="pi pi-filter"
+        :errors="errors"
+        :values="statuses"
+        valueLabel="label"
+      />
+      <DropDownField
+        v-model="teacher.pd_status"
+        field="pd_status"
+        label="PD Status"
+        icon="pi pi-file"
+        :errors="errors"
+        :values="statuses"
+        valueLabel="label"
+      />
+      <DropDownField
+        v-model="teacher.cert_status"
+        field="cert_status"
+        label="Certificate Status"
+        icon="pi pi-bookmark"
+        :errors="errors"
+        :values="statuses"
+        valueLabel="label"
+      />
+      <DropDownField
+        v-model="teacher.ms_status"
+        field="ms_status"
+        label="MS Status"
+        icon="pi pi-star"
+        :errors="errors"
+        :values="statuses"
+        valueLabel="label"
       />
       <DropDownField
         v-model="teacher.district_id"

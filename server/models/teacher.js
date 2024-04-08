@@ -36,7 +36,7 @@ const Model = require('./base')
  *           description: the K-State Wildcat ID of the teacher
  *         status:
  *           type: integer
- *           description: status of the teacher (0 new, 1 active, 2 inactive)
+ *           description: status of the teacher (0 new, 1 active, 2 inactive, 3 complete)
  *         pd_status:
  *           type: integer
  *           description: status of the teacher's professional development (0 new, 1 active, 2 inactive, 3 complete)
@@ -123,7 +123,7 @@ class Teacher extends Model {
         },
         eid: { type: 'string', minLength: 3, maxLength: 20 },
         wid: { type: 'string', minLength: 9, maxLength: 9 },
-        status: { type: 'integer', minimum: 0, maximum: 2 },
+        status: { type: 'integer', minimum: 0, maximum: 3 },
         pd_status: { type: 'integer', minimum: 0, maximum: 3 },
         cert_status: { type: 'integer', minimum: 0, maximum: 3 },
         ms_status: { type: 'integer', minimum: 0, maximum: 3 },

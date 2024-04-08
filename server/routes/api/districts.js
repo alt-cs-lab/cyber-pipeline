@@ -35,7 +35,16 @@ const District = require('../../models/district')
  */
 router.get('/', async function (req, res, next) {
   let districts = await District.query()
-    .select('districts.id', 'districts.name', 'districts.usd', 'districts.url', 'districts.rural', 'districts.urban', 'districts.suburban', 'districts.town')
+    .select(
+      'districts.id',
+      'districts.name',
+      'districts.usd',
+      'districts.url',
+      'districts.rural',
+      'districts.urban',
+      'districts.suburban',
+      'districts.town'
+    )
     .withGraphJoined('teachers')
     .modifyGraph('teachers', (builder) => {
       builder.select('teachers.id', 'teachers.name')
@@ -71,6 +80,18 @@ router.get('/', async function (req, res, next) {
  *                 type: string
  *                 format: uri
  *                 description: the district's website URL
+ *               rural:
+ *                 type: boolean
+ *                 description: is the district rural?
+ *               urban:
+ *                 type: boolean
+ *                 description: is the district urban?
+ *               suburban:
+ *                 type: boolean
+ *                 description: is the district suburban?
+ *               town:
+ *                 type: boolean
+ *                 description: is the district a town?
  *               teachers:
  *                 type: array
  *                 items:
@@ -83,6 +104,10 @@ router.get('/', async function (req, res, next) {
  *               name: School District
  *               usd: 123
  *               url: https://www.usd123.local/
+ *               rural: 0
+ *               urban: 1
+ *               suburban: 0
+ *               town: 0
  *               teachers:
  *                 - id: 1
  *     responses:
@@ -104,6 +129,10 @@ router.put('/', adminOnly, async function (req, res, next) {
         name: req.body.district.name,
         url: req.body.district.url,
         usd: req.body.district.usd,
+        rural: req.body.district.rural,
+        urban: req.body.district.urban,
+        suburban: req.body.district.suburban,
+        town: req.body.district.town,
         teachers: teachers,
       },
       {
@@ -158,6 +187,18 @@ router.put('/', adminOnly, async function (req, res, next) {
  *                 type: string
  *                 format: uri
  *                 description: the district's website URL
+ *               rural:
+ *                 type: boolean
+ *                 description: is the district rural?
+ *               urban:
+ *                 type: boolean
+ *                 description: is the district urban?
+ *               suburban:
+ *                 type: boolean
+ *                 description: is the district suburban?
+ *               town:
+ *                 type: boolean
+ *                 description: is the district a town?
  *               teachers:
  *                 type: array
  *                 items:
@@ -171,6 +212,10 @@ router.put('/', adminOnly, async function (req, res, next) {
  *               name: School District
  *               usd: 123
  *               url: https://www.usd123.local/
+ *               rural: 0
+ *               urban: 1
+ *               suburban: 0
+ *               town: 0
  *               teachers:
  *                 - id: 1
  *     responses:
@@ -193,6 +238,10 @@ router.post('/:id', adminOnly, async function (req, res, next) {
         name: req.body.district.name,
         url: req.body.district.url,
         usd: req.body.district.usd,
+        rural: req.body.district.rural,
+        urban: req.body.district.urban,
+        suburban: req.body.district.suburban,
+        town: req.body.district.town,
         teachers: teachers,
       },
       {

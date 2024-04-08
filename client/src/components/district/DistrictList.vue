@@ -53,7 +53,11 @@ const newDistrict = () => {
     name: '',
     usd: '',
     url: '',
-    teachers: []
+    teachers: [],
+    rural: false,
+    urban: false,
+    suburban: false,
+    town: false
   }
   districtDialogHeader.value = 'New District'
   districtDialog.value = true
@@ -193,6 +197,11 @@ const exportFunction = (row) => {
           </template>
         </Toolbar>
       </template>
+      <template #empty>
+        <div class="p-text-center">
+          <p>No Districts Found</p>
+        </div>
+      </template>
       <Column
         field="usd"
         sortable
@@ -225,10 +234,8 @@ const exportFunction = (row) => {
             class="m-1"
           />
         </template>
-      </Column> 
-      <Column
-        header="Locales"
-      >
+      </Column>
+      <Column header="Locales">
         <template #body="slotProps">
           <Tag
             v-if="slotProps.data.rural == '1'"
@@ -255,7 +262,7 @@ const exportFunction = (row) => {
             class="m-1"
           />
         </template>
-      </Column>    
+      </Column>
       <Column
         header="Actions"
         :exportable="false"
@@ -323,7 +330,35 @@ const exportFunction = (row) => {
         icon="pi pi-at"
         :errors="errors"
       />
-      <!-- TODO: Add Locales to Edit/Save-->
+      <div
+        class="-mt-3 mb-2 w-full flex flex-row flex-wrap align-items-center justify-content-center row-gap-3"
+      >
+        <label class="w-full mb-1 text-center">Locales</label>
+        <BooleanField
+          v-model="district.rural"
+          field="rural"
+          label="Rural"
+          :errors="errors"
+        />
+        <BooleanField
+          v-model="district.urban"
+          field="urban"
+          label="Urban"
+          :errors="errors"
+        />
+        <BooleanField
+          v-model="district.suburban"
+          field="suburban"
+          label="Suburban"
+          :errors="errors"
+        />
+        <BooleanField
+          v-model="district.town"
+          field="town"
+          label="Town"
+          :errors="errors"
+        />
+      </div>
       <AutocompleteMultiple
         v-model="district.teachers"
         field="teachers"

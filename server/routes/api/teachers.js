@@ -91,6 +91,18 @@ router.get('/', async function (req, res, next) {
  *                 minLength: 9
  *                 maxLength: 9
  *                 description: the K-State Wildcat ID of the teacher
+ *               status:
+ *                 type: integer
+ *                 description: status of the teacher (0 new, 1 active, 2 inactive, 3 complete)
+ *               pd_status:
+ *                 type: integer
+ *                 description: status of the teacher's professional development (0 new, 1 active, 2 inactive, 3 complete)
+ *               cert_status:
+ *                 type: integer
+ *                 description: status of the teacher's certification (0 new, 1 active, 2 inactive, 3 complete)
+ *               ms_status:
+ *                 type: integer
+ *                 description: status of the teacher's master's degree (0 new, 1 active, 2 inactive, 3 complete)
  *               district_id:
  *                 type: integer
  *                 description: id of primary district for the teacher
@@ -107,6 +119,10 @@ router.get('/', async function (req, res, next) {
  *               email: test@distrct.com
  *               eid: test-teacher
  *               wid: "000000000"
+ *               status: 0
+ *               pd_status: 0
+ *               cert_status: 0
+ *               ms_status: 0
  *               district_id: 1
  *               districts:
  *                 - id: 1
@@ -130,6 +146,10 @@ router.put('/', adminOnly, async function (req, res, next) {
         email: req.body.teacher.email,
         eid: req.body.teacher.eid,
         wid: req.body.teacher.wid,
+        status: req.body.teacher.status,
+        pd_status: req.body.teacher.pd_status,
+        cert_status: req.body.teacher.cert_status,
+        ms_status: req.body.teacher.ms_status,
         district_id: req.body.teacher.district_id,
         districts: districts,
       },
@@ -194,6 +214,18 @@ router.put('/', adminOnly, async function (req, res, next) {
  *                 minLength: 9
  *                 maxLength: 9
  *                 description: the K-State Wildcat ID of the teacher
+ *               status:
+ *                 type: integer
+ *                 description: status of the teacher (0 new, 1 active, 2 inactive, 3 complete)
+ *               pd_status:
+ *                 type: integer
+ *                 description: status of the teacher's professional development (0 new, 1 active, 2 inactive, 3 complete)
+ *               cert_status:
+ *                 type: integer
+ *                 description: status of the teacher's certification (0 new, 1 active, 2 inactive, 3 complete)
+ *               ms_status:
+ *                 type: integer
+ *                 description: status of the teacher's master's degree (0 new, 1 active, 2 inactive, 3 complete)
  *               district_id:
  *                 type: integer
  *                 description: id of primary district for the teacher
@@ -211,6 +243,10 @@ router.put('/', adminOnly, async function (req, res, next) {
  *               email: test@distrct.com
  *               eid: test-teacher
  *               wid: "000000000"
+ *               status: 0
+ *               pd_status: 0
+ *               cert_status: 0
+ *               ms_status: 0
  *               district_id: 1
  *               districts:
  *                 - id: 1
@@ -235,6 +271,10 @@ router.post('/:id', adminOnly, async function (req, res, next) {
         email: req.body.teacher.email,
         eid: req.body.teacher.eid,
         wid: req.body.teacher.wid,
+        status: req.body.teacher.status,
+        pd_status: req.body.teacher.pd_status,
+        cert_status: req.body.teacher.cert_status,
+        ms_status: req.body.teacher.ms_status,
         district_id: req.body.teacher.district_id,
         districts: districts,
       },
