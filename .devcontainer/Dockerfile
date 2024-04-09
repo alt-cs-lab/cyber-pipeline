@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/devcontainers/javascript-node:1-20-bullseye
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends gnupg2
+    && apt-get -y install --no-install-recommends gnupg2 zsh
 
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10
