@@ -47,6 +47,7 @@ exports.up = function (knex) {
       table.boolean('urban').defaultTo(false)
       table.boolean('suburban').defaultTo(false)
       table.boolean('town').defaultTo(false)
+      table.text('notes').nullable()
       table.timestamps()
       table.string('created_by', 20)
       table.string('updated_by', 20)
@@ -87,6 +88,7 @@ exports.up = function (knex) {
         .inTable('districts')
         .onDelete('CASCADE')
       table.primary(['teacher_id', 'district_id'])
+      table.text('notes').nullable()
       table.timestamps()
       table.string('created_by', 20)
       table.string('updated_by', 20)
@@ -94,6 +96,7 @@ exports.up = function (knex) {
     .createTable('cohorts', function (table) {
       table.increments('id')
       table.string('name', 255).notNullable()
+      table.text('notes').nullable()
       table.timestamps()
       table.string('created_by', 20)
       table.string('updated_by', 20)
@@ -101,6 +104,7 @@ exports.up = function (knex) {
     .createTable('courses', function (table) {
       table.increments('id')
       table.string('name', 255).notNullable()
+      table.text('notes').nullable()
       table.timestamps()
       table.string('created_by', 20)
       table.string('updated_by', 20)

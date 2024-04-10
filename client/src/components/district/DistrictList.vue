@@ -33,6 +33,8 @@ const message = ref('') // error message on dialog form
 const district = ref({}) // item to be edited
 const errors = ref({}) // form errors
 const dt = ref() // datatable reference
+const notesDialog = ref(false) // controls notes dialog
+const notes = ref('') // notes for selected item
 
 /**
  * Click handler to edit an item in the datatable
@@ -57,7 +59,8 @@ const newDistrict = () => {
     rural: false,
     urban: false,
     suburban: false,
-    town: false
+    town: false,
+    notes: ''
   }
   districtDialogHeader.value = 'New District'
   districtDialog.value = true
@@ -102,6 +105,16 @@ const deleteDistrict = (aDistrict) => {
 }
 
 /**
+ * Show notes handler
+ *
+ * @param {String} notes notes to display
+ */
+const toggleNotes = (aDistrict, event) => {
+  notes.value = aDistrict.notes
+  notesDialog.value.toggle(event)
+}
+
+/**
  * Save button handler in edit form dialog
  */
 const save = async () => {
@@ -140,6 +153,7 @@ const exportCSV = () => {
 
 /**
  * Custom export function to handle exporting datatable data
+ * TODO update this to match your data structure
  *
  * @param {District} row
  */
@@ -281,14 +295,35 @@ const exportFunction = (row) => {
             icon="pi pi-trash"
             outlined
             rounded
+            class="mr-2"
             severity="danger"
             @click="deleteDistrict(slotProps.data)"
             v-tooltip.bottom="'Delete'"
+          />
+          <Button
+            v-if="slotProps.data.notes && slotProps.data.notes.length > 0"
+            icon="pi pi-file"
+            outlined
+            rounded
+            severity="info"
+            @click="toggleNotes(slotProps.data, $event)"
+            v-tooltip.bottom="'Notes'"
           />
         </template>
       </Column>
     </DataTable>
   </Panel>
+
+  <!-- Notes dialog -->
+  <OverlayPanel ref="notesDialog">
+    <div class="flex flex-column gap-1 w-25rem">
+      <div class="w-full">
+        <span>Notes</span>
+        <hr class="w-full" />
+      </div>
+      <span>{{ notes }}</span>
+    </div>
+  </OverlayPanel>
 
   <!-- Edit item dialog -->
   <Dialog
@@ -367,6 +402,13 @@ const exportFunction = (row) => {
         :errors="errors"
         :values="teachers"
         valueLabel="name"
+      />
+      <TextAreaField
+        v-model="district.notes"
+        field="notes"
+        label="Notes"
+        icon="pi pi-file"
+        :errors="errors"
       />
       <Button
         label="Save"

@@ -43,7 +43,8 @@ router.get('/', async function (req, res, next) {
       'districts.rural',
       'districts.urban',
       'districts.suburban',
-      'districts.town'
+      'districts.town',
+      'districts.notes'
     )
     .withGraphJoined('teachers')
     .modifyGraph('teachers', (builder) => {
@@ -92,6 +93,9 @@ router.get('/', async function (req, res, next) {
  *               town:
  *                 type: boolean
  *                 description: is the district a town?
+ *               notes:
+ *                 type: string
+ *                 description: any notes about the district
  *               teachers:
  *                 type: array
  *                 items:
@@ -108,6 +112,7 @@ router.get('/', async function (req, res, next) {
  *               urban: 1
  *               suburban: 0
  *               town: 0
+ *               notes: This is a test district
  *               teachers:
  *                 - id: 1
  *     responses:
@@ -133,6 +138,7 @@ router.put('/', adminOnly, async function (req, res, next) {
         urban: req.body.district.urban,
         suburban: req.body.district.suburban,
         town: req.body.district.town,
+        notes: req.body.district.notes,
         teachers: teachers,
       },
       {
@@ -199,6 +205,9 @@ router.put('/', adminOnly, async function (req, res, next) {
  *               town:
  *                 type: boolean
  *                 description: is the district a town?
+ *               notes:
+ *                 type: string
+ *                 description: any notes about the district
  *               teachers:
  *                 type: array
  *                 items:
@@ -216,6 +225,7 @@ router.put('/', adminOnly, async function (req, res, next) {
  *               urban: 1
  *               suburban: 0
  *               town: 0
+ *               notes: This is a test district
  *               teachers:
  *                 - id: 1
  *     responses:
@@ -242,6 +252,7 @@ router.post('/:id', adminOnly, async function (req, res, next) {
         urban: req.body.district.urban,
         suburban: req.body.district.suburban,
         town: req.body.district.town,
+        notes: req.body.district.notes,
         teachers: teachers,
       },
       {

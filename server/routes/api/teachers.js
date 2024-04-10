@@ -45,11 +45,17 @@ router.get('/', async function (req, res, next) {
       'teachers.status',
       'teachers.pd_status',
       'teachers.cert_status',
-      'teachers.ms_status'
+      'teachers.ms_status',
+      'teachers.notes'
     )
-    .withGraphJoined('districts')
+    .withGraphFetched('districts')
     .modifyGraph('districts', (builder) => {
-      builder.select('districts.id', 'districts.usd', 'districts.name')
+      builder.select(
+        'districts.id',
+        'districts.usd',
+        'districts.name',
+        'teacher_districts.notes'
+      )
     })
   res.json(teachers)
 })
@@ -106,6 +112,9 @@ router.get('/', async function (req, res, next) {
  *               district_id:
  *                 type: integer
  *                 description: id of primary district for the teacher
+ *               notes:
+ *                 type: string
+ *                 description: notes about the teacher
  *               districts:
  *                 type: array
  *                 items:
@@ -124,6 +133,7 @@ router.get('/', async function (req, res, next) {
  *               cert_status: 0
  *               ms_status: 0
  *               district_id: 1
+ *               notes: This is a test teacher
  *               districts:
  *                 - id: 1
  *     responses:
@@ -150,6 +160,7 @@ router.put('/', adminOnly, async function (req, res, next) {
         pd_status: req.body.teacher.pd_status,
         cert_status: req.body.teacher.cert_status,
         ms_status: req.body.teacher.ms_status,
+        notes: req.body.teacher.notes,
         district_id: req.body.teacher.district_id,
         districts: districts,
       },
@@ -226,6 +237,9 @@ router.put('/', adminOnly, async function (req, res, next) {
  *               ms_status:
  *                 type: integer
  *                 description: status of the teacher's master's degree (0 new, 1 active, 2 inactive, 3 complete)
+ *               notes:
+ *                 type: string
+ *                 description: notes about the teacher
  *               district_id:
  *                 type: integer
  *                 description: id of primary district for the teacher
@@ -248,6 +262,7 @@ router.put('/', adminOnly, async function (req, res, next) {
  *               cert_status: 0
  *               ms_status: 0
  *               district_id: 1
+ *               notes: This is a test teacher
  *               districts:
  *                 - id: 1
  *     responses:
@@ -275,6 +290,7 @@ router.post('/:id', adminOnly, async function (req, res, next) {
         pd_status: req.body.teacher.pd_status,
         cert_status: req.body.teacher.cert_status,
         ms_status: req.body.teacher.ms_status,
+        notes: req.body.teacher.notes,
         district_id: req.body.teacher.district_id,
         districts: districts,
       },
