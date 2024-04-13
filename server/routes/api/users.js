@@ -39,10 +39,7 @@ router.use(adminOnly)
 router.get('/', async function (req, res, next) {
   let users = await User.query()
     .select('users.id', 'users.eid', 'users.name')
-    .withGraphJoined('roles')
-    .modifyGraph('roles', (builder) => {
-      builder.select('roles.id', 'roles.name')
-    })
+    .withGraphFetched('roles')
   res.json(users)
 })
 

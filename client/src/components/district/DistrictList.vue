@@ -371,30 +371,38 @@ const exportFunction = (row) => {
         class="-mt-3 mb-2 w-full flex flex-row flex-wrap align-items-center justify-content-center row-gap-3"
       >
         <label class="w-full mb-1 text-center">Locales</label>
-        <BooleanField
-          v-model="district.rural"
-          field="rural"
-          label="Rural"
-          :errors="errors"
-        />
-        <BooleanField
-          v-model="district.urban"
-          field="urban"
-          label="Urban"
-          :errors="errors"
-        />
-        <BooleanField
-          v-model="district.suburban"
-          field="suburban"
-          label="Suburban"
-          :errors="errors"
-        />
-        <BooleanField
-          v-model="district.town"
-          field="town"
-          label="Town"
-          :errors="errors"
-        />
+        <div class="w-6 pr-1">
+          <BooleanField
+            v-model="district.rural"
+            field="rural"
+            label="Rural"
+            :errors="errors"
+          />
+        </div>
+        <div class="w-6 pl-1">
+          <BooleanField
+            v-model="district.urban"
+            field="urban"
+            label="Urban"
+            :errors="errors"
+          />
+        </div>
+        <div class="w-6 pr-1">
+          <BooleanField
+            v-model="district.suburban"
+            field="suburban"
+            label="Suburban"
+            :errors="errors"
+          />
+        </div>
+        <div class="w-6 pl-1">
+          <BooleanField
+            v-model="district.town"
+            field="town"
+            label="Town"
+            :errors="errors"
+          />
+        </div>
       </div>
       <!--<AutocompleteMultiple
         v-model="district.teachers"

@@ -34,22 +34,18 @@ const District = require('../../models/district')
  *                 $ref: '#/components/schemas/District'
  */
 router.get('/', adminOnly, async function (req, res, next) {
-  let districts = await District.query()
-    .select(
-      'districts.id',
-      'districts.name',
-      'districts.usd',
-      'districts.url',
-      'districts.rural',
-      'districts.urban',
-      'districts.suburban',
-      'districts.town',
-      'districts.notes'
-    )
-    .withGraphJoined('teachers')
-    .modifyGraph('teachers', (builder) => {
-      builder.select('teachers.id', 'teachers.name')
-    })
+  let districts = await District.query().select(
+    'districts.id',
+    'districts.name',
+    'districts.usd',
+    'districts.url',
+    'districts.rural',
+    'districts.urban',
+    'districts.suburban',
+    'districts.town',
+    'districts.notes'
+  )
+  //.withGraphFetched('teachers')
   res.json(districts)
 })
 

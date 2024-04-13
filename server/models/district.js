@@ -139,6 +139,8 @@ class District extends Model {
           },
           to: 'teachers.id',
         },
+        filter: (builder) =>
+          builder.select('id', 'name', 'teacher_districts.notes'),
       },
     }
   }

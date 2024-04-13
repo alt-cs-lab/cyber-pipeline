@@ -30,7 +30,7 @@ const model = defineModel()
 </script>
 
 <template>
-  <div class="flex w-6 align-items-center">
+  <div class="flex w-full align-items-center">
     <!-- InputText Component -->
     <InputSwitch
       :id="field"
@@ -38,6 +38,7 @@ const model = defineModel()
       :invalid="errors[field] ? true : false"
       v-model="model"
       class=""
+      style="min-width: 2.5rem"
     />
 
     <!-- Label -->

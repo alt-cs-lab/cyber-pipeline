@@ -49,14 +49,6 @@ router.get('/', adminOnly, async function (req, res, next) {
       'teachers.notes'
     )
     .withGraphFetched('districts')
-    .modifyGraph('districts', (builder) => {
-      builder.select(
-        'districts.id',
-        'districts.usd',
-        'districts.name',
-        'teacher_districts.notes'
-      )
-    })
   res.json(teachers)
 })
 

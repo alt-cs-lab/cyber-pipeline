@@ -476,8 +476,8 @@ const exportFunction = (row) => {
       />
       <div class="w-full flex flex-column row-gap-5 -mt-3">
         <div class="w-full flex flex-row align-items-center">
-          <label class="w-11 text-center">Other Districts</label>
-          <div class="w-1 px-1">
+          <label class="w-11 flex-grow-1 text-center">Other Districts</label>
+          <div class="px-1">
             <Button
               icon="pi pi-plus"
               class="p-button-success"
@@ -501,7 +501,7 @@ const exportFunction = (row) => {
               valueLabel="usdName"
             />
           </div>
-          <div class="w-6 px-1">
+          <div class="w-6 flex-grow-1 px-1">
             <TextField
               v-model="teacher.districts[index].notes"
               field="notes"
@@ -510,7 +510,7 @@ const exportFunction = (row) => {
               :errors="errors"
             />
           </div>
-          <div class="w-1 px-1">
+          <div class="pl-1">
             <Button
               icon="pi pi-trash"
               class="p-button-danger"

@@ -171,4 +171,45 @@ exports.seed = async function (knex) {
       updated_by: 'test-admin',
     },
   ])
+
+  // Courses
+  await knex('courses').del()
+  await knex('courses').insert([
+    {
+      id: 1,
+      name: 'CC 710 S23',
+      notes: 'First offering under new CC 710 heading',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
+  ])
+
+  // Teacher Courses
+  await knex('teacher_courses').del()
+  await knex('teacher_courses').insert([
+    {
+      teacher_id: '1',
+      course_id: '1',
+      grade: 'A',
+      incomplete: false,
+      notes: 'Teacher 1 in Course 1',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
+    {
+      teacher_id: '2',
+      course_id: '1',
+      grade: 'I',
+      incomplete: true,
+      notes: 'Teacher 2 in Course 1',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
+  ])
 }

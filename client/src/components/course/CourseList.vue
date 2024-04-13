@@ -14,23 +14,23 @@ const toast = useToast()
 // import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
 
 // Stores
-import { useCohortsStore } from '@/stores/Cohorts'
-const cohortsStore = useCohortsStore()
+import { useCoursesStore } from '@/stores/Courses'
+const coursesStore = useCoursesStore()
 import { useTeachersStore } from '@/stores/Teachers'
 const teachersStore = useTeachersStore()
 
 // Setup Stores
-cohortsStore.hydrate()
-const { cohorts } = storeToRefs(cohortsStore)
+coursesStore.hydrate()
+const { courses } = storeToRefs(coursesStore)
 teachersStore.hydrate()
 const { teachers } = storeToRefs(teachersStore)
 
 // Variables
-const cohortDialog = ref(false) // controls opening the dialog
-const cohortDialogHeader = ref('') // controls header for dialog
+const courseDialog = ref(false) // controls opening the dialog
+const courseDialogHeader = ref('') // controls header for dialog
 const loading = ref(false) // controls loading message
 const message = ref('') // error message on dialog form
-const cohort = ref({}) // item to be edited
+const course = ref({}) // item to be edited
 const errors = ref({}) // form errors
 const dt = ref() // datatable reference
 const notesDialog = ref(false) // controls notes dialog
@@ -39,35 +39,35 @@ const notes = ref('') // notes for selected item
 /**
  * Click handler to edit an item in the datatable
  *
- * @param {Cohort} aCohort item to edit
+ * @param {Course} aCourse item to edit
  */
-const editCohort = (aCohort) => {
-  cohort.value = { ...aCohort }
-  cohortDialogHeader.value = 'Edit Cohort'
-  cohortDialog.value = true
+const editCourse = (aCourse) => {
+  course.value = { ...aCourse }
+  courseDialogHeader.value = 'Edit Course'
+  courseDialog.value = true
 }
 
 /**
  * Click handler for new button
  */
-const newCohort = () => {
-  cohort.value = {
+const newCourse = () => {
+  course.value = {
     name: '',
     notes: '',
     teachers: []
   }
-  cohortDialogHeader.value = 'New Cohort'
-  cohortDialog.value = true
+  courseDialogHeader.value = 'New Course'
+  courseDialog.value = true
 }
 
 /**
  * Click handler to delete an item in the datatable
  *
- * @param {Cohort} aCohort item to delete
+ * @param {Course} aCourse item to delete
  */
-const deleteCohort = (aCohort) => {
+const deleteCourse = (aCourse) => {
   confirm.require({
-    message: 'Are you sure you want to delete ' + aCohort.name + '?',
+    message: 'Are you sure you want to delete ' + aCourse.name + '?',
     header: 'Danger Zone',
     icon: 'pi pi-exclamation-triangle',
     rejectLabel: 'Cancel',
@@ -76,11 +76,11 @@ const deleteCohort = (aCohort) => {
     acceptClass: 'p-button-danger',
     accept: async () => {
       try {
-        await cohortsStore.delete(aCohort.id)
+        await coursesStore.delete(aCourse.id)
         toast.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Cohort Deleted!',
+          detail: 'Course Deleted!',
           life: 3000
         })
       } catch (error) {
@@ -103,8 +103,8 @@ const deleteCohort = (aCohort) => {
  *
  * @param {String} notes notes to display
  */
-const toggleNotes = (aCohort, event) => {
-  notes.value = aCohort.notes
+const toggleNotes = (aCourse, event) => {
+  notes.value = aCourse.notes
   notesDialog.value.toggle(event)
 }
 
@@ -115,15 +115,15 @@ const save = async () => {
   loading.value = true
   errors.value = {}
   message.value = ''
-  cohort.value.teachers = cohort.value.teachers.filter((item) => item.id)
+  course.value.teachers = course.value.teachers.filter((item) => item.id)
   try {
-    if (cohort.value.id) {
-      await cohortsStore.update(cohort.value)
+    if (course.value.id) {
+      await coursesStore.update(course.value)
     } else {
-      await cohortsStore.new(cohort.value)
+      await coursesStore.new(course.value)
     }
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Cohort Updated!', life: 3000 })
-    cohortDialog.value = false
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Course Updated!', life: 3000 })
+    courseDialog.value = false
   } catch (error) {
     console.log(error)
     if (error.response.data.data) {
@@ -150,7 +150,7 @@ const exportCSV = () => {
  * Custom export function to handle exporting datatable data
  * TODO update this to match your data structure
  *
- * @param {Cohort} row
+ * @param {Course} row
  */
 const exportFunction = (row) => {
   if (Array.isArray(row.data)) {
@@ -172,10 +172,10 @@ const exportFunction = (row) => {
   <ConfirmDialog></ConfirmDialog>
 
   <!-- Main datatable for items -->
-  <Panel header="Manage Cohorts">
+  <Panel header="Manage Courses">
     <DataTable
       ref="dt"
-      :value="cohorts"
+      :value="courses"
       stripedRows
       sortField="usd"
       :sortOrder="1"
@@ -193,7 +193,7 @@ const exportFunction = (row) => {
               icon="pi pi-plus"
               severity="success"
               class="mr-2"
-              @click="newCohort"
+              @click="newCourse"
             />
           </template>
           <template #end>
@@ -208,7 +208,7 @@ const exportFunction = (row) => {
       </template>
       <template #empty>
         <div class="p-text-center">
-          <p>No Cohorts Found</p>
+          <p>No Courses Found</p>
         </div>
       </template>
       <Column
@@ -243,7 +243,7 @@ const exportFunction = (row) => {
             outlined
             rounded
             class="mr-2"
-            @click="editCohort(slotProps.data)"
+            @click="editCourse(slotProps.data)"
             v-tooltip.bottom="'Edit'"
           />
           <Button
@@ -252,7 +252,7 @@ const exportFunction = (row) => {
             rounded
             class="mr-2"
             severity="danger"
-            @click="deleteCohort(slotProps.data)"
+            @click="deleteCourse(slotProps.data)"
             v-tooltip.bottom="'Delete'"
           />
           <Button
@@ -282,9 +282,9 @@ const exportFunction = (row) => {
 
   <!-- Edit item dialog -->
   <Dialog
-    v-model:visible="cohortDialog"
-    :style="{ width: '750px' }"
-    :header="cohortDialogHeader"
+    v-model:visible="courseDialog"
+    :style="{ width: '850px' }"
+    :header="courseDialogHeader"
     :modal="true"
     class="p-fluid"
     :closeOnEscape="true"
@@ -300,14 +300,14 @@ const exportFunction = (row) => {
       v-on:keyup.enter="save"
     >
       <TextField
-        v-model="cohort.name"
+        v-model="course.name"
         field="name"
         label="Name"
         icon="pi pi-user"
         :errors="errors"
       />
       <!--<AutocompleteMultiple
-        v-model="cohort.teachers"
+        v-model="course.teachers"
         field="teachers"
         label="Teachers"
         icon="pi pi-users"
@@ -322,18 +322,18 @@ const exportFunction = (row) => {
             <Button
               icon="pi pi-plus"
               class="p-button-success"
-              @click="cohort.teachers.push({ id: '', notes: '' })"
+              @click="course.teachers.push({ id: '', notes: '', grade: '', incomplete: false })"
             />
           </div>
         </div>
         <div
-          class="w-full flex flex-row"
-          v-for="(item, index) in cohort.teachers"
+          class="w-full flex flex-row flex-wrap row-gap-5 align-items-center"
+          v-for="(item, index) in course.teachers"
           :key="item.id"
         >
-          <div class="w-5 pr-1">
+          <div class="w-4 pr-1">
             <DropDownField
-              v-model="cohort.teachers[index].id"
+              v-model="course.teachers[index].id"
               field="id"
               label="Teacher"
               icon="pi pi-user"
@@ -342,12 +342,29 @@ const exportFunction = (row) => {
               valueLabel="name"
             />
           </div>
-          <div class="w-6 flex-grow-1 px-1">
+          <div class="w-2 px-1">
             <TextField
-              v-model="cohort.teachers[index].notes"
+              v-model="course.teachers[index].grade"
+              field="grade"
+              label="Grade"
+              icon="pi pi-file"
+              :errors="errors"
+            />
+          </div>
+          <div class="w-4 flex-grow-1 px-1">
+            <TextField
+              v-model="course.teachers[index].notes"
               field="notes"
               label="Notes"
               icon="pi pi-file"
+              :errors="errors"
+            />
+          </div>
+          <div class="w-1 pl-1">
+            <BooleanField
+              v-model="course.teachers[index].incomplete"
+              field="incomplete"
+              label="I"
               :errors="errors"
             />
           </div>
@@ -355,13 +372,13 @@ const exportFunction = (row) => {
             <Button
               icon="pi pi-trash"
               class="p-button-danger"
-              @click="cohort.teachers.splice(index, 1)"
+              @click="course.teachers.splice(index, 1)"
             />
           </div>
         </div>
       </div>
       <TextAreaField
-        v-model="cohort.notes"
+        v-model="course.notes"
         field="notes"
         label="Notes"
         icon="pi pi-file"

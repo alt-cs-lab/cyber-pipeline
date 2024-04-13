@@ -203,8 +203,9 @@ class Teacher extends Model {
             to: 'teacher_districts.district_id',
           },
           to: 'districts.id',
-          modify: { select: ['id', 'name', 'usd', 'notes'] },
         },
+        filter: (builder) =>
+          builder.select('id', 'name', 'usd', 'teacher_districts.notes'),
       },
       cohorts: {
         relation: Model.ManyToManyRelation,
@@ -222,8 +223,9 @@ class Teacher extends Model {
             to: 'teacher_cohorts.cohort_id',
           },
           to: 'cohorts.id',
-          modify: { select: ['id', 'name', 'notes'] },
         },
+        filter: (builder) =>
+          builder.select('id', 'name', 'teacher_cohorts.notes'),
       },
       courses: {
         relation: Model.ManyToManyRelation,
@@ -242,6 +244,14 @@ class Teacher extends Model {
           },
           to: 'courses.id',
         },
+        filter: (builder) =>
+          builder.select(
+            'id',
+            'name',
+            'teacher_courses.notes',
+            'grade',
+            'incomplete'
+          ),
       },
     }
   }

@@ -197,6 +197,7 @@ class User extends Model {
           },
           to: 'roles.id',
         },
+        filter: (builder) => builder.select('id', 'name'),
       },
     }
   }

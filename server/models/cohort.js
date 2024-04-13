@@ -102,8 +102,9 @@ class Cohort extends Model {
             to: 'teacher_cohorts.teacher_id',
           },
           to: 'teachers.id',
-          modify: { select: ['id', 'name', 'notes'] },
         },
+        filter: (builder) =>
+          builder.select('id', 'name', 'teacher_cohorts.notes'),
       },
     }
   }

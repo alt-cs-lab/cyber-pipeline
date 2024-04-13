@@ -81,6 +81,7 @@ class Role extends Model {
           },
           to: 'users.id',
         },
+        filter: (builder) => builder.select('id', 'eid', 'name'),
       },
     }
   }

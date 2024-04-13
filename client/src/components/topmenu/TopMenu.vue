@@ -56,6 +56,13 @@ tokenStore.$subscribe(() => {
         }
       },
       {
+        label: 'Courses',
+        icon: 'pi pi-book',
+        command: () => {
+          router.push({ name: 'courses' })
+        }
+      },
+      {
         label: 'Users',
         icon: 'pi pi-user-edit',
         command: () => {
