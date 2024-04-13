@@ -11,19 +11,19 @@ import { useToast } from 'primevue/usetoast'
 const toast = useToast()
 
 // Custom Components
-import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
+// import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
 
 // Stores
 import { useDistrictsStore } from '@/stores/Districts'
 const districtsStore = useDistrictsStore()
-import { useTeachersStore } from '@/stores/Teachers'
-const teachersStore = useTeachersStore()
+// import { useTeachersStore } from '@/stores/Teachers'
+// const teachersStore = useTeachersStore()
 
 // Setup Stores
 districtsStore.hydrate()
 const { districts } = storeToRefs(districtsStore)
-teachersStore.hydrate()
-const { teachers } = storeToRefs(teachersStore)
+// teachersStore.hydrate()
+// const { teachers } = storeToRefs(teachersStore)
 
 // Variables
 const districtDialog = ref(false) // controls opening the dialog
@@ -55,7 +55,7 @@ const newDistrict = () => {
     name: '',
     usd: '',
     url: '',
-    teachers: [],
+    // teachers: [],
     rural: false,
     urban: false,
     suburban: false,
@@ -235,6 +235,7 @@ const exportFunction = (row) => {
           <a :href="slotProps.data.url">{{ slotProps.data.url }}</a>
         </template>
       </Column>
+      <!--
       <Column
         field="teachers"
         header="Teachers"
@@ -249,6 +250,7 @@ const exportFunction = (row) => {
           />
         </template>
       </Column>
+      -->
       <Column header="Locales">
         <template #body="slotProps">
           <Tag
@@ -394,7 +396,7 @@ const exportFunction = (row) => {
           :errors="errors"
         />
       </div>
-      <AutocompleteMultiple
+      <!--<AutocompleteMultiple
         v-model="district.teachers"
         field="teachers"
         label="Teachers"
@@ -402,7 +404,7 @@ const exportFunction = (row) => {
         :errors="errors"
         :values="teachers"
         valueLabel="name"
-      />
+      />-->
       <TextAreaField
         v-model="district.notes"
         field="notes"

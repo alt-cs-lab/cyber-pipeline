@@ -126,26 +126,8 @@ exports.seed = async function (knex) {
   await knex('teacher_districts').insert([
     {
       teacher_id: '1',
-      district_id: '1',
-      notes: 'Teacher 1 in District 1',
-      created_at: now,
-      updated_at: now,
-      created_by: 'test-admin',
-      updated_by: 'test-admin',
-    },
-    {
-      teacher_id: '1',
       district_id: '2',
       notes: 'Teacher 1 in District 2',
-      created_at: now,
-      updated_at: now,
-      created_by: 'test-admin',
-      updated_by: 'test-admin',
-    },
-    {
-      teacher_id: '2',
-      district_id: '2',
-      notes: 'Teacher 2 in District 2',
       created_at: now,
       updated_at: now,
       created_by: 'test-admin',

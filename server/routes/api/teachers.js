@@ -145,11 +145,14 @@ router.get('/', async function (req, res, next) {
 router.put('/', adminOnly, async function (req, res, next) {
   try {
     // strip out other data from districts
-    const districts = req.body.teacher.districts.map(({ id, ...next }) => {
-      return {
-        id: id,
+    const districts = req.body.teacher.districts.map(
+      ({ id, notes, ...next }) => {
+        return {
+          id: id,
+          notes: notes,
+        }
       }
-    })
+    )
     await Teacher.query().upsertGraph(
       {
         name: req.body.teacher.name,
@@ -274,11 +277,14 @@ router.put('/', adminOnly, async function (req, res, next) {
 router.post('/:id', adminOnly, async function (req, res, next) {
   try {
     // strip out other data from districts
-    const districts = req.body.teacher.districts.map(({ id, ...next }) => {
-      return {
-        id: id,
+    const districts = req.body.teacher.districts.map(
+      ({ id, notes, ...next }) => {
+        return {
+          id: id,
+          notes: notes,
+        }
       }
-    })
+    )
     await Teacher.query().upsertGraph(
       {
         id: req.params.id,

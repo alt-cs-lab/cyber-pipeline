@@ -37,6 +37,8 @@ const props = defineProps({
 
 // V-model of field to be edited
 const model = defineModel()
+
+console.log(model.value)
 </script>
 
 <template>

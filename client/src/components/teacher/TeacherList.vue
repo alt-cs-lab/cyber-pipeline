@@ -11,7 +11,6 @@ import { useToast } from 'primevue/usetoast'
 const toast = useToast()
 
 // Custom Components
-import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
 import DropDownField from '../forms/DropDownField.vue'
 
 // Stores
@@ -121,6 +120,7 @@ const save = async () => {
   loading.value = true
   errors.value = {}
   message.value = ''
+  teacher.value.districts = teacher.value.districts.filter((item) => item.id)
   try {
     if (teacher.value.id) {
       await teachersStore.update(teacher.value)
@@ -312,7 +312,7 @@ const exportFunction = (row) => {
       </Column>
       <Column
         field="districts"
-        header="Districts"
+        header="Other Districts"
       >
         <template #body="slotProps">
           <Tag
@@ -375,7 +375,7 @@ const exportFunction = (row) => {
   <!-- Edit item dialog -->
   <Dialog
     v-model:visible="teacherDialog"
-    :style="{ width: '450px' }"
+    :style="{ width: '550px' }"
     :header="teacherDialogHeader"
     :modal="true"
     class="p-fluid"
@@ -419,42 +419,52 @@ const exportFunction = (row) => {
         icon="pi pi-key"
         :errors="errors"
       />
-      <DropDownField
-        v-model="teacher.status"
-        field="status"
-        label="Status"
-        icon="pi pi-filter"
-        :errors="errors"
-        :values="statuses"
-        valueLabel="label"
-      />
-      <DropDownField
-        v-model="teacher.pd_status"
-        field="pd_status"
-        label="PD Status"
-        icon="pi pi-file"
-        :errors="errors"
-        :values="statuses"
-        valueLabel="label"
-      />
-      <DropDownField
-        v-model="teacher.cert_status"
-        field="cert_status"
-        label="Certificate Status"
-        icon="pi pi-bookmark"
-        :errors="errors"
-        :values="statuses"
-        valueLabel="label"
-      />
-      <DropDownField
-        v-model="teacher.ms_status"
-        field="ms_status"
-        label="MS Status"
-        icon="pi pi-star"
-        :errors="errors"
-        :values="statuses"
-        valueLabel="label"
-      />
+      <div class="flex flex-row flex-wrap align-items-center row-gap-5 w-full">
+        <div class="w-6 pr-1">
+          <DropDownField
+            v-model="teacher.status"
+            field="status"
+            label="Status"
+            icon="pi pi-filter"
+            :errors="errors"
+            :values="statuses"
+            valueLabel="label"
+          />
+        </div>
+        <div class="w-6 pl-1">
+          <DropDownField
+            v-model="teacher.pd_status"
+            field="pd_status"
+            label="PD Status"
+            icon="pi pi-briefcase"
+            :errors="errors"
+            :values="statuses"
+            valueLabel="label"
+          />
+        </div>
+        <div class="w-6 pr-1">
+          <DropDownField
+            v-model="teacher.cert_status"
+            field="cert_status"
+            label="Certificate Status"
+            icon="pi pi-bookmark"
+            :errors="errors"
+            :values="statuses"
+            valueLabel="label"
+          />
+        </div>
+        <div class="w-6 pl-1">
+          <DropDownField
+            v-model="teacher.ms_status"
+            field="ms_status"
+            label="MS Status"
+            icon="pi pi-star"
+            :errors="errors"
+            :values="statuses"
+            valueLabel="label"
+          />
+        </div>
+      </div>
       <DropDownField
         v-model="teacher.district_id"
         field="district_id"
@@ -464,15 +474,52 @@ const exportFunction = (row) => {
         :values="districts"
         valueLabel="usdName"
       />
-      <AutocompleteMultiple
-        v-model="teacher.districts"
-        field="districts"
-        label="Districts"
-        icon="pi pi-building"
-        :errors="errors"
-        :values="districts"
-        valueLabel="usdName"
-      />
+      <div class="w-full flex flex-column row-gap-5 -mt-3">
+        <div class="w-full flex flex-row align-items-center">
+          <label class="w-11 text-center">Other Districts</label>
+          <div class="w-1 px-1">
+            <Button
+              icon="pi pi-plus"
+              class="p-button-success"
+              @click="teacher.districts.push({ id: '', notes: '' })"
+            />
+          </div>
+        </div>
+        <div
+          class="w-full flex flex-row"
+          v-for="(item, index) in teacher.districts"
+          :key="item.id"
+        >
+          <!--- TODO THIS IS NOT FINISHED -->
+          <div class="w-5 pr-1">
+            <DropDownField
+              v-model="teacher.districts[index].id"
+              field="id"
+              label="District"
+              icon="pi pi-building"
+              :errors="errors"
+              :values="districts"
+              valueLabel="usdName"
+            />
+          </div>
+          <div class="w-6 px-1">
+            <TextField
+              v-model="teacher.districts[index].notes"
+              field="notes"
+              label="Notes"
+              icon="pi pi-file"
+              :errors="errors"
+            />
+          </div>
+          <div class="w-1 px-1">
+            <Button
+              icon="pi pi-trash"
+              class="p-button-danger"
+              @click="teacher.districts.splice(index, 1)"
+            />
+          </div>
+        </div>
+      </div>
       <TextAreaField
         v-model="teacher.notes"
         field="notes"

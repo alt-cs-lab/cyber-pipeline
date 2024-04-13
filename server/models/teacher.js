@@ -80,7 +80,7 @@ const Model = require('./base')
  *               name:
  *                 type: string
  *                 description: the name of the cohort
-  *               notes:
+ *               notes:
  *                 type: string
  *                 description: notes about the teacher in the cohort
  *         courses:
@@ -100,7 +100,7 @@ const Model = require('./base')
  *               grade:
  *                 type: string
  *                 description: grade for the teacher in the course
- *               incomplete
+ *               incomplete:
  *                 type: boolean
  *                 description: is the course incomplete?
  *       example:
@@ -185,7 +185,6 @@ class Teacher extends Model {
     const District = require('./district')
     const Cohort = require('./cohort')
     const Course = require('./course')
-    const TeacherCourse = require('./teacher_course')
 
     return {
       districts: {
@@ -238,7 +237,6 @@ class Teacher extends Model {
             from: 'teacher_courses.teacher_id',
             extra: ['notes', 'grade', 'incomplete'],
             to: 'teacher_courses.course_id',
-            modelClass: TeacherCourse,
           },
           to: 'courses.id',
         },
