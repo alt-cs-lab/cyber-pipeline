@@ -68,14 +68,11 @@ router.get('/', async function (req, res, next) {
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               roles:
- *                 type: array
- *                 items:
- *                   $ref: '#/components/schemas/Role'
+ *             $ref: '#/components/schemas/User'
+ *           example:
+ *             name: Test Administrator
+ *             roles:
+ *               - id: 1
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
@@ -123,14 +120,12 @@ router.post('/:id', async function (req, res, next) {
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               roles:
- *                 type: array
- *                 items:
- *                   $ref: '#/components/schemas/Role'
+ *             $ref: '#/components/schemas/User'
+ *           example:
+ *             eid: test-admin
+ *             name: Test Administrator
+ *             roles:
+ *               - id: 1
  *     responses:
  *       201:
  *         description: success

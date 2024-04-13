@@ -66,6 +66,7 @@ const Model = require('./base')
  *         teachers:
  *           - id: 1
  *             name: Test Teacher
+ *             notes: previous district
  *
  */
 class District extends Model {

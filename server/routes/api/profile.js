@@ -47,10 +47,9 @@ router.get('/', async function (req, res, next) {
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
+ *             $ref: '#/components/schemas/User'
+ *           example:
+ *             name: Test Administrator
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'

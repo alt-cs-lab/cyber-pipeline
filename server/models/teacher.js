@@ -203,6 +203,7 @@ class Teacher extends Model {
             to: 'teacher_districts.district_id',
           },
           to: 'districts.id',
+          modify: { select: ['id', 'name', 'usd', 'notes'] },
         },
       },
       cohorts: {
@@ -221,6 +222,7 @@ class Teacher extends Model {
             to: 'teacher_cohorts.cohort_id',
           },
           to: 'cohorts.id',
+          modify: { select: ['id', 'name', 'notes'] },
         },
       },
       courses: {

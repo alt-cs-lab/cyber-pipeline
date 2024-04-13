@@ -490,7 +490,6 @@ const exportFunction = (row) => {
           v-for="(item, index) in teacher.districts"
           :key="item.id"
         >
-          <!--- TODO THIS IS NOT FINISHED -->
           <div class="w-5 pr-1">
             <DropDownField
               v-model="teacher.districts[index].id"

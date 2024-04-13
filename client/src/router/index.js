@@ -7,6 +7,7 @@ import ProfileView from '../views/ProfileView.vue'
 import DistrictView from '../views/DistrictView.vue'
 import TeacherView from '../views/TeacherView.vue'
 import UserView from '../views/UserView.vue'
+import CohortView from '../views/CohortView.vue'
 
 // Stores
 import { useTokenStore } from '@/stores/Token'
@@ -57,6 +58,14 @@ const router = createRouter({
       path: '/districts',
       name: 'districts',
       component: DistrictView,
+      beforeEnter: requireAdmin
+    },
+
+    // Cohorts page
+    {
+      path: '/cohorts',
+      name: 'cohorts',
+      component: CohortView,
       beforeEnter: requireAdmin
     },
 

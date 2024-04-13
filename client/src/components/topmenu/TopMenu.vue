@@ -49,6 +49,13 @@ tokenStore.$subscribe(() => {
         }
       },
       {
+        label: 'Cohorts',
+        icon: 'pi pi-users',
+        command: () => {
+          router.push({ name: 'cohorts' })
+        }
+      },
+      {
         label: 'Users',
         icon: 'pi pi-user-edit',
         command: () => {

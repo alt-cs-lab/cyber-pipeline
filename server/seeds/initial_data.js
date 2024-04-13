@@ -134,4 +134,41 @@ exports.seed = async function (knex) {
       updated_by: 'test-admin',
     },
   ])
+
+  // Cohocrts
+  await knex('cohorts').del()
+  await knex('cohorts').insert([
+    {
+      id: 1,
+      name: 'Spring 2023',
+      notes: 'PACK grant funded cohort',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
+  ])
+
+  // Teacher Cohorts
+  await knex('teacher_cohorts').del()
+  await knex('teacher_cohorts').insert([
+    {
+      teacher_id: '1',
+      cohort_id: '1',
+      notes: 'Teacher 1 in Cohort 1',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
+    {
+      teacher_id: '2',
+      cohort_id: '1',
+      notes: 'Teacher 2 in Cohort 1',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
+  ])
 }
