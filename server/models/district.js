@@ -53,6 +53,9 @@ const Model = require('./base')
  *               notes:
  *                 type: string
  *                 description: notes about teacher in the district
+ *               primary:
+ *                 type: boolean
+ *                 description: is this the primray district for the teacher?
  *       example:
  *         id: 1
  *         name: School District
@@ -66,7 +69,8 @@ const Model = require('./base')
  *         teachers:
  *           - id: 1
  *             name: Test Teacher
- *             notes: previous district
+ *             notes: Teacher 1 in District 1
+ *             primary: true
  *
  */
 class District extends Model {
@@ -134,13 +138,18 @@ class District extends Model {
             // you need to specify it like this:
             // modelClass: PersonMovie,
             from: 'teacher_districts.district_id',
-            extra: ['notes'],
+            extra: ['notes', 'primary'],
             to: 'teacher_districts.teacher_id',
           },
           to: 'teachers.id',
         },
         filter: (builder) =>
-          builder.select('id', 'name', 'teacher_districts.notes'),
+          builder.select(
+            'id',
+            'name',
+            'teacher_districts.notes',
+            'teacher_districts.primary'
+          ),
       },
     }
   }

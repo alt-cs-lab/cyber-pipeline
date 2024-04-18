@@ -9,6 +9,9 @@ import { useConfirm } from 'primevue/useconfirm'
 const confirm = useConfirm()
 import { useToast } from 'primevue/usetoast'
 const toast = useToast()
+import { FilterMatchMode } from 'primevue/api'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 // Custom Components
 import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
@@ -34,6 +37,14 @@ const message = ref('') // controls loading message
 const user = ref({}) // item to be edited
 const errors = ref({}) // form errors
 const dt = ref() // datatable reference
+
+// Filters
+const filters = ref({
+  global: {
+    value: '',
+    matchMode: FilterMatchMode.CONTAINS
+  }
+})
 
 /**
  * Click handler to edit an item in the datatable
@@ -164,6 +175,8 @@ const exportFunction = (row) => {
       sortField="eid"
       :sortOrder="1"
       tableStyle="min-width: 50rem"
+      v-model:filters="filters"
+      :globalFilterFields="['name', 'eid']"
       :exportFunction="exportFunction"
     >
       <template #header>
@@ -179,8 +192,6 @@ const exportFunction = (row) => {
               class="mr-2"
               @click="newUser"
             />
-          </template>
-          <template #end>
             <Button
               label="Export"
               icon="pi pi-upload"
@@ -188,7 +199,23 @@ const exportFunction = (row) => {
               @click="exportCSV($event)"
             />
           </template>
+          <template #end>
+            <IconField iconPosition="left">
+              <InputIcon>
+                <i class="pi pi-search" />
+              </InputIcon>
+              <InputText
+                v-model="filters['global'].value"
+                placeholder="Keyword Search"
+              />
+            </IconField>
+          </template>
         </Toolbar>
+      </template>
+      <template #empty>
+        <div class="p-text-center">
+          <p>No Users Found</p>
+        </div>
       </template>
       <Column
         field="eid"

@@ -9,6 +9,9 @@ import { useConfirm } from 'primevue/useconfirm'
 const confirm = useConfirm()
 import { useToast } from 'primevue/usetoast'
 const toast = useToast()
+import { FilterMatchMode } from 'primevue/api'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 // Custom Components
 // import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
@@ -35,6 +38,14 @@ const errors = ref({}) // form errors
 const dt = ref() // datatable reference
 const notesDialog = ref(false) // controls notes dialog
 const notes = ref('') // notes for selected item
+
+// Filters
+const filters = ref({
+  global: {
+    value: '',
+    matchMode: FilterMatchMode.CONTAINS
+  }
+})
 
 /**
  * Click handler to edit an item in the datatable
@@ -180,6 +191,8 @@ const exportFunction = (row) => {
       sortField="usd"
       :sortOrder="1"
       tableStyle="min-width: 50rem"
+      v-model:filters="filters"
+      :globalFilterFields="['name']"
       :exportFunction="exportFunction"
     >
       <template #header>
@@ -195,14 +208,23 @@ const exportFunction = (row) => {
               class="mr-2"
               @click="newCohort"
             />
-          </template>
-          <template #end>
             <Button
               label="Export"
               icon="pi pi-upload"
               severity="help"
               @click="exportCSV($event)"
             />
+          </template>
+          <template #end>
+            <IconField iconPosition="left">
+              <InputIcon>
+                <i class="pi pi-search" />
+              </InputIcon>
+              <InputText
+                v-model="filters['global'].value"
+                placeholder="Keyword Search"
+              />
+            </IconField>
           </template>
         </Toolbar>
       </template>

@@ -30,6 +30,12 @@ export const useTeachersStore = defineStore('teachers', {
       Logger.info('teachers:hydrate')
       await api.get('/api/v1/teachers').then((response) => {
         this.teachers = response.data
+        this.teachers.forEach((teacher) => {
+          teacher.districts.map((district) => {
+            district.primary = district.primary === 1
+          })
+          teacher.all_districts = teacher.districts.map((district) => district.usdName).join(', ')
+        })
       })
     },
 
@@ -39,6 +45,9 @@ export const useTeachersStore = defineStore('teachers', {
      * @param {Teacher} teacher
      */
     async update(teacher) {
+      teacher.districts.map((district) => {
+        district.primary = district.primary ? 1 : 0
+      })
       await api
         .post('/api/v1/teachers/' + teacher.id, {
           teacher: teacher
@@ -54,6 +63,9 @@ export const useTeachersStore = defineStore('teachers', {
      * @param {Teacher} teacher
      */
     async new(teacher) {
+      teacher.districts.map((district) => {
+        district.primary = district.primary ? 1 : 0
+      })
       await api
         .put('/api/v1/teachers', {
           teacher: teacher

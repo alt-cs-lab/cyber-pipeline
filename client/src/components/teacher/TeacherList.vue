@@ -9,6 +9,9 @@ import { useConfirm } from 'primevue/useconfirm'
 const confirm = useConfirm()
 import { useToast } from 'primevue/usetoast'
 const toast = useToast()
+import { FilterMatchMode } from 'primevue/api'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 // Custom Components
 import DropDownField from '../forms/DropDownField.vue'
@@ -35,6 +38,18 @@ const errors = ref({}) // form errors
 const dt = ref() // datatable reference
 const notesDialog = ref(false) // controls notes dialog
 const notes = ref('') // notes for selected item
+
+// Filters
+const filters = ref({
+  global: {
+    value: '',
+    matchMode: FilterMatchMode.CONTAINS
+  },
+  status: { value: null, matchMode: FilterMatchMode.IN },
+  pd_status: { value: null, matchMode: FilterMatchMode.IN },
+  cert_status: { value: null, matchMode: FilterMatchMode.IN },
+  ms_status: { value: null, matchMode: FilterMatchMode.IN }
+})
 
 /**
  * Click handler to edit an item in the datatable
@@ -151,6 +166,9 @@ const exportCSV = () => {
   dt.value.exportCSV()
 }
 
+/**
+ * Statuses
+ */
 const statuses = [
   { label: 'New', id: 0, severity: 'warning', icon: 'pi pi-star' },
   { label: 'Active', id: 1, severity: 'primary', icon: 'pi pi-sync' },
@@ -194,6 +212,9 @@ const exportFunction = (row) => {
       sortField="name"
       :sortOrder="1"
       tableStyle="min-width: 50rem"
+      v-model:filters="filters"
+      filterDisplay="row"
+      :globalFilterFields="['name', 'email', 'eid', 'wid', 'all_districts', 'grade_level']"
       :exportFunction="exportFunction"
     >
       <template #header>
@@ -209,14 +230,25 @@ const exportFunction = (row) => {
               class="mr-2"
               @click="newTeacher"
             />
-          </template>
-          <template #end>
             <Button
               label="Export"
               icon="pi pi-upload"
               severity="help"
               @click="exportCSV($event)"
             />
+          </template>
+          <template #end>
+            <div class="flex justify-content-end">
+              <IconField iconPosition="left">
+                <InputIcon>
+                  <i class="pi pi-search" />
+                </InputIcon>
+                <InputText
+                  v-model="filters['global'].value"
+                  placeholder="Keyword Search"
+                />
+              </IconField>
+            </div>
           </template>
         </Toolbar>
       </template>
@@ -258,6 +290,19 @@ const exportFunction = (row) => {
             class="m-1"
           />
         </template>
+        <template #filter="{ filterModel, filterCallback }">
+          <MultiSelect
+            v-model="filterModel.value"
+            @change="filterCallback()"
+            :options="statuses"
+            optionLabel="label"
+            optionValue="id"
+            placeholder="Any"
+            class="p-column-filter"
+            :maxSelectedLabels="2"
+          >
+          </MultiSelect>
+        </template>
       </Column>
       <Column
         header="PD"
@@ -271,6 +316,19 @@ const exportFunction = (row) => {
             :icon="statuses[slotProps.data.pd_status].icon"
             class="m-1"
           />
+        </template>
+        <template #filter="{ filterModel, filterCallback }">
+          <MultiSelect
+            v-model="filterModel.value"
+            @change="filterCallback()"
+            :options="statuses"
+            optionLabel="label"
+            optionValue="id"
+            placeholder="Any"
+            class="p-column-filter"
+            :maxSelectedLabels="2"
+          >
+          </MultiSelect>
         </template>
       </Column>
       <Column
@@ -286,6 +344,19 @@ const exportFunction = (row) => {
             class="m-1"
           />
         </template>
+        <template #filter="{ filterModel, filterCallback }">
+          <MultiSelect
+            v-model="filterModel.value"
+            @change="filterCallback()"
+            :options="statuses"
+            optionLabel="label"
+            optionValue="id"
+            placeholder="Any"
+            class="p-column-filter"
+            :maxSelectedLabels="2"
+          >
+          </MultiSelect>
+        </template>
       </Column>
       <Column
         header="MS"
@@ -300,26 +371,35 @@ const exportFunction = (row) => {
             class="m-1"
           />
         </template>
-      </Column>
-      <Column
-        field="district_id"
-        sortable
-        header="District"
-      >
-        <template #body="slotProps">
-          <p>{{ getDistrict(slotProps.data.district_id)?.usdName }}</p>
+        <template #filter="{ filterModel, filterCallback }">
+          <MultiSelect
+            v-model="filterModel.value"
+            @change="filterCallback()"
+            :options="statuses"
+            optionLabel="label"
+            optionValue="id"
+            placeholder="Any"
+            class="p-column-filter"
+            :maxSelectedLabels="2"
+          >
+          </MultiSelect>
         </template>
       </Column>
       <Column
+        field="grade_level"
+        header="Grade Level"
+        sortable
+      ></Column>
+      <Column
         field="districts"
-        header="Other Districts"
+        header="School Districts"
       >
         <template #body="slotProps">
           <Tag
             v-for="district in slotProps.data.districts"
             :key="district.id"
             :value="district.usdName"
-            :severity="district.id == slotProps.data.district_id ? 'success' : 'secondary'"
+            :severity="district.primary == true ? 'success' : 'secondary'"
             class="m-1"
           />
         </template>
@@ -375,7 +455,7 @@ const exportFunction = (row) => {
   <!-- Edit item dialog -->
   <Dialog
     v-model:visible="teacherDialog"
-    :style="{ width: '550px' }"
+    :style="{ width: '850px' }"
     :header="teacherDialogHeader"
     :modal="true"
     class="p-fluid"
@@ -465,18 +545,16 @@ const exportFunction = (row) => {
           />
         </div>
       </div>
-      <DropDownField
-        v-model="teacher.district_id"
-        field="district_id"
-        label="Primary District"
-        icon="pi pi-building"
+      <TextField
+        v-model="teacher.grade_level"
+        field="grade_level"
+        label="Grade Level"
+        icon="pi pi-globe"
         :errors="errors"
-        :values="districts"
-        valueLabel="usdName"
       />
       <div class="w-full flex flex-column row-gap-5 -mt-3">
         <div class="w-full flex flex-row align-items-center">
-          <label class="w-11 flex-grow-1 text-center">Other Districts</label>
+          <label class="w-11 flex-grow-1 text-center">School Districts</label>
           <div class="px-1">
             <Button
               icon="pi pi-plus"
@@ -486,11 +564,11 @@ const exportFunction = (row) => {
           </div>
         </div>
         <div
-          class="w-full flex flex-row"
+          class="w-full flex flex-row align-items-center"
           v-for="(item, index) in teacher.districts"
           :key="item.id"
         >
-          <div class="w-5 pr-1">
+          <div class="w-4 pr-1">
             <DropDownField
               v-model="teacher.districts[index].id"
               field="id"
@@ -501,12 +579,20 @@ const exportFunction = (row) => {
               valueLabel="usdName"
             />
           </div>
-          <div class="w-6 flex-grow-1 px-1">
+          <div class="w-5 flex-grow-1 px-1">
             <TextField
               v-model="teacher.districts[index].notes"
               field="notes"
               label="Notes"
               icon="pi pi-file"
+              :errors="errors"
+            />
+          </div>
+          <div class="w-1 pl-1">
+            <BooleanField
+              v-model="teacher.districts[index].primary"
+              field="primary"
+              label="P"
               :errors="errors"
             />
           </div>

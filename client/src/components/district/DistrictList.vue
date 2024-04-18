@@ -9,6 +9,9 @@ import { useConfirm } from 'primevue/useconfirm'
 const confirm = useConfirm()
 import { useToast } from 'primevue/usetoast'
 const toast = useToast()
+import { FilterMatchMode } from 'primevue/api'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 // Custom Components
 // import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
@@ -35,6 +38,15 @@ const errors = ref({}) // form errors
 const dt = ref() // datatable reference
 const notesDialog = ref(false) // controls notes dialog
 const notes = ref('') // notes for selected item
+
+// Filters
+const filters = ref({
+  global: {
+    value: '',
+    matchMode: FilterMatchMode.CONTAINS
+  },
+  locales: { value: null, matchMode: FilterMatchMode.CONTAINS }
+})
 
 /**
  * Click handler to edit an item in the datatable
@@ -152,6 +164,16 @@ const exportCSV = () => {
 }
 
 /**
+ * Locales for filtering
+ */
+const locales = [
+  { label: 'Rural', id: 0 },
+  { label: 'Urban', id: 1 },
+  { label: 'Suburban', id: 2 },
+  { label: 'Town', id: 3 }
+]
+
+/**
  * Custom export function to handle exporting datatable data
  * TODO update this to match your data structure
  *
@@ -185,6 +207,9 @@ const exportFunction = (row) => {
       sortField="usd"
       :sortOrder="1"
       tableStyle="min-width: 50rem"
+      v-model:filters="filters"
+      filterDisplay="row"
+      :globalFilterFields="['name', 'url', 'usd']"
       :exportFunction="exportFunction"
     >
       <template #header>
@@ -200,14 +225,25 @@ const exportFunction = (row) => {
               class="mr-2"
               @click="newDistrict"
             />
-          </template>
-          <template #end>
             <Button
               label="Export"
               icon="pi pi-upload"
               severity="help"
               @click="exportCSV($event)"
             />
+          </template>
+          <template #end>
+            <div class="flex justify-content-end">
+              <IconField iconPosition="left">
+                <InputIcon>
+                  <i class="pi pi-search" />
+                </InputIcon>
+                <InputText
+                  v-model="filters['global'].value"
+                  placeholder="Keyword Search"
+                />
+              </IconField>
+            </div>
           </template>
         </Toolbar>
       </template>
@@ -219,7 +255,7 @@ const exportFunction = (row) => {
       <Column
         field="usd"
         sortable
-        header="usd"
+        header="USD"
       ></Column>
       <Column
         field="name"
@@ -251,7 +287,10 @@ const exportFunction = (row) => {
         </template>
       </Column>
       -->
-      <Column header="Locales">
+      <Column
+        header="Locales"
+        field="locales"
+      >
         <template #body="slotProps">
           <Tag
             v-if="slotProps.data.rural == '1'"
@@ -277,6 +316,19 @@ const exportFunction = (row) => {
             severity="secondary"
             class="m-1"
           />
+        </template>
+        <template #filter="{ filterModel, filterCallback }">
+          <Dropdown
+            v-model="filterModel.value"
+            @change="filterCallback()"
+            :options="locales"
+            optionLabel="label"
+            optionValue="id"
+            placeholder="Select One"
+            class="p-column-filter"
+            :showClear="true"
+          >
+          </Dropdown>
         </template>
       </Column>
       <Column

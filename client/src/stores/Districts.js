@@ -36,6 +36,14 @@ export const useDistrictsStore = defineStore('districts', {
           district.suburban = district.suburban === 1
           district.town = district.town === 1
         })
+        this.districts.forEach((district) => {
+          district.locales = [
+            district.rural ? 0 : '',
+            district.urban ? 1 : '',
+            district.suburban ? 2 : '',
+            district.town ? 3 : ''
+          ].join(', ')
+        })
       })
     },
 

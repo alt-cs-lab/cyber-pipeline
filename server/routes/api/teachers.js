@@ -41,11 +41,11 @@ router.get('/', adminOnly, async function (req, res, next) {
       'teachers.email',
       'teachers.eid',
       'teachers.wid',
-      'teachers.district_id',
       'teachers.status',
       'teachers.pd_status',
       'teachers.cert_status',
       'teachers.ms_status',
+      'teachers.grade_level',
       'teachers.notes'
     )
     .withGraphFetched('districts')
@@ -76,11 +76,15 @@ router.get('/', adminOnly, async function (req, res, next) {
  *             pd_status: 0
  *             cert_status: 0
  *             ms_status: 0
- *             district_id: 1
+ *             grade_level: high school 9-12
  *             notes: This is a test teacher
  *             districts:
  *               - id: 2
+ *                 notes: Current District
+ *                 primary: true
+ *               - id: 1
  *                 notes: Previous District
+ *                 primary: false
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
@@ -91,10 +95,11 @@ router.put('/', adminOnly, async function (req, res, next) {
   try {
     // strip out other data from districts
     const districts = req.body.teacher.districts.map(
-      ({ id, notes, ...next }) => {
+      ({ id, notes, primary, ...next }) => {
         return {
           id: id,
           notes: notes,
+          primary: primary,
         }
       }
     )
@@ -108,8 +113,8 @@ router.put('/', adminOnly, async function (req, res, next) {
         pd_status: req.body.teacher.pd_status,
         cert_status: req.body.teacher.cert_status,
         ms_status: req.body.teacher.ms_status,
+        grade_level: req.body.teacher.grade_level,
         notes: req.body.teacher.notes,
-        district_id: req.body.teacher.district_id,
         districts: districts,
       },
       {
@@ -159,10 +164,15 @@ router.put('/', adminOnly, async function (req, res, next) {
  *             cert_status: 0
  *             ms_status: 0
  *             district_id: 1
+ *             grade_level: high school 9-12
  *             notes: This is a test teacher
  *             districts:
  *               - id: 2
+ *                 notes: Current District
+ *                 primary: true
+ *               - id: 1
  *                 notes: Previous District
+ *                 primary: false
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
@@ -173,10 +183,11 @@ router.post('/:id', adminOnly, async function (req, res, next) {
   try {
     // strip out other data from districts
     const districts = req.body.teacher.districts.map(
-      ({ id, notes, ...next }) => {
+      ({ id, notes, primary, ...next }) => {
         return {
           id: id,
           notes: notes,
+          primary: primary,
         }
       }
     )
@@ -191,8 +202,8 @@ router.post('/:id', adminOnly, async function (req, res, next) {
         pd_status: req.body.teacher.pd_status,
         cert_status: req.body.teacher.cert_status,
         ms_status: req.body.teacher.ms_status,
+        grade_level: req.body.teacher.grade_level,
         notes: req.body.teacher.notes,
-        district_id: req.body.teacher.district_id,
         districts: districts,
       },
       {

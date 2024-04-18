@@ -46,12 +46,12 @@ const Model = require('./base')
  *         ms_status:
  *           type: integer
  *           description: status of the teacher's master's degree (0 new, 1 active, 2 inactive, 3 complete)
+ *         grade_level:
+ *           type: string
+ *           description: the grade level of the teacher
  *         notes:
  *           type: string
  *           description: notes about the teacher
- *         district_id:
- *           type: integer
- *           description: id of primary district for the teacher
  *         districts:
  *           type: array
  *           items:
@@ -69,6 +69,9 @@ const Model = require('./base')
  *               notes:
  *                 type: string
  *                 description: notes about the teacher in the district
+ *               primary:
+ *                 type: boolean
+ *                 description: is this the primary district for the teacher?
  *         cohorts:
  *           type: array
  *           items:
@@ -113,12 +116,19 @@ const Model = require('./base')
  *         pd_status: 1
  *         cert_status: 0
  *         ms_status: 0
+ *         grade_level: high school 9-12
  *         notes: This is a test teacher
  *         districts:
  *           - id: 1
  *             name: School District
  *             usd: 123
  *             notes: Teacher 1 in District 1
+ *             primary: true
+ *           - id: 2
+ *             name: School District 2
+ *             usd: 456
+ *             notes: Teacher 1 in District 2
+ *             primary: false
  *         cohorts:
  *           - id: 1
  *             name: Spring 2023
@@ -175,6 +185,7 @@ class Teacher extends Model {
         pd_status: { type: 'integer', minimum: 0, maximum: 3 },
         cert_status: { type: 'integer', minimum: 0, maximum: 3 },
         ms_status: { type: 'integer', minimum: 0, maximum: 3 },
+        grade_level: { type: 'string' },
       },
     }
   }
@@ -199,13 +210,19 @@ class Teacher extends Model {
             // you need to specify it like this:
             // modelClass: TeacherDistrict,
             from: 'teacher_districts.teacher_id',
-            extra: ['notes'],
+            extra: ['notes', 'primary'],
             to: 'teacher_districts.district_id',
           },
           to: 'districts.id',
         },
         filter: (builder) =>
-          builder.select('id', 'name', 'usd', 'teacher_districts.notes'),
+          builder.select(
+            'id',
+            'name',
+            'usd',
+            'teacher_districts.notes',
+            'teacher_districts.primary'
+          ),
       },
       cohorts: {
         relation: Model.ManyToManyRelation,
