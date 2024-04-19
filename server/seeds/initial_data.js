@@ -19,6 +19,15 @@ exports.seed = async function (knex) {
       created_by: 'test-admin',
       updated_by: 'test-admin',
     },
+    {
+      id: 2,
+      eid: 'russfeld',
+      name: 'Russell Feldhausen',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
   ])
 
   // Roles
@@ -39,6 +48,14 @@ exports.seed = async function (knex) {
   await knex('user_roles').insert([
     {
       user_id: '1',
+      role_id: '1',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
+    {
+      user_id: '2',
       role_id: '1',
       created_at: now,
       updated_at: now,
