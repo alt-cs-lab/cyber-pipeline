@@ -45,7 +45,7 @@ const filters = ref({
     value: '',
     matchMode: FilterMatchMode.CONTAINS
   },
-  locales: { value: null, matchMode: FilterMatchMode.CONTAINS }
+  locale: { value: null, matchMode: FilterMatchMode.IN }
 })
 
 /**
@@ -68,10 +68,7 @@ const newDistrict = () => {
     usd: '',
     url: '',
     // teachers: [],
-    rural: false,
-    urban: false,
-    suburban: false,
-    town: false,
+    locale: 0,
     notes: ''
   }
   districtDialogHeader.value = 'New District'
@@ -167,10 +164,18 @@ const exportCSV = () => {
  * Locales for filtering
  */
 const locales = [
-  { label: 'Rural', id: 0 },
-  { label: 'Urban', id: 1 },
-  { label: 'Suburban', id: 2 },
-  { label: 'Town', id: 3 }
+  { label: 'Rural:Fringe (41)', id: 41, severity: 'success', icon: 'pi pi-map-marker' },
+  { label: 'Rural:Distant (42)', id: 42, severity: 'success', icon: 'pi pi-map-marker' },
+  { label: 'Rural:Remote (43)', id: 43, severity: 'success', icon: 'pi pi-map-marker' },
+  { label: 'Town:Fringe (31)', id: 31, severity: 'primary', icon: 'pi pi-compass' },
+  { label: 'Town:Distant (32)', id: 32, severity: 'primary', icon: 'pi pi-compass' },
+  { label: 'Town:Remote (33)', id: 33, severity: 'primary', icon: 'pi pi-compass' },
+  { label: 'Suburban:Large (21)', id: 21, severity: 'secondary', icon: 'pi pi-home' },
+  { label: 'Suburban:Midsize (22)', id: 22, severity: 'secondary', icon: 'pi pi-home' },
+  { label: 'Suburban:Small (23)', id: 23, severity: 'secondary', icon: 'pi pi-home' },
+  { label: 'Urban:Large (11)', id: 11, severity: 'secondary', icon: 'pi pi-building' },
+  { label: 'Urban:Midsize (12)', id: 12, severity: 'secondary', icon: 'pi pi-building' },
+  { label: 'Urban:Small (13)', id: 13, severity: 'secondary', icon: 'pi pi-building' }
 ]
 
 /**
@@ -288,47 +293,30 @@ const exportFunction = (row) => {
       </Column>
       -->
       <Column
-        header="Locales"
-        field="locales"
+        header="Locale"
+        field="locale"
+        sortable
       >
         <template #body="slotProps">
           <Tag
-            v-if="slotProps.data.rural == '1'"
-            :value="'Rural'"
-            severity="success"
-            class="m-1"
-          />
-          <Tag
-            v-if="slotProps.data.town == '1'"
-            :value="'Town'"
-            severity="primary"
-            class="m-1"
-          />
-          <Tag
-            v-if="slotProps.data.suburban == '1'"
-            :value="'Suburban'"
-            severity="secondary"
-            class="m-1"
-          />
-          <Tag
-            v-if="slotProps.data.urban == '1'"
-            :value="'Urban'"
-            severity="secondary"
+            :value="locales.find((locale) => locale.id === slotProps.data.locale).label"
+            :severity="locales.find((locale) => locale.id === slotProps.data.locale).severity"
+            :icon="locales.find((locale) => locale.id === slotProps.data.locale).icon"
             class="m-1"
           />
         </template>
         <template #filter="{ filterModel, filterCallback }">
-          <Dropdown
+          <MultiSelect
             v-model="filterModel.value"
             @change="filterCallback()"
             :options="locales"
             optionLabel="label"
             optionValue="id"
-            placeholder="Select One"
+            placeholder="Any"
             class="p-column-filter"
-            :showClear="true"
+            :maxSelectedLabels="2"
           >
-          </Dropdown>
+          </MultiSelect>
         </template>
       </Column>
       <Column
@@ -419,43 +407,15 @@ const exportFunction = (row) => {
         icon="pi pi-at"
         :errors="errors"
       />
-      <div
-        class="-mt-3 mb-2 w-full flex flex-row flex-wrap align-items-center justify-content-center row-gap-3"
-      >
-        <label class="w-full mb-1 text-center">Locales</label>
-        <div class="w-6 pr-1">
-          <BooleanField
-            v-model="district.rural"
-            field="rural"
-            label="Rural"
-            :errors="errors"
-          />
-        </div>
-        <div class="w-6 pl-1">
-          <BooleanField
-            v-model="district.urban"
-            field="urban"
-            label="Urban"
-            :errors="errors"
-          />
-        </div>
-        <div class="w-6 pr-1">
-          <BooleanField
-            v-model="district.suburban"
-            field="suburban"
-            label="Suburban"
-            :errors="errors"
-          />
-        </div>
-        <div class="w-6 pl-1">
-          <BooleanField
-            v-model="district.town"
-            field="town"
-            label="Town"
-            :errors="errors"
-          />
-        </div>
-      </div>
+      <DropDownField
+        v-model="district.locale"
+        field="locale"
+        label="NCES Locale"
+        icon="pi pi-map-marker"
+        :errors="errors"
+        :values="locales"
+        valueLabel="label"
+      />
       <!--<AutocompleteMultiple
         v-model="district.teachers"
         field="teachers"

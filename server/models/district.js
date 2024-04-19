@@ -24,18 +24,9 @@ const Model = require('./base')
  *           type: string
  *           format: uri
  *           description: the district's website URL
- *         rural:
- *           type: boolean
- *           description: is the district rural?
- *         urban:
- *           type: boolean
- *           description: is the district urban?
- *         suburban:
- *           type: boolean
- *           description: is the district suburban?
- *         town:
- *           type: boolean
- *           description: is the district a town?
+ *         locale:
+ *           type: integer
+ *           description: the NCES locale code for the district
  *         notes:
  *           type: string
  *           description: any notes about the district
@@ -61,10 +52,7 @@ const Model = require('./base')
  *         name: School District
  *         usd: 123
  *         url: https://www.usd123.local/
- *         rural: 0
- *         urban: 1
- *         suburban: 0
- *         town: 0
+ *         locale: 13
  *         notes: This is a test district
  *         teachers:
  *           - id: 1
@@ -108,6 +96,7 @@ class District extends Model {
         name: { type: 'string', minLength: 1, maxLength: 255 },
         url: { type: 'string', minLength: 1, maxLength: 255, format: 'uri' },
         usd: { type: 'integer' },
+        locale: { type: 'integer' },
       },
     }
   }

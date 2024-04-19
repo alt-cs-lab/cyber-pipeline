@@ -30,20 +30,6 @@ export const useDistrictsStore = defineStore('districts', {
       Logger.info('districts:hydrate')
       await api.get('/api/v1/districts').then((response) => {
         this.districts = response.data
-        this.districts.map((district) => {
-          district.rural = district.rural === 1
-          district.urban = district.urban === 1
-          district.suburban = district.suburban === 1
-          district.town = district.town === 1
-        })
-        this.districts.forEach((district) => {
-          district.locales = [
-            district.rural ? 0 : '',
-            district.urban ? 1 : '',
-            district.suburban ? 2 : '',
-            district.town ? 3 : ''
-          ].join(', ')
-        })
       })
     },
 
@@ -53,10 +39,6 @@ export const useDistrictsStore = defineStore('districts', {
      * @param {District} district
      */
     async update(district) {
-      district.rural = district.rural ? 1 : 0
-      district.urban = district.urban ? 1 : 0
-      district.suburban = district.suburban ? 1 : 0
-      district.town = district.town ? 1 : 0
       await api
         .post('/api/v1/districts/' + district.id, {
           district: district
@@ -72,10 +54,6 @@ export const useDistrictsStore = defineStore('districts', {
      * @param {District} district
      */
     async new(district) {
-      district.rural = district.rural ? 1 : 0
-      district.urban = district.urban ? 1 : 0
-      district.suburban = district.suburban ? 1 : 0
-      district.town = district.town ? 1 : 0
       await api
         .put('/api/v1/districts', {
           district: district

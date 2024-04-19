@@ -39,10 +39,7 @@ router.get('/', adminOnly, async function (req, res, next) {
     'districts.name',
     'districts.usd',
     'districts.url',
-    'districts.rural',
-    'districts.urban',
-    'districts.suburban',
-    'districts.town',
+    'districts.locale',
     'districts.notes'
   )
   //.withGraphFetched('teachers')
@@ -68,10 +65,7 @@ router.get('/', adminOnly, async function (req, res, next) {
  *             name: School District
  *             usd: 123
  *             url: https://www.usd123.local/
- *             rural: 0
- *             urban: 1
- *             suburban: 0
- *             town: 0
+ *             locale: 13
  *             notes: This is a test district
  *     responses:
  *       200:
@@ -92,11 +86,8 @@ router.put('/', adminOnly, async function (req, res, next) {
         name: req.body.district.name,
         url: req.body.district.url,
         usd: req.body.district.usd,
-        rural: req.body.district.rural,
-        urban: req.body.district.urban,
-        suburban: req.body.district.suburban,
-        town: req.body.district.town,
         notes: req.body.district.notes,
+        locale: req.body.district.locale,
         // teachers: teachers,
       },
       {
@@ -140,10 +131,7 @@ router.put('/', adminOnly, async function (req, res, next) {
  *             name: School District
  *             usd: 123
  *             url: https://www.usd123.local/
- *             rural: 0
- *             urban: 1
- *             suburban: 0
- *             town: 0
+ *             locale: 13
  *             notes: This is a test district
  *     responses:
  *       200:
@@ -165,10 +153,7 @@ router.post('/:id', adminOnly, async function (req, res, next) {
         name: req.body.district.name,
         url: req.body.district.url,
         usd: req.body.district.usd,
-        rural: req.body.district.rural,
-        urban: req.body.district.urban,
-        suburban: req.body.district.suburban,
-        town: req.body.district.town,
+        locale: req.body.district.locale,
         notes: req.body.district.notes,
         // teachers: teachers,
       },
