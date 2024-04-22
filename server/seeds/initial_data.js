@@ -224,8 +224,7 @@ exports.seed = async function (knex) {
     {
       teacher_id: '1',
       course_id: '1',
-      grade: 'A',
-      incomplete: false,
+      status: '1',
       notes: 'Teacher 1 in Course 1',
       created_at: now,
       updated_at: now,
@@ -235,8 +234,7 @@ exports.seed = async function (knex) {
     {
       teacher_id: '2',
       course_id: '1',
-      grade: 'I',
-      incomplete: true,
+      status: '2',
       notes: 'Teacher 2 in Course 1',
       created_at: now,
       updated_at: now,

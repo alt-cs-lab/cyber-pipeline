@@ -100,12 +100,9 @@ const Model = require('./base')
  *               notes:
  *                 type: string
  *                 description: notes about the teacher in the course
- *               grade:
- *                 type: string
- *                 description: grade for the teacher in the course
- *               incomplete:
- *                 type: boolean
- *                 description: is the course incomplete?
+ *               status:
+ *                 type: integer
+ *                 description: grade status for the teacher (0 - enrolled, 1 - pass, 2 - incomplete, 3 - fail)
  *       example:
  *         id: 1
  *         name: Test Teacher
@@ -137,8 +134,7 @@ const Model = require('./base')
  *           - id: 1
  *             name: CC 710 S23
  *             notes: Teacher is doing well
- *             grade: A
- *             incomplete: false
+ *             status: 0
  */
 class Teacher extends Model {
   // Table name is the only required property.
@@ -256,7 +252,7 @@ class Teacher extends Model {
             // you need to specify it like this:
             // modelClass: PersonMovie,
             from: 'teacher_courses.teacher_id',
-            extra: ['notes', 'grade', 'incomplete'],
+            extra: ['notes', 'status'],
             to: 'teacher_courses.course_id',
           },
           to: 'courses.id',
@@ -266,8 +262,7 @@ class Teacher extends Model {
             'id',
             'name',
             'teacher_courses.notes',
-            'grade',
-            'incomplete'
+            'teacher_courses.status'
           ),
       },
     }

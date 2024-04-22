@@ -158,6 +158,16 @@ const exportCSV = () => {
 }
 
 /**
+ * Grade Statuses
+ */
+const statuses = [
+  { label: 'Enrolled', id: 0, severity: 'secondary', icon: 'pi pi-circle' },
+  { label: 'Pass', id: 1, severity: 'success', icon: 'pi pi-check' },
+  { label: 'Incomplete', id: 2, severity: 'warning', icon: 'pi pi-info' },
+  { label: 'Fail', id: 3, severity: 'danger', icon: 'pi pi-times' }
+]
+
+/**
  * Custom export function to handle exporting datatable data
  * TODO update this to match your data structure
  *
@@ -364,13 +374,15 @@ const exportFunction = (row) => {
               valueLabel="name"
             />
           </div>
-          <div class="w-2 px-1">
-            <TextField
-              v-model="course.teachers[index].grade"
-              field="grade"
+          <div class="w-3 px-1">
+            <DropDownField
+              v-model="course.teachers[index].status"
+              field="status"
               label="Grade"
-              icon="pi pi-file"
+              icon="pi pi-circle"
               :errors="errors"
+              :values="statuses"
+              valueLabel="label"
             />
           </div>
           <div class="w-4 flex-grow-1 px-1">
@@ -379,14 +391,6 @@ const exportFunction = (row) => {
               field="notes"
               label="Notes"
               icon="pi pi-file"
-              :errors="errors"
-            />
-          </div>
-          <div class="w-1 pl-1">
-            <BooleanField
-              v-model="course.teachers[index].incomplete"
-              field="incomplete"
-              label="I"
               :errors="errors"
             />
           </div>

@@ -62,8 +62,7 @@ router.get('/', async function (req, res, next) {
  *             - id: 1
  *               name: Test Teacher
  *               notes: Teacher is doing well
- *               grade: A
- *               incomplete: false
+ *               status: 0
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
@@ -74,12 +73,11 @@ router.put('/', adminOnly, async function (req, res, next) {
   try {
     // strip out other data from teachers
     const teachers = req.body.course.teachers.map(
-      ({ id, notes, grade, incomplete, ...next }) => {
+      ({ id, notes, status, ...next }) => {
         return {
           id: id,
           notes: notes,
-          grade: grade,
-          incomplete: incomplete,
+          status: status,
         }
       }
     )
@@ -133,8 +131,7 @@ router.put('/', adminOnly, async function (req, res, next) {
  *             - id: 1
  *               name: Test Teacher
  *               notes: Teacher is doing well
- *               grade: A
- *               incomplete: false
+ *               status: 0
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
@@ -145,12 +142,11 @@ router.post('/:id', async (req, res) => {
   try {
     // strip out other data from teachers
     const teachers = req.body.course.teachers.map(
-      ({ id, notes, grade, incomplete, ...next }) => {
+      ({ id, notes, status, ...next }) => {
         return {
           id: id,
           notes: notes,
-          grade: grade,
-          incomplete: incomplete,
+          status: status,
         }
       }
     )
