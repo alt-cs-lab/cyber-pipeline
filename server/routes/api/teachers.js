@@ -49,6 +49,8 @@ router.get('/', adminOnly, async function (req, res, next) {
       'teachers.notes'
     )
     .withGraphFetched('districts')
+    .withGraphFetched('courses')
+    .withGraphFetched('cohorts')
   res.json(teachers)
 })
 

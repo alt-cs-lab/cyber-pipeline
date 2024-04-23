@@ -17,7 +17,14 @@
 	"forwardPorts": [3001],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "cd server && npm install && cd ../client && npm install"
+	"postCreateCommand": "cd server && npm install && cd ../client && npm install",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"Vue.volar"
+			]
+		}
+	}
 
 	// Configure tool-specific properties.
 	// "customizations": {},

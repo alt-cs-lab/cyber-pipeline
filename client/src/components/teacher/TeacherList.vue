@@ -176,6 +176,13 @@ const statuses = [
   { label: 'Complete', id: 3, severity: 'success', icon: 'pi pi-check' }
 ]
 
+const grades = [
+  { label: 'Enrolled', id: 0, severity: 'secondary', icon: 'pi pi-circle' },
+  { label: 'Pass', id: 1, severity: 'success', icon: 'pi pi-check' },
+  { label: 'Incomplete', id: 2, severity: 'warning', icon: 'pi pi-info' },
+  { label: 'Fail', id: 3, severity: 'danger', icon: 'pi pi-times' }
+]
+
 /**
  * Custom export function to handle exporting datatable data
  *
@@ -392,7 +399,7 @@ const exportFunction = (row) => {
       ></Column>
       <Column
         field="districts"
-        header="School Districts"
+        header="Districts"
       >
         <template #body="slotProps">
           <Tag
@@ -400,6 +407,34 @@ const exportFunction = (row) => {
             :key="district.id"
             :value="district.usdName"
             :severity="district.primary == true ? 'success' : 'secondary'"
+            class="m-1"
+          />
+        </template>
+      </Column>
+      <Column
+        field="cohorts"
+        header="Cohorts"
+      >
+        <template #body="slotProps">
+          <Tag
+            v-for="cohort in slotProps.data.cohorts"
+            :key="cohort.id"
+            :value="cohort.name"
+            class="m-1"
+          />
+        </template>
+      </Column>
+      <Column
+        field="courses"
+        header="Courses"
+      >
+        <template #body="slotProps">
+          <Tag
+            v-for="course in slotProps.data.courses"
+            :key="course.id"
+            :value="course.name"
+            :severity="grades[course.status].severity"
+            :icon="grades[course.status].icon"
             class="m-1"
           />
         </template>
