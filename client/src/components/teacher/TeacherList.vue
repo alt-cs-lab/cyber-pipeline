@@ -180,17 +180,18 @@ const exportCSV = () => {
  * Statuses
  */
 const statuses = [
-  { label: 'New', id: 0, severity: 'warning', icon: 'pi pi-star' },
-  { label: 'Active', id: 1, severity: 'primary', icon: 'pi pi-sync' },
-  { label: 'Inactive', id: 2, severity: 'secondary', icon: 'pi pi-times' },
-  { label: 'Complete', id: 3, severity: 'success', icon: 'pi pi-check' }
+  { label: 'New', id: 0, severity: 'warning', icon: 'pi pi-star', hidden: 'false' },
+  { label: 'Active', id: 1, severity: 'primary', icon: 'pi pi-sync', hidden: 'false' },
+  { label: 'Inactive', id: 2, severity: 'secondary', icon: 'pi pi-times', hidden: 'true' },
+  { label: 'Complete', id: 3, severity: 'success', icon: 'pi pi-check', hidden: 'false' }
 ]
 
 const grades = [
-  { label: 'Enrolled', id: 0, severity: 'secondary', icon: 'pi pi-circle' },
+  { label: 'Enrolled', id: 0, severity: 'primary', icon: 'pi pi-circle' },
   { label: 'Pass', id: 1, severity: 'success', icon: 'pi pi-check' },
   { label: 'Incomplete', id: 2, severity: 'warning', icon: 'pi pi-info' },
-  { label: 'Fail', id: 3, severity: 'danger', icon: 'pi pi-times' }
+  { label: 'Fail', id: 3, severity: 'danger', icon: 'pi pi-times' },
+  { label: 'Withdrawn', id: 4, severity: 'secondary', icon: 'pi pi-minus' }
 ]
 
 /**
@@ -304,6 +305,7 @@ const exportFunction = (row) => {
             :value="statuses[slotProps.data.status].label"
             :severity="statuses[slotProps.data.status].severity"
             :icon="statuses[slotProps.data.status].icon"
+            v-if="statuses[slotProps.data.status].hidden != 'true'"
             class="m-1"
           />
         </template>
@@ -331,6 +333,7 @@ const exportFunction = (row) => {
             :value="statuses[slotProps.data.pd_status].label"
             :severity="statuses[slotProps.data.pd_status].severity"
             :icon="statuses[slotProps.data.pd_status].icon"
+            v-if="statuses[slotProps.data.pd_status].hidden != 'true'"
             class="m-1"
           />
         </template>
@@ -358,6 +361,7 @@ const exportFunction = (row) => {
             :value="statuses[slotProps.data.cert_status].label"
             :severity="statuses[slotProps.data.cert_status].severity"
             :icon="statuses[slotProps.data.cert_status].icon"
+            v-if="statuses[slotProps.data.cert_status].hidden != 'true'"
             class="m-1"
           />
         </template>
@@ -385,6 +389,7 @@ const exportFunction = (row) => {
             :value="statuses[slotProps.data.ms_status].label"
             :severity="statuses[slotProps.data.ms_status].severity"
             :icon="statuses[slotProps.data.ms_status].icon"
+            v-if="statuses[slotProps.data.ms_status].hidden != 'true'"
             class="m-1"
           />
         </template>

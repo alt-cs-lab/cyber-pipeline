@@ -36,7 +36,7 @@ const Model = require('./base')
  *                 description: notes about teacher in the course
  *               status:
  *                 type: integer
- *                 description: grade status for the teacher (0 - enrolled, 1 - pass, 2 - incomplete, 3 - fail)
+ *                 description: grade status for the teacher (0 - enrolled, 1 - pass, 2 - incomplete, 3 - fail, 4 - withdrawn)
  *       example:
  *         id: 1
  *         name: CC 710 S23

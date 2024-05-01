@@ -161,10 +161,11 @@ const exportCSV = () => {
  * Grade Statuses
  */
 const statuses = [
-  { label: 'Enrolled', id: 0, severity: 'secondary', icon: 'pi pi-circle' },
+  { label: 'Enrolled', id: 0, severity: 'primary', icon: 'pi pi-circle' },
   { label: 'Pass', id: 1, severity: 'success', icon: 'pi pi-check' },
   { label: 'Incomplete', id: 2, severity: 'warning', icon: 'pi pi-info' },
-  { label: 'Fail', id: 3, severity: 'danger', icon: 'pi pi-times' }
+  { label: 'Fail', id: 3, severity: 'danger', icon: 'pi pi-times' },
+  { label: 'Withdrawn', id: 4, severity: 'secondary', icon: 'pi pi-minus' }
 ]
 
 /**
