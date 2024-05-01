@@ -21,12 +21,20 @@ import { useTeachersStore } from '@/stores/Teachers'
 const teachersStore = useTeachersStore()
 import { useDistrictsStore } from '@/stores/Districts'
 const districtsStore = useDistrictsStore()
+import { useCohortsStore } from '@/stores/Cohorts'
+const cohortsStore = useCohortsStore()
+import { useCoursesStore } from '@/stores/Courses'
+const coursesStore = useCoursesStore()
 
 // Setup Stores
 teachersStore.hydrate()
 const { teachers } = storeToRefs(teachersStore)
 districtsStore.hydrate()
 const { districts, getDistrict } = storeToRefs(districtsStore)
+cohortsStore.hydrate()
+const { cohorts } = storeToRefs(cohortsStore)
+coursesStore.hydrate()
+const { courses } = storeToRefs(coursesStore)
 
 // Variables
 const teacherDialog = ref(false) // controls opening the dialog
@@ -71,6 +79,8 @@ const newTeacher = () => {
     eid: '',
     wid: '',
     districts: [],
+    cohorts: [],
+    courses: [],
     status: 0,
     pd_status: 0,
     cert_status: 0,
@@ -590,11 +600,11 @@ const exportFunction = (row) => {
       <div class="w-full flex flex-column row-gap-5 -mt-3">
         <div class="w-full flex flex-row align-items-center">
           <label class="w-11 flex-grow-1 text-center">School Districts</label>
-          <div class="px-1">
+          <div class="pl-1">
             <Button
               icon="pi pi-plus"
               class="p-button-success"
-              @click="teacher.districts.push({ id: '', notes: '' })"
+              @click="teacher.districts.push({ id: '', notes: '', primary: false })"
             />
           </div>
         </div>
@@ -636,6 +646,107 @@ const exportFunction = (row) => {
               icon="pi pi-trash"
               class="p-button-danger"
               @click="teacher.districts.splice(index, 1)"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="w-full flex flex-column row-gap-5 -mt-3">
+        <div class="w-full flex flex-row align-items-center">
+          <label class="w-11 flex-grow-1 text-center">Cohorts</label>
+          <div class="pl-1">
+            <Button
+              icon="pi pi-plus"
+              class="p-button-success"
+              @click="teacher.cohorts.push({ id: '', notes: '' })"
+            />
+          </div>
+        </div>
+        <div
+          class="w-full flex flex-row align-items-center"
+          v-for="(item, index) in teacher.cohorts"
+          :key="item.id"
+        >
+          <div class="w-5 pr-1">
+            <DropDownField
+              v-model="teacher.cohorts[index].id"
+              field="id"
+              label="Cohort"
+              icon="pi pi-building"
+              :errors="errors"
+              :values="cohorts"
+              valueLabel="name"
+            />
+          </div>
+          <div class="w-5 flex-grow-1 px-1">
+            <TextField
+              v-model="teacher.cohorts[index].notes"
+              field="notes"
+              label="Notes"
+              icon="pi pi-file"
+              :errors="errors"
+            />
+          </div>
+          <div class="pl-1">
+            <Button
+              icon="pi pi-trash"
+              class="p-button-danger"
+              @click="teacher.cohorts.splice(index, 1)"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="w-full flex flex-column row-gap-5 -mt-3">
+        <div class="w-full flex flex-row align-items-center">
+          <label class="w-11 flex-grow-1 text-center">Courses</label>
+          <div class="pl-1">
+            <Button
+              icon="pi pi-plus"
+              class="p-button-success"
+              @click="teacher.courses.push({ id: '', notes: '', status: 0 })"
+            />
+          </div>
+        </div>
+        <div
+          class="w-full flex flex-row align-items-center"
+          v-for="(item, index) in teacher.courses"
+          :key="item.id"
+        >
+          <div class="w-4 pr-1">
+            <DropDownField
+              v-model="teacher.courses[index].id"
+              field="id"
+              label="Course"
+              icon="pi pi-building"
+              :errors="errors"
+              :values="courses"
+              valueLabel="name"
+            />
+          </div>
+          <div class="w-3 px-1">
+            <DropDownField
+              v-model="teacher.courses[index].status"
+              field="status"
+              label="Grade"
+              icon="pi pi-circle"
+              :errors="errors"
+              :values="grades"
+              valueLabel="label"
+            />
+          </div>
+          <div class="w-4 flex-grow-1 px-1">
+            <TextField
+              v-model="teacher.courses[index].notes"
+              field="notes"
+              label="Notes"
+              icon="pi pi-file"
+              :errors="errors"
+            />
+          </div>
+          <div class="pl-1">
+            <Button
+              icon="pi pi-trash"
+              class="p-button-danger"
+              @click="teacher.courses.splice(index, 1)"
             />
           </div>
         </div>

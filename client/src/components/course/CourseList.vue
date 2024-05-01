@@ -354,7 +354,7 @@ const exportFunction = (row) => {
             <Button
               icon="pi pi-plus"
               class="p-button-success"
-              @click="course.teachers.push({ id: '', notes: '', grade: '', incomplete: false })"
+              @click="course.teachers.push({ id: '', notes: '', status: 0 })"
             />
           </div>
         </div>

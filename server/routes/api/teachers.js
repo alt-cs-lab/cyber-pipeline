@@ -87,6 +87,13 @@ router.get('/', adminOnly, async function (req, res, next) {
  *               - id: 1
  *                 notes: Previous District
  *                 primary: false
+ *             cohorts:
+ *               - id: 1
+ *                 notes: Started cohort on time
+ *             courses:
+ *               - id: 1
+ *                 notes: Teacher is doing well
+ *                 status: 0
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
@@ -105,6 +112,21 @@ router.put('/', adminOnly, async function (req, res, next) {
         }
       }
     )
+    const cohorts = req.body.teacher.cohorts.map(({ id, notes, ...next }) => {
+      return {
+        id: id,
+        notes: notes,
+      }
+    })
+    const courses = req.body.teacher.courses.map(
+      ({ id, notes, status, ...next }) => {
+        return {
+          id: id,
+          notes: notes,
+          status: status,
+        }
+      }
+    )
     await Teacher.query().upsertGraph(
       {
         name: req.body.teacher.name,
@@ -118,6 +140,8 @@ router.put('/', adminOnly, async function (req, res, next) {
         grade_level: req.body.teacher.grade_level,
         notes: req.body.teacher.notes,
         districts: districts,
+        cohorts: cohorts,
+        courses: courses,
       },
       {
         relate: true,
@@ -175,6 +199,13 @@ router.put('/', adminOnly, async function (req, res, next) {
  *               - id: 1
  *                 notes: Previous District
  *                 primary: false
+ *             cohorts:
+ *               - id: 1
+ *                 notes: Started cohort on time
+ *             courses:
+ *               - id: 1
+ *                 notes: Teacher is doing well
+ *                 status: 0
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
@@ -193,6 +224,21 @@ router.post('/:id', adminOnly, async function (req, res, next) {
         }
       }
     )
+    const cohorts = req.body.teacher.cohorts.map(({ id, notes, ...next }) => {
+      return {
+        id: id,
+        notes: notes,
+      }
+    })
+    const courses = req.body.teacher.courses.map(
+      ({ id, notes, status, ...next }) => {
+        return {
+          id: id,
+          notes: notes,
+          status: status,
+        }
+      }
+    )
     await Teacher.query().upsertGraph(
       {
         id: req.params.id,
@@ -207,6 +253,8 @@ router.post('/:id', adminOnly, async function (req, res, next) {
         grade_level: req.body.teacher.grade_level,
         notes: req.body.teacher.notes,
         districts: districts,
+        cohorts: cohorts,
+        courses: courses,
       },
       {
         relate: true,
