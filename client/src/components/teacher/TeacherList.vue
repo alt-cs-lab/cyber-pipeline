@@ -201,7 +201,7 @@ const grades = [
  */
 const exportFunction = (row) => {
   if (row.field == 'districts') {
-    return row.data.find((item) => item.primary == true).usdName
+    return row.data.find((item) => item.primary == true)?.usdName || ''
   } else if (row.field == 'cohorts') {
     return row.data.map((item) => item.name).join(' ')
   } else if (row.field == 'courses') {
@@ -209,7 +209,7 @@ const exportFunction = (row) => {
       .map((item) => item.name + ': ' + grades.find((grade) => grade.id == item.status).label)
       .join('","')
   } else if (row.field.endsWith('status')) {
-    return statuses.find((status) => status.id == row.data).label
+    return statuses.find((status) => status.id == row.data)?.label || ''
   } else {
     return row.data
   }
