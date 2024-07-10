@@ -107,3 +107,13 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           generate_release_notes: true
+
+      # Step 9 - Deploy App
+      - name: Deploy Stage
+        id: request
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: 'https://watchtower.cs.ksu.edu/v1/update'
+          method: 'GET'
+          bearerToken: ${{ secrets.DEPLOY_TOKEN }}
+          timeout: 600000
