@@ -30,7 +30,7 @@ const coursesStore = useCoursesStore()
 teachersStore.hydrate()
 const { teachers } = storeToRefs(teachersStore)
 districtsStore.hydrate()
-const { districts, getDistrict } = storeToRefs(districtsStore)
+const { districts } = storeToRefs(districtsStore)
 cohortsStore.hydrate()
 const { cohorts } = storeToRefs(cohortsStore)
 coursesStore.hydrate()
@@ -200,17 +200,16 @@ const grades = [
  * @param {Teacher} row
  */
 const exportFunction = (row) => {
-  if (Array.isArray(row.data)) {
-    var output = '"'
-    for (const item of row.data) {
-      output += item.usdName + ','
-    }
-    output += '"'
-    return output
-  } else if (row.field == 'district_id') {
-    return getDistrict.value(row.data)?.usdName
+  if (row.field == 'districts') {
+    return row.data.find((item) => item.primary == true).usdName
+  } else if (row.field == 'cohorts') {
+    return row.data.map((item) => item.name).join(' ')
+  } else if (row.field == 'courses') {
+    return row.data
+      .map((item) => item.name + ': ' + grades.find((grade) => grade.id == item.status).label)
+      .join('","')
   } else if (row.field.endsWith('status')) {
-    return statuses[row.data].label
+    return statuses.find((status) => status.id == row.data).label
   } else {
     return row.data
   }

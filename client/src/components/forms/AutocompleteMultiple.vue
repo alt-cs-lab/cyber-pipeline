@@ -60,7 +60,9 @@ const items = ref([])
  * @param {AutoCompleteCompleteEvent} event
  */
 const search = (event) => {
-  items.value = props.values.filter((value) => value[props.valueLabel].includes(event.query))
+  items.value = props.values
+    .filter((value) => value[props.valueLabel].includes(event.query))
+    .sort((a, b) => a[props.valueLabel].localeCompare(b[props.valueLabel]))
 }
 </script>
 

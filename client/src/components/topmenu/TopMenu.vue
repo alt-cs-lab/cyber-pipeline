@@ -16,7 +16,10 @@ const tokenStore = useTokenStore()
 const items = ref([
   {
     label: 'Home',
-    icon: 'pi pi-home'
+    icon: 'pi pi-home',
+    command: () => {
+      router.push({ name: 'home' })
+    }
   }
 ])
 
@@ -76,7 +79,10 @@ tokenStore.$subscribe(() => {
     items.value = [
       {
         label: 'Home',
-        icon: 'pi pi-home'
+        icon: 'pi pi-home',
+        command: () => {
+          router.push({ name: 'home' })
+        }
       }
     ]
   }

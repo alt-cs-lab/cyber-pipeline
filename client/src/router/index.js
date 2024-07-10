@@ -20,7 +20,11 @@ import { useTokenStore } from '@/stores/Token'
  */
 const requireAdmin = () => {
   const tokenStore = useTokenStore()
-  return tokenStore.is_admin
+  if (tokenStore.is_admin) {
+    return true
+  } else {
+    return { name: 'home' }
+  }
 }
 
 /**

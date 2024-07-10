@@ -185,14 +185,9 @@ const locales = [
  * @param {District} row
  */
 const exportFunction = (row) => {
-  if (Array.isArray(row.data)) {
-    var output = '"'
-    for (const item of row.data) {
-      output += item.name + ','
-    }
-    output += '"'
-    console.log(output)
-    return output
+  if (row.field == 'locale') {
+    //return row.data
+    return locales.find((item) => item.id == row.data).label
   } else {
     return row.data
   }
