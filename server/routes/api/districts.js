@@ -40,7 +40,8 @@ router.get('/', adminOnly, async function (req, res, next) {
     'districts.usd',
     'districts.url',
     'districts.locale',
-    'districts.notes'
+    'districts.notes',
+    District.relatedQuery('teachers_raw').count().as('teachers')
   )
   //.withGraphFetched('teachers')
   res.json(districts)

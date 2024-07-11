@@ -315,6 +315,11 @@ const exportFunction = (row) => {
         </template>
       </Column>
       <Column
+        header="Teachers"
+        field="teachers"
+        sortable
+      ></Column>
+      <Column
         header="Actions"
         :exportable="false"
         style="min-width: 8rem"

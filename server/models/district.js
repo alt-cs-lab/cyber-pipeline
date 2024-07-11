@@ -140,6 +140,24 @@ class District extends Model {
             'teacher_districts.primary'
           ),
       },
+      teachers_raw: {
+        relation: Model.ManyToManyRelation,
+        modelClass: Teacher,
+        join: {
+          from: 'districts.id',
+          // ManyToMany relation needs the `through` object
+          // to describe the join table.
+          through: {
+            // If you have a model class for the join table
+            // you need to specify it like this:
+            // modelClass: PersonMovie,
+            from: 'teacher_districts.district_id',
+            extra: ['notes', 'primary'],
+            to: 'teacher_districts.teacher_id',
+          },
+          to: 'teachers.id',
+        },
+      },
     }
   }
 }

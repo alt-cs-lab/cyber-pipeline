@@ -15,6 +15,7 @@ const adminOnly = require('../../middlewares/admin-only')
 // Load Models
 const Cohort = require('../../models/cohort')
 const Course = require('../../models/course')
+const District = require('../../models/district')
 
 /**
  * @swagger
@@ -154,6 +155,16 @@ router.get('/course/grade', adminOnly, async function (req, res, next) {
       .as('withdrawn')
   )
   res.json(courses)
+})
+
+router.get('/district/teacher', adminOnly, async function (req, res, next) {
+  let districts = await District.query().select(
+    'districts.id',
+    'districts.name',
+    'districts.usd',
+    District.relatedQuery('teachers_raw').count().as('teachers')
+  )
+  res.json(districts)
 })
 
 module.exports = router
