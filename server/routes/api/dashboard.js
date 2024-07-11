@@ -134,23 +134,23 @@ router.get('/course/grade', adminOnly, async function (req, res, next) {
     'courses.name',
     Course.relatedQuery('teachers_raw')
       .count()
-      .where('teachers_raw.status', 0)
+      .where('teacher_courses.status', 0)
       .as('enrolled'),
     Course.relatedQuery('teachers_raw')
       .count()
-      .where('teachers_raw.status', 1)
+      .where('teacher_courses.status', 1)
       .as('pass'),
     Course.relatedQuery('teachers_raw')
       .count()
-      .where('teachers_raw.status', 2)
+      .where('teacher_courses.status', 2)
       .as('incomplete'),
     Course.relatedQuery('teachers_raw')
       .count()
-      .where('teachers_raw.status', 3)
+      .where('teacher_courses.status', 3)
       .as('fail'),
     Course.relatedQuery('teachers_raw')
       .count()
-      .where('teachers_raw.status', 4)
+      .where('teacher_courses.status', 4)
       .as('withdrawn')
   )
   res.json(courses)
