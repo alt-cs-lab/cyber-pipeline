@@ -187,7 +187,7 @@ const locales = [
 const exportFunction = (row) => {
   if (row.field == 'locale') {
     //return row.data
-    return locales.find((item) => item.id == row.data).label
+    return locales.find((item) => item.id == row.data)?.label || ''
   } else {
     return row.data
   }
