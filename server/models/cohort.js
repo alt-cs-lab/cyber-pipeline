@@ -106,6 +106,24 @@ class Cohort extends Model {
         filter: (builder) =>
           builder.select('id', 'name', 'teacher_cohorts.notes'),
       },
+      teachers_raw: {
+        relation: Model.ManyToManyRelation,
+        modelClass: Teacher,
+        join: {
+          from: 'cohorts.id',
+          // ManyToMany relation needs the `through` object
+          // to describe the join table.
+          through: {
+            // If you have a model class for the join table
+            // you need to specify it like this:
+            // modelClass: PersonMovie,
+            from: 'teacher_cohorts.cohort_id',
+            extra: ['notes'],
+            to: 'teacher_cohorts.teacher_id',
+          },
+          to: 'teachers.id',
+        },
+      },
     }
   }
 }

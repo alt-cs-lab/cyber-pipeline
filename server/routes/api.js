@@ -35,6 +35,7 @@ const districtRouter = require('./api/districts')
 const teacherRouter = require('./api/teachers')
 const cohortRouter = require('./api/cohorts')
 const courseRouter = require('./api/courses')
+const dashboardRouter = require('./api/dashboard')
 
 // Load Token Middleware
 router.use(token)
@@ -52,6 +53,7 @@ router.use('/districts', districtRouter)
 router.use('/teachers', teacherRouter)
 router.use('/cohorts', cohortRouter)
 router.use('/courses', courseRouter)
+router.use('/dashboard', dashboardRouter)
 
 /**
  * @swagger

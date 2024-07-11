@@ -8,7 +8,11 @@ import api from '@/services/api'
 export const useCohortsStore = defineStore('cohorts', {
   state: () => {
     return {
-      cohorts: [] // list of cohorts
+      cohorts: [], // list of cohorts
+      dashStatus: [], // status dashboard
+      pdStatus: [], // pd status dashboard
+      certStatus: [], // cert status dashboard
+      msStatus: [] // ms status dashboard
     }
   },
   getters: {
@@ -30,6 +34,18 @@ export const useCohortsStore = defineStore('cohorts', {
       Logger.info('cohorts:hydrate')
       await api.get('/api/v1/cohorts').then((response) => {
         this.cohorts = response.data
+      })
+      await api.get('/api/v1/dashboard/cohort/status').then((response) => {
+        this.dashStatus = response.data
+      })
+      await api.get('/api/v1/dashboard/cohort/pdstatus').then((response) => {
+        this.pdStatus = response.data
+      })
+      await api.get('/api/v1/dashboard/cohort/certstatus').then((response) => {
+        this.certStatus = response.data
+      })
+      await api.get('/api/v1/dashboard/cohort/msstatus').then((response) => {
+        this.msStatus = response.data
       })
     },
 

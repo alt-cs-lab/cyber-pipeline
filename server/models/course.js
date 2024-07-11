@@ -115,6 +115,24 @@ class Course extends Model {
             'teacher_courses.status'
           ),
       },
+      teachers_raw: {
+        relation: Model.ManyToManyRelation,
+        modelClass: Teacher,
+        join: {
+          from: 'courses.id',
+          // ManyToMany relation needs the `through` object
+          // to describe the join table.
+          through: {
+            // If you have a model class for the join table
+            // you need to specify it like this:
+            // modelClass: PersonMovie,
+            from: 'teacher_courses.course_id',
+            to: 'teacher_courses.teacher_id',
+            extra: ['notes', 'status'],
+          },
+          to: 'teachers.id',
+        },
+      },
     }
   }
 }

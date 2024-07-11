@@ -8,7 +8,8 @@ import api from '@/services/api'
 export const useCoursesStore = defineStore('courses', {
   state: () => {
     return {
-      courses: [] // list of courses
+      courses: [], // list of courses
+      dashGrades: [] // grades dashboard
     }
   },
   getters: {
@@ -35,6 +36,9 @@ export const useCoursesStore = defineStore('courses', {
             teacher.incomplete = teacher.incomplete === 1
           })
         })
+      })
+      await api.get('/api/v1/dashboard/course/grade').then((response) => {
+        this.dashGrades = response.data
       })
     },
 
