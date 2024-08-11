@@ -59,7 +59,19 @@ export const useTokenStore = defineStore('token', {
      */
     is_admin() {
       if (this.token) {
-        return jwtDecode(this.token)['is_admin']
+        return jwtDecode(this.token)['roles'].includes('admin')
+      } else {
+        return false
+      }
+    },
+    /**
+     * Gets the user's user status
+     *
+     * @returns Boolean: true if the user is a user, otherwise false
+     */
+    is_user() {
+      if (this.token) {
+        return jwtDecode(this.token)['roles'].includes('user')
       } else {
         return false
       }

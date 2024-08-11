@@ -28,6 +28,15 @@ exports.seed = async function (knex) {
       created_by: 'test-admin',
       updated_by: 'test-admin',
     },
+    {
+      id: 3,
+      eid: 'test-student',
+      name: 'Test Student',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
   ])
 
   // Roles
@@ -36,6 +45,14 @@ exports.seed = async function (knex) {
     {
       id: 1,
       name: 'admin',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
+    {
+      id: 2,
+      name: 'user',
       created_at: now,
       updated_at: now,
       created_by: 'test-admin',
@@ -57,6 +74,14 @@ exports.seed = async function (knex) {
     {
       user_id: '2',
       role_id: '1',
+      created_at: now,
+      updated_at: now,
+      created_by: 'test-admin',
+      updated_by: 'test-admin',
+    },
+    {
+      user_id: '3',
+      role_id: '2',
       created_at: now,
       updated_at: now,
       created_by: 'test-admin',

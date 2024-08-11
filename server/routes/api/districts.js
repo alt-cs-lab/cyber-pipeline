@@ -33,7 +33,7 @@ const District = require('../../models/district')
  *               items:
  *                 $ref: '#/components/schemas/District'
  */
-router.get('/', adminOnly, async function (req, res, next) {
+router.get('/', async function (req, res, next) {
   let districts = await District.query().select(
     'districts.id',
     'districts.name',

@@ -11,6 +11,7 @@ const router = express.Router()
 
 // Load Middleware
 const adminOnly = require('../../middlewares/admin-only')
+const userOrAdminOnly = require('../../middlewares/user-or-admin-only')
 
 // Load Models
 const Teacher = require('../../models/teacher')
@@ -33,25 +34,41 @@ const Teacher = require('../../models/teacher')
  *               items:
  *                 $ref: '#/components/schemas/Teacher'
  */
-router.get('/', adminOnly, async function (req, res, next) {
-  let teachers = await Teacher.query()
-    .select(
-      'teachers.id',
-      'teachers.name',
-      'teachers.email',
-      'teachers.eid',
-      'teachers.wid',
-      'teachers.status',
-      'teachers.pd_status',
-      'teachers.cert_status',
-      'teachers.ms_status',
-      'teachers.grade_level',
-      'teachers.notes'
-    )
-    .withGraphFetched('districts')
-    .withGraphFetched('courses')
-    .withGraphFetched('cohorts')
-  res.json(teachers)
+router.get('/', userOrAdminOnly, async function (req, res, next) {
+  if (req.roles.includes('admin')) {
+    let teachers = await Teacher.query()
+      .select(
+        'teachers.id',
+        'teachers.name',
+        'teachers.email',
+        'teachers.eid',
+        'teachers.wid',
+        'teachers.status',
+        'teachers.pd_status',
+        'teachers.cert_status',
+        'teachers.ms_status',
+        'teachers.grade_level',
+        'teachers.notes'
+      )
+      .withGraphFetched('districts')
+      .withGraphFetched('courses')
+      .withGraphFetched('cohorts')
+    res.json(teachers)
+  } else {
+    let teachers = await Teacher.query()
+      .select(
+        'teachers.id',
+        'teachers.name',
+        'teachers.email',
+        'teachers.eid',
+        'teachers.wid',
+        'teachers.grade_level',
+        'teachers.notes'
+      )
+      .withGraphFetched('districts')
+      .withGraphFetched('cohorts')
+    res.json(teachers)
+  }
 })
 
 /**

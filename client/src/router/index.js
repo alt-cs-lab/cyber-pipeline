@@ -27,6 +27,15 @@ const requireAdmin = () => {
   }
 }
 
+const requireUser = () => {
+  const tokenStore = useTokenStore()
+  if (tokenStore.is_user || tokenStore.is_admin) {
+    return true
+  } else {
+    return { name: 'home' }
+  }
+}
+
 /**
  * Router factory method
  */
@@ -55,7 +64,7 @@ const router = createRouter({
       path: '/teachers',
       name: 'teachers',
       component: TeacherView,
-      beforeEnter: requireAdmin
+      beforeEnter: requireUser
     },
 
     // Districts page
@@ -63,7 +72,7 @@ const router = createRouter({
       path: '/districts',
       name: 'districts',
       component: DistrictView,
-      beforeEnter: requireAdmin
+      beforeEnter: requireUser
     },
 
     // Cohorts page

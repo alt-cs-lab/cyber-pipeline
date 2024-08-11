@@ -125,23 +125,24 @@ class User extends Model {
     return refresh_token
   }
 
-  async is_admin() {
+  async get_roles() {
     const roles = await this.$relatedQuery('roles').for(this.id).select('name')
     //Roles for current user
     //console.log(roles)
-    return roles.some((r) => r.name === 'admin')
+    // return array of role names
+    return roles.map((role) => role.name)
   }
 
   static async getToken(id) {
     //const refresh_token = await User.updateRefreshToken(id)
     let user = await User.query().findById(id)
     const refresh_token = await user.updateRefreshToken()
-    const is_admin = await user.is_admin()
+    const roles = await user.get_roles()
     const token = jwt.sign(
       {
         user_id: id,
         eid: user.eid,
-        is_admin: is_admin,
+        roles: roles,
         refresh_token: refresh_token,
       },
       process.env.TOKEN_SECRET,

@@ -138,7 +138,7 @@ router.put('/', adminOnly, async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.post('/:id', async (req, res) => {
+router.post('/:id', adminOnly, async (req, res) => {
   try {
     // strip out other data from teachers
     const teachers = req.body.course.teachers.map(

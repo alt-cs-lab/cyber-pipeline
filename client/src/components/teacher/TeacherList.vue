@@ -16,6 +16,11 @@ import InputIcon from 'primevue/inputicon'
 // Custom Components
 import DropDownField from '../forms/DropDownField.vue'
 
+// Token
+import { useTokenStore } from '@/stores/Token'
+const tokenStore = useTokenStore()
+const { is_admin } = storeToRefs(tokenStore)
+
 // Stores
 import { useTeachersStore } from '@/stores/Teachers'
 const teachersStore = useTeachersStore()
@@ -31,9 +36,11 @@ teachersStore.hydrate()
 const { teachers } = storeToRefs(teachersStore)
 districtsStore.hydrate()
 const { districts } = storeToRefs(districtsStore)
-cohortsStore.hydrate()
 const { cohorts } = storeToRefs(cohortsStore)
-coursesStore.hydrate()
+if (is_admin.value) {
+  cohortsStore.hydrate()
+  coursesStore.hydrate()
+}
 const { courses } = storeToRefs(coursesStore)
 
 // Variables
@@ -241,6 +248,7 @@ const exportFunction = (row) => {
         >
           <template #start>
             <Button
+              v-if="is_admin"
               label="New"
               icon="pi pi-plus"
               severity="success"
@@ -295,6 +303,7 @@ const exportFunction = (row) => {
         header="WID"
       ></Column>
       <Column
+        v-if="is_admin"
         header="Status"
         field="status"
         sortable
@@ -323,6 +332,7 @@ const exportFunction = (row) => {
         </template>
       </Column>
       <Column
+        v-if="is_admin"
         header="PD"
         field="pd_status"
         sortable
@@ -351,6 +361,7 @@ const exportFunction = (row) => {
         </template>
       </Column>
       <Column
+        v-if="is_admin"
         header="Cert"
         field="cert_status"
         sortable
@@ -379,6 +390,7 @@ const exportFunction = (row) => {
         </template>
       </Column>
       <Column
+        v-if="is_admin"
         header="MS"
         field="ms_status"
         sortable
@@ -439,6 +451,7 @@ const exportFunction = (row) => {
         </template>
       </Column>
       <Column
+        v-if="is_admin"
         field="courses"
         header="Courses"
       >
@@ -460,6 +473,7 @@ const exportFunction = (row) => {
       >
         <template #body="slotProps">
           <Button
+            v-if="is_admin"
             icon="pi pi-pencil"
             outlined
             rounded
@@ -468,6 +482,7 @@ const exportFunction = (row) => {
             v-tooltip.bottom="'Edit'"
           />
           <Button
+            v-if="is_admin"
             icon="pi pi-trash"
             outlined
             rounded
@@ -503,6 +518,7 @@ const exportFunction = (row) => {
 
   <!-- Edit item dialog -->
   <Dialog
+    v-if="is_admin"
     v-model:visible="teacherDialog"
     :style="{ width: '850px' }"
     :header="teacherDialogHeader"

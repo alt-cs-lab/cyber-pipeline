@@ -13,15 +13,46 @@ services:
     command: sleep infinity
 
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    network_mode: service:mysql
+    # network_mode: service:mysql
 
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
     # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+    # Networks
+    networks:
+      # External Network
+      - traefik
+      # Internal Network
+      - pipeline
+
+    # Container Labels
+    labels:
+      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      # Traefik Labels - see https://doc.traefik.io/traefik/routing/providers/docker/
+      # Traefik Enable
+      - "traefik.enable=true"
+      # Docker Network
+      - "traefik.docker.network=traefik"
+      # Routing Rule
+      - "traefik.http.routers.pipeline.rule=Host(`pipeline.home.russfeld.me`)"
+      # Change Port
+      - "traefik.http.services.pipeline.loadbalancer.server.port=3001"
+      # Enable TLS
+      - "traefik.http.routers.pipeline.tls=true"
+      # TLS Certificate Resolver
+      - "traefik.http.routers.pipeline.tls.certresolver=letsencrypt"
+      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      # Watchtower Labels - see https://containrrr.dev/watchtower/running-multiple-instances/
+      # Watchtower Scope - Update on Webhook Ping
+      - "com.centurylinklabs.watchtower.scope=webhook"
+      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   mysql:
     image: mysql:5.7
     container_name: mysql
     restart: unless-stopped
+    networks:
+      - pipeline
     environment:
       MYSQL_HOST: mysql
       MYSQL_DATABASE: cyberpipeline
@@ -43,11 +74,19 @@ services:
       timeout: 5s
       retries: 20
   
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: phpmyadmin
-    restart: unless-stopped
-    ports:
-      - '8080:80'
-    environment:
-      PMA_ARBITRARY: 1
+  # phpmyadmin:
+  #   image: phpmyadmin:latest
+  #   container_name: phpmyadmin
+  #   restart: unless-stopped
+  #   ports:
+  #     - '8080:80'
+  #   environment:
+  #     PMA_ARBITRARY: 1
+
+networks:
+  pipeline:
+    name: pipeline
+    internal: true
+  traefik:
+    name: traefik
+    external: true

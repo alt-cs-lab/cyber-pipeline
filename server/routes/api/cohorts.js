@@ -33,7 +33,7 @@ const Cohort = require('../../models/cohort')
  *               items:
  *                 $ref: '#/components/schemas/Cohort'
  */
-router.get('/', async function (req, res, next) {
+router.get('/', adminOnly, async function (req, res, next) {
   let cohorts = await Cohort.query()
     .select('cohorts.id', 'cohorts.name', 'cohorts.notes')
     .withGraphFetched('teachers')

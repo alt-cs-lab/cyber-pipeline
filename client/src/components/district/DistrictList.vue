@@ -16,6 +16,11 @@ import InputIcon from 'primevue/inputicon'
 // Custom Components
 // import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
 
+// Token
+import { useTokenStore } from '@/stores/Token'
+const tokenStore = useTokenStore()
+const { is_admin } = storeToRefs(tokenStore)
+
 // Stores
 import { useDistrictsStore } from '@/stores/Districts'
 const districtsStore = useDistrictsStore()
@@ -219,6 +224,7 @@ const exportFunction = (row) => {
         >
           <template #start>
             <Button
+              v-if="is_admin"
               label="New"
               icon="pi pi-plus"
               severity="success"
@@ -326,6 +332,7 @@ const exportFunction = (row) => {
       >
         <template #body="slotProps">
           <Button
+            v-if="is_admin"
             icon="pi pi-pencil"
             outlined
             rounded
@@ -334,6 +341,7 @@ const exportFunction = (row) => {
             v-tooltip.bottom="'Edit'"
           />
           <Button
+            v-if="is_admin"
             icon="pi pi-trash"
             outlined
             rounded

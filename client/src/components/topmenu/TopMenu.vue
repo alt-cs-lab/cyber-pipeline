@@ -73,6 +73,30 @@ tokenStore.$subscribe(() => {
         }
       }
     ]
+  } else if (tokenStore.is_user) {
+    items.value = [
+      {
+        label: 'Home',
+        icon: 'pi pi-home',
+        command: () => {
+          router.push({ name: 'home' })
+        }
+      },
+      {
+        label: 'Teachers',
+        icon: 'pi pi-users',
+        command: () => {
+          router.push({ name: 'teachers' })
+        }
+      },
+      {
+        label: 'Districts',
+        icon: 'pi pi-building',
+        command: () => {
+          router.push({ name: 'districts' })
+        }
+      }
+    ]
 
     // If user is not admin, show simple menu only
   } else {
