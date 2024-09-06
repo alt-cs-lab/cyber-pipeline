@@ -21,7 +21,7 @@ services:
     # Networks
     networks:
       # External Network
-      - traefik
+      # - traefik
       # Internal Network
       - pipeline
 
@@ -87,6 +87,6 @@ networks:
   pipeline:
     name: pipeline
     internal: true
-  traefik:
-    name: traefik
-    external: true
+  # traefik:
+  #   name: traefik
+  #   external: true
