@@ -24,6 +24,8 @@ services:
       # - traefik
       # Internal Network
       - pipeline
+      # Default network
+      - default
 
     # Container Labels
     labels:
