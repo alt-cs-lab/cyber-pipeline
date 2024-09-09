@@ -21,7 +21,22 @@ const loginAsAdmin = function (done) {
   })
 }
 
+const loginAsUser = function (done) {
+  var agent = chai.request.agent(app)
+  agent.get('/auth/login?eid=alwhipple').end(() => {
+    agent.get('/auth/token').end((err, res) => {
+      this.token = res.body.token
+      if (!this.tokens) this.tokens = {}
+      this.tokens['user1'] = res.body.token
+      res.should.have.status(200)
+      agent.close()
+      done()
+    })
+  })
+}
+
 module.exports = {
     loginAsAdmin: loginAsAdmin,
+    loginAsUser: loginAsUser,
   }
   
