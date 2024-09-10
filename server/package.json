@@ -39,7 +39,8 @@
     "winston": "^3.14.2"
   },
   "devDependencies": {
-    "chai": "^5.1.1",
+    "chai": "^4.5.0",
+    "chai-http": "^4.4.0",
     "eslint": "^9.9.1",
     "eslint-config-prettier": "^9.1.0",
     "mocha": "^10.7.3",
