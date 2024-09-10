@@ -9,7 +9,7 @@ var app = require('../app')
 
 const loginAsAdmin = function (done) {
   var agent = chai.request.agent(app)
-  agent.get('/auth/login?eid=test-admin').end(() => {
+  agent.get('/auth/login?eid=russfeld').end(() => {
     agent.get('/auth/token').end((err, res) => {
       this.token = res.body.token
       if (!this.tokens) this.tokens = {}
