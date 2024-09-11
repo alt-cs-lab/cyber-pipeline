@@ -5,7 +5,7 @@ describe('test-admin /auth', function () {
   const user = {
     id: 1,
     eid: 'test-admin',
-    is_admin: true,
+    roles: ['admin']
   }
 
   shared.shouldAllowLogin(user.eid)

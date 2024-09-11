@@ -37,6 +37,7 @@ exports.tokenShouldIncludeUserData = function (user) {
         const token_user = jwt.verify(this.token, process.env.TOKEN_SECRET)
         token_user.should.have.property('user_id').eql(user.id)
         token_user.should.have.property('eid').eql(user.eid)
+        token_user.should.have.deep.property('roles').eql(user.roles)
         done()
       })
     })
