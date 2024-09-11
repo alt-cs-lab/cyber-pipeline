@@ -4,25 +4,26 @@ const chaiHttp = require('chai-http')
 chai.use(chaiHttp)
 require('chai').should()
 
-//Require app dependencies
+//Require Helpers
+const { loginAsAdmin, loginAsStudent } = require('../../helpers')
+
 var app = require('../../../app')
 
-//Require Helpers
-const { loginAsStudent1 } = require('../../helpers')
+//Require Shared Tests
+const shared = require('./shared')
 
-describe('test-student-1 /api/v1/users', function () {
-  beforeEach(loginAsStudent1)
-
-  describe('GET /', function () {
-    it('should not get roles', function (done) {
-      chai
+describe('test-student-1 /api/v1/roles', function(){
+  this.beforeEach(loginAsStudent)
+    describe('GET /', function(){
+      it('should not get the list of roles' , function (done){
+        chai
         .request(app)
         .get('/api/v1/roles/')
-        .auth(this.token, { type: 'bearer' })
+        .auth(this.token, {type: 'bearer'})
         .end((err, res) => {
-          res.should.have.status(403)
-          done()
+            res.should.has.status(403)
+            done()
         })
     })
-  })
+    })
 })

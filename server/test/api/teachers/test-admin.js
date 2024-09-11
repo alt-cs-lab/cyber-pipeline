@@ -12,9 +12,11 @@ var app = require('../../../app')
 //Require Shared Tests
 const shared = require('./shared')
 
-describe('test-admin /api/v1/roles', function(){
-  this.beforeEach(loginAsAdmin)
-    describe('GET /', function(){
-      shared.shouldGetRoleList()
-    })
-})
+describe('test-admin /api/v1/teachers', function(){
+    this.beforeEach(loginAsAdmin)
+      describe('GET /', function(){
+        shared.shouldGetTeacherList()
+      })
+  })
+
+
