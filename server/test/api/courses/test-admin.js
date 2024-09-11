@@ -45,10 +45,38 @@ describe('test-admin /api/v1/courses', function () {
     })
 
     describe('POST /', function () {
-        
+      it('should allow updating of courses', function (done) {
+        chai
+          .request(app)
+          .post('/api/v1/courses/1')
+          .send({
+            params: { id: 1 },
+            course: {
+                name: 'Valid Course Name',
+                notes: 'Some notes about the course',
+                teachers: [ 
+                    { id: 1, notes: 'Experienced teacher', status: 1 },
+                ],
+            },
+          })
+          .auth(this.token, { type: 'bearer' })
+          .end((err, res) => {
+            res.should.have.status(200)
+            done()
+          })
+      })
     })
 
     describe('DELETE /:id', function () {
-        
-    })
+      it('should allow deleting of courses', function (done) {
+        chai
+          .request(app)
+          .delete('/api/v1/courses/1')
+          .auth(this.token, { type: 'bearer' })
+          .end((err, res) => {
+            res.should.have.status(200)
+            done()
+          })
+      })
+  })
 })
