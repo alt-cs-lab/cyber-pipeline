@@ -37,7 +37,12 @@ exports.tokenShouldIncludeUserData = function (user) {
         const token_user = jwt.verify(this.token, process.env.TOKEN_SECRET)
         token_user.should.have.property('user_id').eql(user.id)
         token_user.should.have.property('eid').eql(user.eid)
-        token_user.should.have.property('is_admin').eql(user.is_admin)
+
+        if (user.is_admin) {
+          token_user.should.have.property('roles').that.includes('admin');
+        } else {
+          token_user.should.not.have.deep.property('roles', ['admin']);
+        }
         done()
       })
     })
