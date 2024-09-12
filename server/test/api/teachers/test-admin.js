@@ -16,6 +16,7 @@ describe('test-admin /api/v1/teachers', function(){
     this.beforeEach(loginAsAdmin)
       describe('GET /', function(){
         shared.shouldGetTeacherList()
+        shared.shouldCreateTeacher()
       })
   })
 

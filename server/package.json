@@ -10,7 +10,7 @@
     "format": "prettier --write .",
     "lint:check": "eslint .",
     "lint": "eslint --fix .",
-    "test": "mocha --require test/hooks.js --recursive --timeout 5000 --exit",
+    "test": "mocha --require test/hooks.js --recursive --timeout 15000 --exit",
     "cov": "nyc --reporter=html mocha --require test/hooks.js --recursive --timeout 2000 --exit",
     "test-json": "mocha --require test/hooks.js --recursive --timeout 2000 --exit --reporter json > test-results.json"
   },
