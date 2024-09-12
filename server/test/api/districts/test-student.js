@@ -5,29 +5,29 @@ chai.use(chaiHttp)
 require('chai').should()
 
 //Require Helpers
-const { loginAsAdmin } = require('../../helpers')
+const { loginAsStudent } = require('../../helpers')
 
 var app = require('../../../app')
 
 //Require Shared Tests
 const shared = require('./shared')
 
-describe('test-admin /api/v1/districts', function () {
-    beforeEach(loginAsAdmin)
+describe('test-student /api/v1/districts', function () {
+    beforeEach(loginAsStudent)
 
     describe('GET /', function () {
         shared.shouldGetListOfDistricts()
     })
 
     describe('PUT /', function () {
-        shared.shouldPutDistrict()
+        shared.shouldNotPutDistrict()
     })
 
     describe('POST /', function () {
-        shared.shouldPostDistrict()
+        shared.shouldNotPostDistrict()
     })
 
     describe('DELETE /', function () {
-        shared.shouldDeleteDistrict()
+        shared.shouldNotDeleteDistrict()
     })
 })
