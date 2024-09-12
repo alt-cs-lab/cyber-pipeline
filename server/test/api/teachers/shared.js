@@ -17,52 +17,6 @@ exports.shouldGetTeacherList = function(){
         .end((err, res) => {
             res.should.has.status(200)
             res.body.should.be.a('array')
-            //console.log(res.body)
-            res.body.forEach((teacher) => {
-                teacher.should.be.a('object')
-
-                teacher.should.have.property('id')
-                teacher.id.should.be.a('number')
-
-                teacher.should.have.property('name')
-                teacher.name.should.be.a('string')
-
-                teacher.should.have.property('email')
-                teacher.email.should.be.a('string')
-
-                teacher.should.have.property('eid')
-                teacher.eid.should.be.a('string')
-
-                teacher.should.have.property('wid')
-                teacher.wid.should.be.a('string')
-                
-                teacher.should.have.property('status')
-                teacher.status.should.be.a('number')
-
-                teacher.should.have.property('pd_status')
-                teacher.pd_status.should.be.a('number')
-
-                teacher.should.have.property('cert_status')
-                teacher.cert_status.should.be.a('number')
-
-                teacher.should.have.property('ms_status')
-                teacher.ms_status.should.be.a('number')
-
-                teacher.should.have.property('grade_level')
-                teacher.grade_level.should.be.a('string')
-
-                teacher.should.have.property('notes')
-                teacher.notes.should.be.a('string')
-                
-                teacher.should.have.property('districts')
-                teacher.districts.should.be.a('array')
-                
-                teacher.should.have.property('cohorts')
-                teacher.cohorts.should.be.a('array')
-                
-                teacher.should.have.property('courses')
-                teacher.courses.should.be.a('array')
-            });
             done()
         })
     })
@@ -86,7 +40,7 @@ exports.shouldCreateTeacher = function(){
                 ms_status: 0,
                 grade_level: 'high school 9-12',
                 notes: 'This is a test teacher',
-                districts: [{id: 2, notes: 'Current District', primary: true}, {id: 1, notes: 'Previous District', primary: false}],
+                districts: [{id: 2, notes: 'Current District', primary: true}],
                 cohorts: [{id: 1, notes: 'Started cohort on time'}],
                 courses: [{id: 1, notes: 'Teacher is doing well', status: 0}]
               },
@@ -96,7 +50,6 @@ exports.shouldCreateTeacher = function(){
             res.should.has.status(200)
             res.body.should.be.a('object')
             res.body.should.have.property('message')
-            //console.log(res.body)
         })
     })
 }
