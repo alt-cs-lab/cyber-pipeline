@@ -14,10 +14,11 @@ const shared = require('./shared')
 
 describe('test-admin /api/v1/teachers', function(){
     this.beforeEach(loginAsAdmin)
-      describe('GET /', function(){
+      describe('Admin tests', function(){
         shared.shouldGetTeacherList()
         shared.shouldCreateTeacher()
         shared.shouldEditTeacher()
+        shared.shouldDeleteTeacher()
       })
   })
 
