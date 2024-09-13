@@ -12,22 +12,20 @@ var app = require('../../../app')
 //Require Shared Tests
 const shared = require('./shared')
 
-describe('test-admin /api/v1/districts', function () {
+describe('test-admin /api/v1/profile', function () {
     beforeEach(loginAsAdmin)
 
-    describe('GET /', function () {
-        shared.shouldGetListOfDistricts()
-    })
+    const adminProfile = {
+        id: 1,
+        eid: 'test-admin',
+        name: 'Test Administrator'
+    }
 
-    describe('PUT /', function () {
-        shared.shouldPutDistrict()
+    describe('GET /', function () {
+        shared.shouldGetProfile(adminProfile)
     })
 
     describe('POST /', function () {
-        shared.shouldPostDistrict()
-    })
-
-    describe('DELETE /', function () {
-        shared.shouldDeleteDistrict()
+        shared.shouldPostProfile(adminProfile)
     })
 })
