@@ -4,7 +4,8 @@ const shared = require('./shared')
 describe('test-student-1 /auth', function () {
   const user = {
     id: 3,
-    eid: 'test-student'
+    eid: 'test-student',
+    roles: ['user']
   }
 
   shared.shouldAllowLogin(user.eid)
