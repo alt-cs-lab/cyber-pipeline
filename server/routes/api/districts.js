@@ -61,7 +61,7 @@ router.get('/', async function (req, res, next) {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Teacher'
+ *             $ref: '#/components/schemas/District'
  *           example:
  *             name: School District
  *             usd: 123
@@ -126,7 +126,7 @@ router.put('/', adminOnly, async function (req, res, next) {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Teacher'
+ *             $ref: '#/components/schemas/District'
  *           example:
  *             id: 1
  *             name: School District
