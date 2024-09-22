@@ -1,4 +1,4 @@
-const { AsyncLocalStorage } = require('node:async_hooks')
+import { AsyncLocalStorage } from ('node:async_hooks')
 
 const asyncLocalStorage = new AsyncLocalStorage()
 
@@ -9,7 +9,4 @@ async function dbAudit(req, res, next) {
   })
 }
 
-module.exports = {
-  dbAudit: dbAudit,
-  asyncLocalStorage: asyncLocalStorage,
-}
+export { dbAudit, asyncLocalStorage }

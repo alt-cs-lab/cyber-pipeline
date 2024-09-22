@@ -8,4 +8,4 @@ async function adminOnly(req, res, next) {
   }
 }
 
-module.exports = adminOnly
+export default adminOnly
