@@ -1,4 +1,4 @@
-const swaggerJsdoc = require('swagger-jsdoc')
+import swaggerJsdoc from 'swagger-jsdoc'
 
 // https://blog.logrocket.com/documenting-express-js-api-swagger/
 const options = {

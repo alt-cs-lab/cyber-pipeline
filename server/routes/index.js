@@ -1,5 +1,5 @@
 // Load Libraries
-const express = require('express')
+import express from 'express'
 const router = express.Router()
 
 // Load Models

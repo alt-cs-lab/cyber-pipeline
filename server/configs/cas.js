@@ -1,4 +1,4 @@
-var CASAuthentication = require('node-cas-authentication')
+import CASAuthentication from 'node-cas-authentication'
 
 var cas = new CASAuthentication({
   cas_url: process.env.CAS_URL,

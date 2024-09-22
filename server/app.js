@@ -1,23 +1,25 @@
 //Require Libraries
-const createError = require('http-errors')
-const express = require('express')
-const path = require('path')
-const cookieParser = require('cookie-parser')
-const debug = require('debug')('app')
-const cors = require('cors')
-const compression = require('compression')
-const helmet = require('helmet')
-const history = require('connect-history-api-fallback')
-const util = require('node:util')
+import createError from 'http-errors'
+import express from 'express'
+import path from 'path'
+import cookieParser from 'cookie-parser'
+import debugModule from 'debug'
+const debug = debugModule('app')
+import cors from 'cors'
+import compression from 'compression'
+import helmet from 'helmet'
+import history from 'connect-history-api-fallback'  
+import util from 'node:util'
+import dotenv from 'dotenv'
 
 // Logger
-const logger = require('./configs/logger')
+import logger from './configs/logger'
 
 // Default Environment
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 // Load Environment Variable
-require('dotenv').config()
+dotenv.config()
 debug('Environment:\n' + process.env)
 
 // Configure Timezone
@@ -27,9 +29,9 @@ process.env.TZ = 'UTC'
 const session = require('./configs/session')
 
 // Load Routers
-const indexRouter = require('./routes/index')
-const authRouter = require('./routes/auth')
-const apiRouter = require('./routes/api')
+import indexRouter from './routes/index'
+import authRouter from './routes/auth'
+import apiRouter from './routes/api'
 
 // Create Express Application
 const app = express()
@@ -73,13 +75,16 @@ app.use(helmet())
 if (process.env.NODE_ENV == 'development') {
   app.use('/', indexRouter)
 
-  const openapi = require('./configs/openapi')
-  const swaggerUi = require('swagger-ui-express')
-  app.use(
-    '/docs',
-    swaggerUi.serve,
-    swaggerUi.setup(openapi, { explorer: true })
-  )
+  // Use dynamic import for ES6 modules
+  import('./configs/openapi').then(openapi => {
+    import('swagger-ui-express').then(swaggerUi => {
+      app.use(
+        '/docs',
+        swaggerUi.serve,
+        swaggerUi.setup(openapi.default, { explorer: true })
+      )
+    })
+  })
 }
 
 // Routers

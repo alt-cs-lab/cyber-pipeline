@@ -2,6 +2,7 @@
   "name": "server",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "nodemon ./bin/www --ignore vue",
     "start": "NODE_ENV=production node ./bin/www",

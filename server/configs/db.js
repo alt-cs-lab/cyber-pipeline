@@ -1,4 +1,4 @@
-var Knex = require('knex')
+import Knex from 'knex'
 
 var db = Knex({
   client: 'mysql',

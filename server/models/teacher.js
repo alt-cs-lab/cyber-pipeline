@@ -1,4 +1,4 @@
-const Model = require('./base')
+import Model from '/base'
 
 /**
  * @swagger
