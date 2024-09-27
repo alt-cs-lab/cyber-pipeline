@@ -9,12 +9,22 @@ import { useConfirm } from 'primevue/useconfirm'
 const confirm = useConfirm()
 import { useToast } from 'primevue/usetoast'
 const toast = useToast()
-import { FilterMatchMode } from 'primevue/api'
+import { FilterMatchMode } from '@primevue/core/api'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import Toolbar from 'primevue/toolbar'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import DataTable from 'primevue/datatable'
+import Panel from 'primevue/panel'
+import Message from 'primevue/message'
+import Dialog from 'primevue/dialog'
 
 // Custom Components
 import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
+import TextField from '@/components/forms/TextField.vue'
 
 // Stores
 import { useUsersStore } from '@/stores/Users'
