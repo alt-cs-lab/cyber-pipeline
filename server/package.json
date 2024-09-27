@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "lint:check": "eslint .",
     "lint": "eslint --fix .",
-    "test": "mocha --require test/hooks.js --recursive --timeout 2000 --exit",
+    "oldtest": "mocha --require test/hooks.js --recursive --timeout 2000 --exit",
+    "test": "vitest",
     "cov": "nyc --reporter=html mocha --require test/hooks.js --recursive --timeout 2000 --exit",
     "test-json": "mocha --require test/hooks.js --recursive --timeout 2000 --exit --reporter json > test-results.json"
   },
@@ -45,6 +46,7 @@
     "mocha": "^10.7.3",
     "prettier": "^3.3.3",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "vitest": "^2.1.1"
   }
 }
