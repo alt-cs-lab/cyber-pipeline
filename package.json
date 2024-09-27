@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "vitest": "^2.1.1"
+  },
+  "dependencies": {
+    "mocha": "^10.7.3"
+  }
+}
