@@ -13,7 +13,7 @@ import util from 'node:util'
 import dotenv from 'dotenv'
 
 // Logger
-import logger from './configs/logger'
+import logger from './configs/logger.js'
 
 // Default Environment
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
@@ -29,9 +29,9 @@ process.env.TZ = 'UTC'
 const session = require('./configs/session')
 
 // Load Routers
-import indexRouter from './routes/index'
-import authRouter from './routes/auth'
-import apiRouter from './routes/api'
+import indexRouter from './routes/index.js'
+import authRouter from './routes/auth.js'
+import apiRouter from './routes/api.js'
 
 // Create Express Application
 const app = express()
@@ -117,4 +117,5 @@ app.use(function (err, req, res, next) {
   res.render('error')
 })
 
-module.exports = app
+export default app
+//module.exports = app

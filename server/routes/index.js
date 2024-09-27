@@ -33,4 +33,5 @@ router.get('/', async function (req, res, next) {
   res.render('index', { data: data })
 })
 
-module.exports = router
+export default router
+//module.exports = router
