@@ -25,6 +25,8 @@ import 'primeicons/primeicons.css'
 // import 'primevue/resources/themes/aura-light-purple/theme.css'
 // import 'primevue/resources/themes/aura-dark-purple/theme.css'
 import 'primeflex/primeflex.css'
+import '/styles/aura-dark.css?url'
+import '/styles/aura-light.css?url'
 
 // App and Vue Router
 import App from './App.vue'
