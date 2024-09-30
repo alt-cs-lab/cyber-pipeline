@@ -1,4 +1,4 @@
-import Model from './base'
+import Model from './base.js'
 
 /**
  * @swagger
@@ -128,4 +128,4 @@ class Cohort extends Model {
   }
 }
 
-module.exports = Cohort
+export default Cohort

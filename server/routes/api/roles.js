@@ -6,14 +6,14 @@
  */
 
 // Load Libraries
-const express = require('express')
+import express from 'express'
 const router = express.Router()
 
 // Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
+import adminOnly from '../../middlewares/admin-only.js'
 
 // Load Models
-const Role = require('../../models/role')
+import Role from '../../models/role.js'
 
 // Require Admin Role on All Routes
 router.use(adminOnly)
@@ -41,4 +41,4 @@ router.get('/', async function (req, res, next) {
   res.json(roles)
 })
 
-module.exports = router
+export default router

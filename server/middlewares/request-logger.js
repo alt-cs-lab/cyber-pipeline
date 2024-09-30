@@ -1,6 +1,6 @@
 // https://levelup.gitconnected.com/better-logs-for-expressjs-using-winston-and-morgan-with-typescript-1c31c1ab9342
 import morgan from 'morgan'
-import logger from '../configs/logger'
+import logger from '../configs/logger.js'
 
 // Override the stream method by telling
 // Morgan to use our custom logger instead of the console.log.

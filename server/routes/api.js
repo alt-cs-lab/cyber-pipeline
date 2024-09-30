@@ -19,23 +19,26 @@
  */
 
 // Load Libraries
-const express = require('express')
+//const express = require('express')
+//const router = express.Router()
+import express from 'express'
 const router = express.Router()
 
+
 // Load Middleware
-var token = require('../middlewares/token')
-var { dbAudit } = require('../middlewares/db-audit')
-const requestLogger = require('../middlewares/request-logger')
+import token from '../middlewares/token.js'
+import { dbAudit } from '../middlewares/db-audit.js'
+import requestLogger from '../middlewares/request-logger.js'
 
 // Load Routers
-const usersRouter = require('./api/users')
-const profileRouter = require('./api/profile')
-const roleRouter = require('./api/roles')
-const districtRouter = require('./api/districts')
-const teacherRouter = require('./api/teachers')
-const cohortRouter = require('./api/cohorts')
-const courseRouter = require('./api/courses')
-const dashboardRouter = require('./api/dashboard')
+import usersRouter from './api/users.js'
+import profileRouter from './api/profile.js'
+import roleRouter from './api/roles.js'
+import districtRouter from './api/districts.js'
+import teacherRouter from './api/teachers.js'
+import cohortRouter from './api/cohorts.js'
+import courseRouter from './api/courses.js'
+import dashboardRouter from './api/dashboard.js'
 
 // Load Token Middleware
 router.use(token)
@@ -93,4 +96,5 @@ router.get('/', function (req, res, next) {
   })
 })
 
-module.exports = router
+export default router
+//module.exports = router

@@ -4,25 +4,32 @@
  * Module dependencies.
  */
 
-var app = require('../app')
-var debug = require('debug')('cyber-pipeline:server')
-var http = require('http')
+//var app = require('../app')
+//var debug = require('debug')('cyber-pipeline:server')
+//var http = require('http')
+// Common JS --> ES6 Modules
+import app from '../app.js'
+import debugModule from 'debug'
+const debug = debugModule('cyber-pipeline:server')
+import http from 'http'
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000')
+const port = normalizePort(process.env.PORT || '3000')
 app.set('port', port)
 
 // Get Logger
-const logger = require('../configs/logger')
+//const logger = require('../configs/logger')
+// CJS --> ES6M
+import logger from '../configs/logger.js'
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app)
+const server = http.createServer(app)
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -31,7 +38,9 @@ server.on('error', onError)
 server.on('listening', onListening)
 
 // Migrate Database on Startup
-const db = require('../configs/db')
+//const db = require('../configs/db')
+// CJS --> ES6
+import db from '../configs/db.js'
 db.migrate.currentVersion().then(function (version) {
   logger.info('Database Migration Version: ' + version)
   if (version == 'none') {
@@ -58,7 +67,7 @@ db.migrate.currentVersion().then(function (version) {
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10)
+  const port = parseInt(val, 10)
 
   if (isNaN(port)) {
     // named pipe
@@ -82,7 +91,7 @@ function onError(error) {
     throw error
   }
 
-  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -104,7 +113,7 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address()
-  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
+  const addr = server.address()
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
   debug('Listening on ' + bind)
 }

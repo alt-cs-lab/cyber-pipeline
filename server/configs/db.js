@@ -14,4 +14,4 @@ var db = Knex({
   },
 })
 
-module.exports = db
+export default db;

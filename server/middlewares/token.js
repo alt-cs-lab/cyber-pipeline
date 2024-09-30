@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 // const User = require('../models/user')
 
 // Load Logger
-import logger from '../configs/logger'
+import logger from '../configs/logger.js'
 
 async function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization']

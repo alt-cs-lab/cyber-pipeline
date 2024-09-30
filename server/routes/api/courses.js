@@ -6,14 +6,14 @@
  */
 
 // Load Libraries
-const express = require('express')
+import express from 'express'
 const router = express.Router()
 
 // Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
+import adminOnly from '../../middlewares/admin-only.js'
 
 // Load Models
-const Course = require('../../models/course')
+import Course from '../../models/course.js'
 
 /**
  * @swagger
@@ -208,4 +208,4 @@ router.delete('/:id', adminOnly, async function (req, res, next) {
   }
 })
 
-module.exports = router
+export default router
