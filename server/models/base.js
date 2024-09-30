@@ -1,7 +1,8 @@
 import db from '../configs/db.js'
 import { Model } from 'objection'
 import { AjvValidator } from 'objection'
-import { addFormats } from 'ajv-formats'
+import formatModule from 'ajv-formats/dist/index.js'
+const { addFormats } = formatModule
 import { asyncLocalStorage } from '../middlewares/db-audit.js'
 
 Model.knex(db)

@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 //Require Libraries
 import createError from 'http-errors'
 import express from 'express'
@@ -11,6 +13,11 @@ import helmet from 'helmet'
 import history from 'connect-history-api-fallback'  
 import util from 'node:util'
 import dotenv from 'dotenv'
+
+// View engine setup
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Logger
 import logger from './configs/logger.js'
@@ -26,7 +33,7 @@ debug('Environment:\n' + process.env)
 process.env.TZ = 'UTC'
 
 // Load Configs
-const session = require('./configs/session')
+import session from './configs/session.js'
 
 // Load Routers
 import indexRouter from './routes/index.js'
@@ -49,7 +56,6 @@ if (process.env.NODE_ENV === 'development') {
   )
 }
 
-// View engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
 
@@ -76,7 +82,7 @@ if (process.env.NODE_ENV == 'development') {
   app.use('/', indexRouter)
 
   // Use dynamic import for ES6 modules
-  import('./configs/openapi').then(openapi => {
+  import('./configs/openapi.js').then(openapi => {
     import('swagger-ui-express').then(swaggerUi => {
       app.use(
         '/docs',

@@ -1,4 +1,4 @@
-import Model from './base'
+import Model from './base.js'
 
 /**
  * @swagger
