@@ -6,6 +6,7 @@ import { ref } from 'vue'
 import FloatLabel from 'primevue/floatlabel'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import AutoComplete from 'primevue/autocomplete'
 
 // Props
 const props = defineProps({

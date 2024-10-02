@@ -3,6 +3,7 @@
 import FloatLabel from 'primevue/floatlabel'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import Select from 'primevue/select'
 
 // Props
 const props = defineProps({
@@ -63,7 +64,7 @@ const model = defineModel()
         </InputIcon>
 
         <!-- Dropdown Component -->
-        <Dropdown
+        <Select
           :id="field"
           :disabled="disabled"
           :invalid="errors[field] ? true : false"

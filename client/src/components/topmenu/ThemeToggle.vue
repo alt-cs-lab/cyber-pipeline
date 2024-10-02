@@ -8,8 +8,10 @@ import { usePrimeVue } from 'primevue/config'
 const PrimeVue = usePrimeVue()
 import Logger from 'js-logger'
 
+import { usePreset } from '@primevue/themes'
+
 // Theme reference
-const themeDark = ref('light-theme')
+const themeDark = ref('aura-light-purple')
 
 /**
  * Get theme from local storage
@@ -24,9 +26,9 @@ const getTheme = () => {
 const getMediaPreference = () => {
   const hasDarkPreference = window.matchMedia('(prefers-color-scheme: dark)').matches
   if (hasDarkPreference) {
-    return 'dark-theme'
+    return 'aura-dark-purple'
   } else {
-    return 'light-theme'
+    return 'aura-light-purple'
   }
 }
 
@@ -43,14 +45,11 @@ onMounted(() => {
  */
 const updateTheme = () => {
   Logger.info('Update theme to ' + themeDark.value)
-  if (themeDark.value == 'light-theme') {
-    PrimeVue.changeTheme('aura-dark-purple', 'aura-light-purple', 'theme-link', () => {
-      localStorage.setItem('user-theme', themeDark.value)
-    })
-  } else {
-    PrimeVue.changeTheme('aura-light-purple', 'aura-dark-purple', 'theme-link', () => {
-      localStorage.setItem('user-theme', themeDark.value)
-    })
+
+  const themeLink = document.getElementById('theme-link')
+
+  if(themeLink) {
+    themeLink.href = themeDark.value === 'aura-dark-purple' ? '/themes/aura-dark-purple/theme.css' : '/themes/aura-light-purple/theme.css'
   }
 }
 
@@ -58,10 +57,10 @@ const updateTheme = () => {
  * Toggle theme value and trigger update
  */
 const toggleDarkMode = () => {
-  if (themeDark.value == 'dark-theme') {
-    themeDark.value = 'light-theme'
+  if (themeDark.value == 'aura-dark-purple') {
+    themeDark.value = 'aura-light-purple'
   } else {
-    themeDark.value = 'dark-theme'
+    themeDark.value = 'aura-dark-purple'
   }
   updateTheme()
 }
@@ -75,7 +74,7 @@ const toggleDarkMode = () => {
         @click="toggleDarkMode()"
       >
         <span
-          v-if="themeDark == 'light-theme'"
+          v-if="themeDark == 'aura-light-purple'"
           class="pi pi-moon"
           v-tooltip.bottom="'Toggle Dark Mode'"
         />
