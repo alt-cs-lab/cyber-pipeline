@@ -1,5 +1,6 @@
 <script setup>
 import Chart from 'primevue/chart'
+import Panel from 'primevue/panel'
 
 import { ref, onMounted } from 'vue'
 

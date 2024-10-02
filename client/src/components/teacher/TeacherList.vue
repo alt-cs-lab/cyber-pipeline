@@ -9,12 +9,27 @@ import { useConfirm } from 'primevue/useconfirm'
 const confirm = useConfirm()
 import { useToast } from 'primevue/usetoast'
 const toast = useToast()
-import { FilterMatchMode } from 'primevue/api'
+import { FilterMatchMode } from '@primevue/core/api'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import Toolbar from 'primevue/toolbar'
+import Column from 'primevue/column'
+import Tag from 'primevue/tag'
+import MultiSelect from 'primevue/multiselect'
+import Popover from 'primevue/popover'
+import Message from 'primevue/message'
+import Panel from 'primevue/panel'
+import DataTable from 'primevue/datatable'
+import Dialog from 'primevue/dialog'
+
 
 // Custom Components
 import DropDownField from '../forms/DropDownField.vue'
+import TextField from '@/components/forms/TextField.vue'
+import BooleanField from '@/components/forms/BooleanField.vue'
+import TextAreaField from '@/components/forms/TextAreaField.vue'
 
 // Token
 import { useTokenStore } from '@/stores/Token'
@@ -506,7 +521,7 @@ const exportFunction = (row) => {
   </Panel>
 
   <!-- Notes dialog -->
-  <OverlayPanel ref="notesDialog">
+  <Popover ref="notesDialog">
     <div class="flex flex-column gap-1 w-25rem">
       <div class="w-full">
         <span>Notes</span>
@@ -514,7 +529,7 @@ const exportFunction = (row) => {
       </div>
       <span>{{ notes }}</span>
     </div>
-  </OverlayPanel>
+</Popover>
 
   <!-- Edit item dialog -->
   <Dialog

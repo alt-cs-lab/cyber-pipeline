@@ -3,6 +3,7 @@
 import FloatLabel from 'primevue/floatlabel'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import Textarea from 'primevue/textarea'
 
 // Props
 const props = defineProps({
