@@ -1,21 +1,25 @@
-var session = require('express-session')
-var MySQLStore = require('express-mysql-session')(session)
+import session from 'express-session';
+import MySQLStoreModule from 'express-mysql-session';
+const MySQLStore = MySQLStoreModule(session);
 
-var options = {
+console.log(`MYSQL_HOST=${process.env.MYSQL_HOST}`);
+
+const options = {
   host: process.env.MYSQL_HOST,
   port: 3306,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
-}
+};
+console.log("log options: " + JSON.stringify(options));
 
-var mysql_store = new MySQLStore(options)
+const mysql_store = new MySQLStore(options);
 
-var mysql_session = session({
+const mysql_session = session({
   secret: process.env.APP_SECRET,
   resave: false,
   saveUninitialized: true,
   store: mysql_store,
-})
+});
 
-module.exports = mysql_session
+export default mysql_session;

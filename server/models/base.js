@@ -1,8 +1,9 @@
-const db = require('../configs/db.js')
-const Model = require('objection').Model
-const AjvValidator = require('objection').AjvValidator
-const addFormats = require('ajv-formats')
-const { asyncLocalStorage } = require('../middlewares/db-audit')
+import db from '../configs/db.js'
+import { Model } from 'objection'
+import { AjvValidator } from 'objection'
+import formatModule from 'ajv-formats/dist/index.js'
+const { addFormats } = formatModule
+import { asyncLocalStorage } from '../middlewares/db-audit.js'
 
 Model.knex(db)
 
@@ -41,4 +42,4 @@ class BaseModel extends Model {
   }
 }
 
-module.exports = BaseModel
+export default BaseModel

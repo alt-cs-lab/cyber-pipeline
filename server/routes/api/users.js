@@ -6,14 +6,19 @@
  */
 
 // Load Libraries
-const express = require('express')
+//const express = require('express')
+//const router = express.Router()
+import express from 'express'
 const router = express.Router()
 
+
 // Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
+//const adminOnly = require('../../middlewares/admin-only')
+import adminOnly from '../../middlewares/admin-only.js'
 
 // Load Models
-const User = require('../../models/user')
+//const User = require('../../models/user')
+import User from '../../models/user.js'
 
 // Require Admin Role on All Routes
 router.use(adminOnly)
@@ -188,7 +193,7 @@ router.delete('/:id', async function (req, res, next) {
     res.json({ error: 'Cannot Delete Yourself' })
   } else {
     try {
-      var deleted = await User.query().deleteById(req.params.id)
+      const deleted = await User.query().deleteById(req.params.id)
       if (deleted === 1) {
         res.status(200)
         res.json({ message: 'User Deleted' })
@@ -203,4 +208,4 @@ router.delete('/:id', async function (req, res, next) {
   }
 })
 
-module.exports = router
+export default router

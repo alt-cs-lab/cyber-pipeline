@@ -15,16 +15,22 @@
  */
 
 // Load Libraries
-const express = require('express')
+//const express = require('express')
+//const router = express.Router()
+//const jwt = require('jsonwebtoken')
+import express from 'express'
 const router = express.Router()
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken'
 
 // Load Configurations
-var cas = require('../configs/cas')
-const requestLogger = require('../middlewares/request-logger')
+//var cas = require('../configs/cas')
+//const requestLogger = require('../middlewares/request-logger')
+import cas from '../configs/cas.js'
+import requestLogger from '../middlewares/request-logger.js'
 
 // Load Models
-const User = require('../models/user')
+//const User = require('../models/user')
+import User from '../models/user.js'
 
 // Configure Logging
 router.use(requestLogger)
@@ -201,4 +207,5 @@ router.get('/logout', async function (req, res, next) {
   }
 })
 
-module.exports = router
+export default router
+//module.exports = router

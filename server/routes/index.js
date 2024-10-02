@@ -1,9 +1,10 @@
 // Load Libraries
-const express = require('express')
+import express from 'express'
 const router = express.Router()
 
 // Load Models
-const User = require('../models/user')
+//const User = require('../models/user')
+import User from '../models/user.js'
 
 // Configure Logging
 // router.use(requestLogger)
@@ -33,4 +34,5 @@ router.get('/', async function (req, res, next) {
   res.render('index', { data: data })
 })
 
-module.exports = router
+export default router
+//module.exports = router

@@ -17,6 +17,7 @@
     "@vueuse/core": "^11.0.3",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
+    "cjstoesm": "^2.1.2",
     "js-logger": "^1.6.1",
     "jwt-decode": "^4.0.0",
     "pinia": "^2.2.2",
