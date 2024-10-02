@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = async function (knex) {
+export async function up (knex) {
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   await knex('roles')
     .insert([
@@ -23,6 +23,6 @@ exports.up = async function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = async function (knex) {
+export async function down (knex) {
   await knex('roles').where('id', 2).del()
 }
