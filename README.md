@@ -1,6 +1,6 @@
 Getting started with development:
-1. [Local](developing-locally)
-2. [Codespaces](developing-in-github-codespaces)
+1. [Local](#developing-locally)
+2. [Codespaces](#developing-in-github-codespaces)
 
 ## Developing Locally
 
