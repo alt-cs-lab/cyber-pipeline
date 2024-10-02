@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.seed = async function (knex) {
+export async function seed (knex) {
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
   var then = new Date(now)
   then.setMinutes(then.getMinutes() - 5)
