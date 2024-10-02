@@ -27,4 +27,5 @@ const options = {
   apis: ['./routes/*.js', './routes/api/*.js', './models/*.js'],
 }
 
-module.exports = swaggerJsdoc(options)
+
+export default swaggerJsdoc(options)

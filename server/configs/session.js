@@ -2,6 +2,8 @@ import session from 'express-session';
 import MySQLStoreModule from 'express-mysql-session';
 const MySQLStore = MySQLStoreModule(session);
 
+console.log(`MYSQL_HOST=${process.env.MYSQL_HOST}`);
+
 const options = {
   host: process.env.MYSQL_HOST,
   port: 3306,
@@ -9,12 +11,9 @@ const options = {
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
 };
+console.log("log options: " + JSON.stringify(options));
 
 const mysql_store = new MySQLStore(options);
-
-if (!process.env.APP_SECRET) {
-  throw new Error('APP_SECRET environment variable is not set');
-}
 
 const mysql_session = session({
   secret: process.env.APP_SECRET,
