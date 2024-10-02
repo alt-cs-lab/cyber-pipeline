@@ -13,6 +13,8 @@ import helmet from 'helmet'
 import history from 'connect-history-api-fallback'  
 import util from 'node:util'
 import dotenv from 'dotenv'
+import swaggerUI from 'swagger-ui-express'
+import openapi from './configs/openapi.js'
 
 // View engine setup
 import { fileURLToPath } from 'url'
@@ -82,15 +84,11 @@ if (process.env.NODE_ENV == 'development') {
   app.use('/', indexRouter)
 
   // Use dynamic import for ES6 modules
-  import('./configs/openapi.js').then(openapi => {
-    import('swagger-ui-express').then(swaggerUi => {
-      app.use(
-        '/docs',
-        swaggerUi.serve,
-        swaggerUi.setup(openapi.default, { explorer: true })
-      )
-    })
-  })
+  app.use(
+    '/docs',
+    swaggerUI.serve,
+    swaggerUI.setup(openapi, {explorer: true})
+  )
 }
 
 // Routers
