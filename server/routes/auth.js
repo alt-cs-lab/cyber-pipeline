@@ -43,35 +43,45 @@ router.use(requestLogger)
  *         description: user is logged in, redirect to homepage
  */
 router.get('/login', async function (req, res, next) {
-  if (!req.session.user_id) {
-    let eid = ''
-    if (req.query.eid && process.env.FORCE_AUTH === 'true') {
-      // force authentication enabled, use eID from query
-      eid = req.query.eid
+    console.log('Login attempt:');
+
+    if (!req.session.user_id) {
+        let eid = '';
+
+        if (req.query.eid && process.env.FORCE_AUTH === 'true') {
+            eid = req.query.eid;
+            console.log('Using eID from query:', eid);
+        } else {
+            if (req.session[cas.session_name] === undefined) {
+                console.log('CAS not authenticated, redirecting...');
+                req.url = req.originalUrl;
+                cas.bounce_redirect(req, res, next);
+                return;
+            } else {
+                eid = req.session[cas.session_name];
+                console.log('Using eID from CAS session:', eid);
+            }
+        }
+
+        if (eid && eid.length !== 0) {
+            console.log('Attempting to find or create user for eID:', eid);
+            let user = await User.findOrCreate(eid);
+            console.log('User found or created:', user);
+
+            // Store User ID in session
+            req.session.user_id = user.id;
+            req.session.user_eid = eid;
+        } else {
+            console.log('No eID provided, cannot log in');
+        }
     } else {
-      // use CAS authentication
-      if (req.session[cas.session_name] === undefined) {
-        // CAS is not authenticated, so redirect
-        // Hack to fix redirects
-        req.url = req.originalUrl
-        cas.bounce_redirect(req, res, next)
-        return
-      } else {
-        // CAS is authenticated, get eID from session
-        eid = req.session[cas.session_name]
-      }
+        console.log('User already logged in, user_id:', req.session.user_id);
     }
-    if (eid && eid.length != 0) {
-      // Find or Create User for eID
-      let user = await User.findOrCreate(eid)
-      // Store User ID in session
-      req.session.user_id = user.id
-      req.session.user_eid = eid
-    }
-  }
-  // Redirect to Homepage
-  res.redirect('/')
-})
+
+    // Redirect to Homepage
+    res.redirect('/');
+});
+
 
 /**
  * @swagger

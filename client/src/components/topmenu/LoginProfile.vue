@@ -4,6 +4,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
+// PrimeVue Components
+import Menu from 'primevue/menu'
+import Avatar from 'primevue/avatar'
+
 // Stores
 import { useTokenStore } from '@/stores/Token'
 const tokenStore = useTokenStore()

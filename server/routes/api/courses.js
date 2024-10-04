@@ -6,14 +6,14 @@
  */
 
 // Load Libraries
-const express = require('express')
-const router = express.Router()
+import express from 'express';
+const router = express.Router();
 
 // Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
+import adminOnly from '../../middlewares/admin-only.js';
 
 // Load Models
-const Course = require('../../models/course')
+import Course from '../../models/course.js';
 
 /**
  * @swagger
@@ -33,12 +33,16 @@ const Course = require('../../models/course')
  *               items:
  *                 $ref: '#/components/schemas/Course'
  */
-router.get('/', async function (req, res, next) {
-  let courses = await Course.query()
-    .select('courses.id', 'courses.name', 'courses.notes')
-    .withGraphFetched('teachers')
-  res.json(courses)
-})
+router.get('/', async (req, res, next) => {
+  try {
+    const courses = await Course.query()
+      .select('courses.id', 'courses.name', 'courses.notes')
+      .withGraphFetched('teachers');
+    res.json(courses);
+  } catch (error) {
+    next(error);
+  }
+});
 
 /**
  * @swagger
@@ -69,18 +73,14 @@ router.get('/', async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.put('/', adminOnly, async function (req, res, next) {
+router.put('/', adminOnly, async (req, res) => {
   try {
-    // strip out other data from teachers
-    const teachers = req.body.course.teachers.map(
-      ({ id, notes, status, ...next }) => {
-        return {
-          id: id,
-          notes: notes,
-          status: status,
-        }
-      }
-    )
+    const teachers = req.body.course.teachers.map(({ id, notes, status }) => ({
+      id,
+      notes,
+      status,
+    }));
+    
     await Course.query().upsertGraph(
       {
         name: req.body.course.name,
@@ -91,14 +91,12 @@ router.put('/', adminOnly, async function (req, res, next) {
         relate: true,
         unrelate: true,
       }
-    )
-    res.status(200)
-    res.json({ message: 'Course Saved' })
+    );
+    res.status(200).json({ message: 'Course Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
 /**
  * @swagger
@@ -140,16 +138,12 @@ router.put('/', adminOnly, async function (req, res, next) {
  */
 router.post('/:id', adminOnly, async (req, res) => {
   try {
-    // strip out other data from teachers
-    const teachers = req.body.course.teachers.map(
-      ({ id, notes, status, ...next }) => {
-        return {
-          id: id,
-          notes: notes,
-          status: status,
-        }
-      }
-    )
+    const teachers = req.body.course.teachers.map(({ id, notes, status }) => ({
+      id,
+      notes,
+      status,
+    }));
+    
     await Course.query().upsertGraph(
       {
         id: req.params.id,
@@ -161,14 +155,12 @@ router.post('/:id', adminOnly, async (req, res) => {
         relate: true,
         unrelate: true,
       }
-    )
-    res.status(200)
-    res.json({ message: 'Course Saved' })
+    );
+    res.status(200).json({ message: 'Course Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
 /**
  * @swagger
@@ -192,20 +184,17 @@ router.post('/:id', adminOnly, async (req, res) => {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.delete('/:id', adminOnly, async function (req, res, next) {
+router.delete('/:id', adminOnly, async (req, res) => {
   try {
-    var deleted = await Course.query().deleteById(req.params.id)
+    const deleted = await Course.query().deleteById(req.params.id);
     if (deleted === 1) {
-      res.status(200)
-      res.json({ message: 'Course Deleted' })
+      res.status(200).json({ message: 'Course Deleted' });
     } else {
-      res.status(422)
-      res.json({ error: 'Course Not Found' })
+      res.status(422).json({ error: 'Course Not Found' });
     }
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
-module.exports = router
+export default router;

@@ -1,20 +1,9 @@
-/**
- * @swagger
- * tags:
- *   name: Teachers
- *   description: Teachers API
- */
+import express from 'express';
+import adminOnly from '../../middlewares/admin-only.js';
+import userOrAdminOnly from '../../middlewares/user-or-admin-only.js';
+import Teacher from '../../models/teacher.js';
 
-// Load Libraries
-const express = require('express')
-const router = express.Router()
-
-// Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
-const userOrAdminOnly = require('../../middlewares/user-or-admin-only')
-
-// Load Models
-const Teacher = require('../../models/teacher')
+const router = express.Router();
 
 /**
  * @swagger
@@ -34,9 +23,9 @@ const Teacher = require('../../models/teacher')
  *               items:
  *                 $ref: '#/components/schemas/Teacher'
  */
-router.get('/', userOrAdminOnly, async function (req, res, next) {
+router.get('/', userOrAdminOnly, async (req, res) => {
   if (req.roles.includes('admin')) {
-    let teachers = await Teacher.query()
+    const teachers = await Teacher.query()
       .select(
         'teachers.id',
         'teachers.name',
@@ -52,10 +41,10 @@ router.get('/', userOrAdminOnly, async function (req, res, next) {
       )
       .withGraphFetched('districts')
       .withGraphFetched('courses')
-      .withGraphFetched('cohorts')
-    res.json(teachers)
+      .withGraphFetched('cohorts');
+    res.json(teachers);
   } else {
-    let teachers = await Teacher.query()
+    const teachers = await Teacher.query()
       .select(
         'teachers.id',
         'teachers.name',
@@ -66,10 +55,10 @@ router.get('/', userOrAdminOnly, async function (req, res, next) {
         'teachers.notes'
       )
       .withGraphFetched('districts')
-      .withGraphFetched('cohorts')
-    res.json(teachers)
+      .withGraphFetched('cohorts');
+    res.json(teachers);
   }
-})
+});
 
 /**
  * @swagger
@@ -88,7 +77,7 @@ router.get('/', userOrAdminOnly, async function (req, res, next) {
  *             $ref: '#/components/schemas/Teacher'
  *           example:
  *             name: Test Teacher
- *             email: test@distrct.com
+ *             email: test@district.com
  *             eid: test-teacher
  *             wid: "000000000"
  *             status: 0
@@ -117,61 +106,45 @@ router.get('/', userOrAdminOnly, async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.put('/', adminOnly, async function (req, res, next) {
+router.put('/', adminOnly, async (req, res) => {
   try {
-    // strip out other data from districts
-    const districts = req.body.teacher.districts.map(
-      ({ id, notes, primary, ...next }) => {
-        return {
-          id: id,
-          notes: notes,
-          primary: primary,
-        }
-      }
-    )
-    const cohorts = req.body.teacher.cohorts.map(({ id, notes, ...next }) => {
-      return {
-        id: id,
-        notes: notes,
-      }
-    })
-    const courses = req.body.teacher.courses.map(
-      ({ id, notes, status, ...next }) => {
-        return {
-          id: id,
-          notes: notes,
-          status: status,
-        }
-      }
-    )
-    await Teacher.query().upsertGraph(
-      {
-        name: req.body.teacher.name,
-        email: req.body.teacher.email,
-        eid: req.body.teacher.eid,
-        wid: req.body.teacher.wid,
-        status: req.body.teacher.status,
-        pd_status: req.body.teacher.pd_status,
-        cert_status: req.body.teacher.cert_status,
-        ms_status: req.body.teacher.ms_status,
-        grade_level: req.body.teacher.grade_level,
-        notes: req.body.teacher.notes,
-        districts: districts,
-        cohorts: cohorts,
-        courses: courses,
-      },
-      {
-        relate: true,
-        unrelate: true,
-      }
-    )
-    res.status(200)
-    res.json({ message: 'Teacher Saved' })
+    const districts = req.body.teacher.districts.map(({ id, notes, primary }) => ({
+      id,
+      notes,
+      primary,
+    }));
+    const cohorts = req.body.teacher.cohorts.map(({ id, notes }) => ({
+      id,
+      notes,
+    }));
+    const courses = req.body.teacher.courses.map(({ id, notes, status }) => ({
+      id,
+      notes,
+      status,
+    }));
+    await Teacher.query().upsertGraph({
+      name: req.body.teacher.name,
+      email: req.body.teacher.email,
+      eid: req.body.teacher.eid,
+      wid: req.body.teacher.wid,
+      status: req.body.teacher.status,
+      pd_status: req.body.teacher.pd_status,
+      cert_status: req.body.teacher.cert_status,
+      ms_status: req.body.teacher.ms_status,
+      grade_level: req.body.teacher.grade_level,
+      notes: req.body.teacher.notes,
+      districts,
+      cohorts,
+      courses,
+    }, {
+      relate: true,
+      unrelate: true,
+    });
+    res.status(200).json({ message: 'Teacher Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
 /**
  * @swagger
@@ -199,14 +172,13 @@ router.put('/', adminOnly, async function (req, res, next) {
  *           example:
  *             id: 1
  *             name: Test Teacher
- *             email: test@distrct.com
+ *             email: test@district.com
  *             eid: test-teacher
  *             wid: "000000000"
  *             status: 0
  *             pd_status: 0
  *             cert_status: 0
  *             ms_status: 0
- *             district_id: 1
  *             grade_level: high school 9-12
  *             notes: This is a test teacher
  *             districts:
@@ -229,62 +201,46 @@ router.put('/', adminOnly, async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.post('/:id', adminOnly, async function (req, res, next) {
+router.post('/:id', adminOnly, async (req, res) => {
   try {
-    // strip out other data from districts
-    const districts = req.body.teacher.districts.map(
-      ({ id, notes, primary, ...next }) => {
-        return {
-          id: id,
-          notes: notes,
-          primary: primary,
-        }
-      }
-    )
-    const cohorts = req.body.teacher.cohorts.map(({ id, notes, ...next }) => {
-      return {
-        id: id,
-        notes: notes,
-      }
-    })
-    const courses = req.body.teacher.courses.map(
-      ({ id, notes, status, ...next }) => {
-        return {
-          id: id,
-          notes: notes,
-          status: status,
-        }
-      }
-    )
-    await Teacher.query().upsertGraph(
-      {
-        id: req.params.id,
-        name: req.body.teacher.name,
-        email: req.body.teacher.email,
-        eid: req.body.teacher.eid,
-        wid: req.body.teacher.wid,
-        status: req.body.teacher.status,
-        pd_status: req.body.teacher.pd_status,
-        cert_status: req.body.teacher.cert_status,
-        ms_status: req.body.teacher.ms_status,
-        grade_level: req.body.teacher.grade_level,
-        notes: req.body.teacher.notes,
-        districts: districts,
-        cohorts: cohorts,
-        courses: courses,
-      },
-      {
-        relate: true,
-        unrelate: true,
-      }
-    )
-    res.status(200)
-    res.json({ message: 'Teacher Saved' })
+    const districts = req.body.teacher.districts.map(({ id, notes, primary }) => ({
+      id,
+      notes,
+      primary,
+    }));
+    const cohorts = req.body.teacher.cohorts.map(({ id, notes }) => ({
+      id,
+      notes,
+    }));
+    const courses = req.body.teacher.courses.map(({ id, notes, status }) => ({
+      id,
+      notes,
+      status,
+    }));
+    await Teacher.query().upsertGraph({
+      id: req.params.id,
+      name: req.body.teacher.name,
+      email: req.body.teacher.email,
+      eid: req.body.teacher.eid,
+      wid: req.body.teacher.wid,
+      status: req.body.teacher.status,
+      pd_status: req.body.teacher.pd_status,
+      cert_status: req.body.teacher.cert_status,
+      ms_status: req.body.teacher.ms_status,
+      grade_level: req.body.teacher.grade_level,
+      notes: req.body.teacher.notes,
+      districts,
+      cohorts,
+      courses,
+    }, {
+      relate: true,
+      unrelate: true,
+    });
+    res.status(200).json({ message: 'Teacher Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
 /**
  * @swagger
@@ -308,20 +264,17 @@ router.post('/:id', adminOnly, async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.delete('/:id', adminOnly, async function (req, res, next) {
+router.delete('/:id', adminOnly, async (req, res) => {
   try {
-    var deleted = await Teacher.query().deleteById(req.params.id)
+    const deleted = await Teacher.query().deleteById(req.params.id);
     if (deleted === 1) {
-      res.status(200)
-      res.json({ message: 'Teacher Deleted' })
+      res.status(200).json({ message: 'Teacher Deleted' });
     } else {
-      res.status(422)
-      res.json({ error: 'Teacher Not Found' })
+      res.status(422).json({ error: 'Teacher Not Found' });
     }
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
-module.exports = router
+export default router;

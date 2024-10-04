@@ -6,14 +6,11 @@
  */
 
 // Load Libraries
-const express = require('express')
-const router = express.Router()
+import express from 'express';
+import adminOnly from '../../middlewares/admin-only.js'; // Ensure you include .js extension
+import District from '../../models/district.js'; // Ensure you include .js extension
 
-// Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
-
-// Load Models
-const District = require('../../models/district')
+const router = express.Router();
 
 /**
  * @swagger
@@ -33,7 +30,7 @@ const District = require('../../models/district')
  *               items:
  *                 $ref: '#/components/schemas/District'
  */
-router.get('/', async function (req, res, next) {
+router.get('/', async (req, res, next) => {
   let districts = await District.query().select(
     'districts.id',
     'districts.name',
@@ -42,10 +39,9 @@ router.get('/', async function (req, res, next) {
     'districts.locale',
     'districts.notes',
     District.relatedQuery('teachers_raw').count().as('teachers')
-  )
-  //.withGraphFetched('teachers')
-  res.json(districts)
-})
+  );
+  res.json(districts);
+});
 
 /**
  * @swagger
@@ -74,35 +70,23 @@ router.get('/', async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.put('/', adminOnly, async function (req, res, next) {
+router.put('/', adminOnly, async (req, res, next) => {
   try {
-    // // strip out other data from teachers
-    // const teachers = req.body.district.teachers.map(({ id, ...next }) => {
-    //   return {
-    //     id: id,
-    //   }
-    // })
-    await District.query().upsertGraph(
-      {
-        name: req.body.district.name,
-        url: req.body.district.url,
-        usd: req.body.district.usd,
-        notes: req.body.district.notes,
-        locale: req.body.district.locale,
-        // teachers: teachers,
-      },
-      {
-        relate: true,
-        unrelate: true,
-      }
-    )
-    res.status(200)
-    res.json({ message: 'District Saved' })
+    await District.query().upsertGraph({
+      name: req.body.district.name,
+      url: req.body.district.url,
+      usd: req.body.district.usd,
+      notes: req.body.district.notes,
+      locale: req.body.district.locale,
+    }, {
+      relate: true,
+      unrelate: true,
+    });
+    res.status(200).json({ message: 'District Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
 /**
  * @swagger
@@ -140,36 +124,24 @@ router.put('/', adminOnly, async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.post('/:id', adminOnly, async function (req, res, next) {
+router.post('/:id', adminOnly, async (req, res, next) => {
   try {
-    // strip out other data from teachers
-    // const teachers = req.body.district.teachers.map(({ id, ...next }) => {
-    //   return {
-    //     id: id,
-    //   }
-    // })
-    await District.query().upsertGraph(
-      {
-        id: req.params.id,
-        name: req.body.district.name,
-        url: req.body.district.url,
-        usd: req.body.district.usd,
-        locale: req.body.district.locale,
-        notes: req.body.district.notes,
-        // teachers: teachers,
-      },
-      {
-        relate: true,
-        unrelate: true,
-      }
-    )
-    res.status(200)
-    res.json({ message: 'District Saved' })
+    await District.query().upsertGraph({
+      id: req.params.id,
+      name: req.body.district.name,
+      url: req.body.district.url,
+      usd: req.body.district.usd,
+      locale: req.body.district.locale,
+      notes: req.body.district.notes,
+    }, {
+      relate: true,
+      unrelate: true,
+    });
+    res.status(200).json({ message: 'District Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
 /**
  * @swagger
@@ -193,20 +165,17 @@ router.post('/:id', adminOnly, async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.delete('/:id', adminOnly, async function (req, res, next) {
+router.delete('/:id', adminOnly, async (req, res, next) => {
   try {
-    var deleted = await District.query().deleteById(req.params.id)
+    const deleted = await District.query().deleteById(req.params.id);
     if (deleted === 1) {
-      res.status(200)
-      res.json({ message: 'District Deleted' })
+      res.status(200).json({ message: 'District Deleted' });
     } else {
-      res.status(422)
-      res.json({ error: 'District Not Found' })
+      res.status(422).json({ error: 'District Not Found' });
     }
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
-module.exports = router
+export default router;

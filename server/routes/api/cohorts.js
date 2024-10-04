@@ -6,14 +6,11 @@
  */
 
 // Load Libraries
-const express = require('express')
-const router = express.Router()
+import express from 'express';
+import adminOnly from '../../middlewares/admin-only.js'; // Ensure correct extension
+import Cohort from '../../models/cohort.js'; // Ensure correct extension
 
-// Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
-
-// Load Models
-const Cohort = require('../../models/cohort')
+const router = express.Router();
 
 /**
  * @swagger
@@ -33,12 +30,12 @@ const Cohort = require('../../models/cohort')
  *               items:
  *                 $ref: '#/components/schemas/Cohort'
  */
-router.get('/', adminOnly, async function (req, res, next) {
+router.get('/', adminOnly, async (req, res, next) => {
   let cohorts = await Cohort.query()
     .select('cohorts.id', 'cohorts.name', 'cohorts.notes')
-    .withGraphFetched('teachers')
-  res.json(cohorts)
-})
+    .withGraphFetched('teachers');
+  res.json(cohorts);
+});
 
 /**
  * @swagger
@@ -68,15 +65,14 @@ router.get('/', adminOnly, async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.put('/', adminOnly, async function (req, res, next) {
+router.put('/', adminOnly, async (req, res, next) => {
   try {
     // strip out other data from teachers
-    const teachers = req.body.cohort.teachers.map(({ id, notes, ...next }) => {
-      return {
-        id: id,
-        notes: notes,
-      }
-    })
+    const teachers = req.body.cohort.teachers.map(({ id, notes, ...next }) => ({
+      id: id,
+      notes: notes,
+    }));
+    
     await Cohort.query().upsertGraph(
       {
         name: req.body.cohort.name,
@@ -87,14 +83,12 @@ router.put('/', adminOnly, async function (req, res, next) {
         relate: true,
         unrelate: true,
       }
-    )
-    res.status(200)
-    res.json({ message: 'Cohort Saved' })
+    );
+    res.status(200).json({ message: 'Cohort Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
 /**
  * @swagger
@@ -136,12 +130,11 @@ router.put('/', adminOnly, async function (req, res, next) {
 router.post('/:id', async (req, res) => {
   try {
     // strip out other data from teachers
-    const teachers = req.body.cohort.teachers.map(({ id, notes, ...next }) => {
-      return {
-        id: id,
-        notes: notes,
-      }
-    })
+    const teachers = req.body.cohort.teachers.map(({ id, notes, ...next }) => ({
+      id: id,
+      notes: notes,
+    }));
+
     await Cohort.query().upsertGraph(
       {
         id: req.params.id,
@@ -153,14 +146,12 @@ router.post('/:id', async (req, res) => {
         relate: true,
         unrelate: true,
       }
-    )
-    res.status(200)
-    res.json({ message: 'Cohort Saved' })
+    );
+    res.status(200).json({ message: 'Cohort Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
 /**
  * @swagger
@@ -184,20 +175,17 @@ router.post('/:id', async (req, res) => {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.delete('/:id', adminOnly, async function (req, res, next) {
+router.delete('/:id', adminOnly, async (req, res, next) => {
   try {
-    var deleted = await Cohort.query().deleteById(req.params.id)
+    const deleted = await Cohort.query().deleteById(req.params.id);
     if (deleted === 1) {
-      res.status(200)
-      res.json({ message: 'Cohort Deleted' })
+      res.status(200).json({ message: 'Cohort Deleted' });
     } else {
-      res.status(422)
-      res.json({ error: 'Cohort Not Found' })
+      res.status(422).json({ error: 'Cohort Not Found' });
     }
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
-module.exports = router
+export default router;

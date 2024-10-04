@@ -1,4 +1,4 @@
-const Model = require('./base')
+import Model from './base.js'; // Ensure you include .js extension
 
 /**
  * @swagger
@@ -25,7 +25,7 @@ const Model = require('./base')
 class Role extends Model {
   // Table name is the only required property.
   static get tableName() {
-    return 'roles'
+    return 'roles';
   }
 
   // Each model must have a column (or a set of columns) that uniquely
@@ -33,15 +33,8 @@ class Role extends Model {
   // property. `idColumn` returns `id` by default and doesn't need to be
   // specified unless the model's primary key is something else.
   static get idColumn() {
-    return 'id'
+    return 'id';
   }
-
-  // Methods can be defined for model classes just as you would for
-  // any JavaScript class. If you want to include the result of these
-  // methods in the output json, see `virtualAttributes`.
-  //fullName() {
-  //  return this.firstName + ' ' + this.lastName;
-  //}
 
   // Optional JSON schema. This is not the database schema!
   // No tables or columns are generated based on this. This is only
@@ -52,17 +45,16 @@ class Role extends Model {
     return {
       type: 'object',
       required: ['name'],
-
       properties: {
         name: { type: 'string', minLength: 1, maxLength: 255 },
       },
-    }
+    };
   }
 
   // This object defines the relations to other models.
   static get relationMappings() {
     // Importing models here is one way to avoid require loops.
-    const User = require('./user')
+    const User = require('./user.js'); // Ensure you include .js extension
 
     return {
       users: {
@@ -73,9 +65,6 @@ class Role extends Model {
           // ManyToMany relation needs the `through` object
           // to describe the join table.
           through: {
-            // If you have a model class for the join table
-            // you need to specify it like this:
-            // modelClass: PersonMovie,
             from: 'user_roles.role_id',
             to: 'user_roles.user_id',
           },
@@ -83,8 +72,8 @@ class Role extends Model {
         },
         filter: (builder) => builder.select('id', 'eid', 'name'),
       },
-    }
+    };
   }
 }
 
-module.exports = Role
+export default Role;

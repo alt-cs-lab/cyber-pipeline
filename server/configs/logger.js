@@ -1,5 +1,5 @@
 // https://levelup.gitconnected.com/better-logs-for-expressjs-using-winston-and-morgan-with-typescript-1c31c1ab9342
-const winston = require('winston')
+import winston from 'winston';
 
 const levels = {
   error: 0,
@@ -9,13 +9,13 @@ const levels = {
   socket: 4,
   presence: 5,
   debug: 6,
-}
+};
 
 const level = () => {
-  const env = process.env.NODE_ENV || 'development'
-  if (env === 'test') return 'error'
-  return env === 'development' ? 'debug' : 'http'
-}
+  const env = process.env.NODE_ENV || 'development';
+  if (env === 'test') return 'error';
+  return env === 'development' ? 'debug' : 'http';
+};
 
 const colors = {
   error: 'red',
@@ -25,17 +25,15 @@ const colors = {
   socket: 'blue',
   presence: 'grey',
   debug: 'white',
-}
+};
 
-winston.addColors(colors)
+winston.addColors(colors);
 
 const format = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winston.format.colorize({ all: true }),
-  winston.format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`
-  )
-)
+  winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+);
 
 const transports = [
   new winston.transports.Console(),
@@ -44,13 +42,13 @@ const transports = [
   //   level: 'error',
   // }),
   // new winston.transports.File({ filename: 'logs/all.log' }),
-]
+];
 
 const logger = winston.createLogger({
   level: level(),
   levels,
   format,
   transports,
-})
+});
 
-module.exports = logger
+export default logger;
