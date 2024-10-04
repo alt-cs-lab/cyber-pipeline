@@ -1,6 +1,7 @@
 {
   "name": "server",
   "version": "0.0.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "nodemon ./bin/www --ignore vue",
@@ -10,7 +11,8 @@
     "format": "prettier --write .",
     "lint:check": "eslint .",
     "lint": "eslint --fix .",
-    "test": "mocha --require test/hooks.js --recursive --timeout 2000 --exit",
+    "oldtest": "mocha --require test/hooks.js --recursive --timeout 2000 --exit",
+    "test": "vitest",
     "cov": "nyc --reporter=html mocha --require test/hooks.js --recursive --timeout 2000 --exit",
     "test-json": "mocha --require test/hooks.js --recursive --timeout 2000 --exit --reporter json > test-results.json"
   },
@@ -40,11 +42,16 @@
   },
   "devDependencies": {
     "chai": "^5.1.1",
+    "chai-json-schema-ajv": "^5.2.4",
+    "chai-shallow-deep-equal": "^1.4.6",
     "eslint": "^9.9.1",
     "eslint-config-prettier": "^9.1.0",
+    "jsdom": "^25.0.1",
     "mocha": "^10.7.3",
     "prettier": "^3.3.3",
+    "sinon": "^19.0.2",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "vitest": "^2.1.1"
   }
 }

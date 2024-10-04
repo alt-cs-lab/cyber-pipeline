@@ -1,6 +1,6 @@
-var Knex = require('knex')
+import Knex from 'knex';
 
-var db = Knex({
+const db = Knex({
   client: 'mysql',
   connection: {
     host: process.env.MYSQL_HOST,
@@ -12,6 +12,6 @@ var db = Knex({
   migrations: {
     tableName: 'migrations',
   },
-})
+});
 
-module.exports = db
+export default db;

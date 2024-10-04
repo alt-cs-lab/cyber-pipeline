@@ -6,17 +6,14 @@
  */
 
 // Load Libraries
-const express = require('express')
-const router = express.Router()
+import express from 'express';
+import adminOnly from '../../middlewares/admin-only.js'; // Ensure you include .js extension
+import User from '../../models/user.js'; // Ensure you include .js extension
 
-// Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
-
-// Load Models
-const User = require('../../models/user')
+const router = express.Router();
 
 // Require Admin Role on All Routes
-router.use(adminOnly)
+router.use(adminOnly);
 
 /**
  * @swagger
@@ -36,12 +33,12 @@ router.use(adminOnly)
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get('/', async function (req, res, next) {
+router.get('/', async (req, res, next) => {
   let users = await User.query()
     .select('users.id', 'users.eid', 'users.name')
-    .withGraphFetched('roles')
-  res.json(users)
-})
+    .withGraphFetched('roles');
+  res.json(users);
+});
 
 /**
  * @swagger
@@ -76,14 +73,14 @@ router.get('/', async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.post('/:id', async function (req, res, next) {
+router.post('/:id', async (req, res, next) => {
   try {
     // strip out other data from roles
     const roles = req.body.user.roles.map(({ id, ...next }) => {
       return {
         id: id,
-      }
-    })
+      };
+    });
     await User.query().upsertGraph(
       {
         id: req.params.id,
@@ -94,14 +91,12 @@ router.post('/:id', async function (req, res, next) {
         relate: true,
         unrelate: true,
       }
-    )
-    res.status(200)
-    res.json({ message: 'User Saved' })
+    );
+    res.status(200).json({ message: 'User Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
 /**
  * @swagger
@@ -133,14 +128,14 @@ router.post('/:id', async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.put('/', async function (req, res, next) {
+router.put('/', async (req, res, next) => {
   try {
     // strip out other data from roles
     const roles = req.body.user.roles.map(({ id, ...next }) => {
       return {
         id: id,
-      }
-    })
+      };
+    });
     await User.query().upsertGraph(
       {
         eid: req.body.user.eid,
@@ -151,14 +146,12 @@ router.put('/', async function (req, res, next) {
         relate: true,
         unrelate: true,
       }
-    )
-    res.status(200)
-    res.json({ message: 'User Saved' })
+    );
+    res.status(200).json({ message: 'User Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422).json(error);
   }
-})
+});
 
 /**
  * @swagger
@@ -182,25 +175,21 @@ router.put('/', async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.delete('/:id', async function (req, res, next) {
+router.delete('/:id', async (req, res, next) => {
   if (req.params.id == req.user_id) {
-    res.status(422)
-    res.json({ error: 'Cannot Delete Yourself' })
+    res.status(422).json({ error: 'Cannot Delete Yourself' });
   } else {
     try {
-      var deleted = await User.query().deleteById(req.params.id)
+      const deleted = await User.query().deleteById(req.params.id);
       if (deleted === 1) {
-        res.status(200)
-        res.json({ message: 'User Deleted' })
+        res.status(200).json({ message: 'User Deleted' });
       } else {
-        res.status(422)
-        res.json({ error: 'User Not Found' })
+        res.status(422).json({ error: 'User Not Found' });
       }
     } catch (error) {
-      res.status(422)
-      res.json(error)
+      res.status(422).json(error);
     }
   }
-})
+});
 
-module.exports = router
+export default router;

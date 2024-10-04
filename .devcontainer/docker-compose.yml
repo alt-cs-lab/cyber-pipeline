@@ -5,6 +5,13 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
+    
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: cyberpipeline
+      MYSQL_USER: cyberpipeline
+      MYSQL_PASSWORD: password
+      MYSQL_RANDOM_ROOT_PASSWORD: fact      
 
     volumes:
       - ../..:/workspaces:cached
@@ -51,10 +58,13 @@ services:
 
   mysql:
     image: mysql:5.7
+    hostname: mysql
     container_name: mysql
     restart: unless-stopped
     networks:
       - pipeline
+    ports: 
+      - '3306:3306'
     environment:
       MYSQL_HOST: mysql
       MYSQL_DATABASE: cyberpipeline
@@ -75,6 +85,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+
   
   # phpmyadmin:
   #   image: phpmyadmin:latest

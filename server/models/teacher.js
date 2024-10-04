@@ -1,4 +1,4 @@
-const Model = require('./base')
+import Model from './base';
 
 /**
  * @swagger
@@ -139,7 +139,7 @@ const Model = require('./base')
 class Teacher extends Model {
   // Table name is the only required property.
   static get tableName() {
-    return 'teachers'
+    return 'teachers';
   }
 
   // Each model must have a column (or a set of columns) that uniquely
@@ -147,15 +147,8 @@ class Teacher extends Model {
   // property. `idColumn` returns `id` by default and doesn't need to be
   // specified unless the model's primary key is something else.
   static get idColumn() {
-    return 'id'
+    return 'id';
   }
-
-  // Methods can be defined for model classes just as you would for
-  // any JavaScript class. If you want to include the result of these
-  // methods in the output json, see `virtualAttributes`.
-  //fullName() {
-  //  return this.firstName + ' ' + this.lastName;
-  //}
 
   // Optional JSON schema. This is not the database schema!
   // No tables or columns are generated based on this. This is only
@@ -183,15 +176,15 @@ class Teacher extends Model {
         ms_status: { type: 'integer', minimum: 0, maximum: 3 },
         grade_level: { type: 'string' },
       },
-    }
+    };
   }
 
   // This object defines the relations to other models.
   static get relationMappings() {
     // Importing models here is one way to avoid require loops.
-    const District = require('./district')
-    const Cohort = require('./cohort')
-    const Course = require('./course')
+    const District = require('./district').default;
+    const Cohort = require('./cohort').default;
+    const Course = require('./course').default;
 
     return {
       districts: {
@@ -202,9 +195,6 @@ class Teacher extends Model {
           // ManyToMany relation needs the `through` object
           // to describe the join table.
           through: {
-            // If you have a model class for the join table
-            // you need to specify it like this:
-            // modelClass: TeacherDistrict,
             from: 'teacher_districts.teacher_id',
             extra: ['notes', 'primary'],
             to: 'teacher_districts.district_id',
@@ -225,12 +215,7 @@ class Teacher extends Model {
         modelClass: Cohort,
         join: {
           from: 'teachers.id',
-          // ManyToMany relation needs the `through` object
-          // to describe the join table.
           through: {
-            // If you have a model class for the join table
-            // you need to specify it like this:
-            // modelClass: PersonMovie,
             from: 'teacher_cohorts.teacher_id',
             extra: ['notes'],
             to: 'teacher_cohorts.cohort_id',
@@ -245,12 +230,7 @@ class Teacher extends Model {
         modelClass: Course,
         join: {
           from: 'teachers.id',
-          // ManyToMany relation needs the `through` object
-          // to describe the join table.
           through: {
-            // If you have a model class for the join table
-            // you need to specify it like this:
-            // modelClass: PersonMovie,
             from: 'teacher_courses.teacher_id',
             extra: ['notes', 'status'],
             to: 'teacher_courses.course_id',
@@ -265,8 +245,8 @@ class Teacher extends Model {
             'teacher_courses.status'
           ),
       },
-    }
+    };
   }
 }
 
-module.exports = Teacher
+export default Teacher;

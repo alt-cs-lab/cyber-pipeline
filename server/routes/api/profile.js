@@ -6,11 +6,10 @@
  */
 
 // Load Libraries
-const express = require('express')
-const router = express.Router()
+import express from 'express';
+import User from '../../models/user.js'; // Ensure you include .js extension
 
-// Load Models
-const User = require('../../models/user')
+const router = express.Router();
 
 /**
  * @swagger
@@ -28,10 +27,10 @@ const User = require('../../models/user')
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-router.get('/', async function (req, res, next) {
-  let user = await User.query().findById(req.user_id)
-  res.json(user)
-})
+router.get('/', async (req, res, next) => {
+  let user = await User.query().findById(req.user_id);
+  res.json(user);
+});
 
 /**
  * @swagger
@@ -56,17 +55,17 @@ router.get('/', async function (req, res, next) {
  *       422:
  *         $ref: '#/components/responses/UpdateError'
  */
-router.post('/', async function (req, res, next) {
+router.post('/', async (req, res, next) => {
   try {
     await User.query().findById(req.user_id).patch({
       name: req.body.user.name,
-    })
-    res.status(200)
-    res.json({ message: 'Profile Saved' })
+    });
+    res.status(200);
+    res.json({ message: 'Profile Saved' });
   } catch (error) {
-    res.status(422)
-    res.json(error)
+    res.status(422);
+    res.json(error);
   }
-})
+});
 
-module.exports = router
+export default router;

@@ -1,115 +1,58 @@
-//Require Libraries
-const createError = require('http-errors')
-const express = require('express')
-const path = require('path')
-const cookieParser = require('cookie-parser')
-const debug = require('debug')('app')
-const cors = require('cors')
-const compression = require('compression')
-const helmet = require('helmet')
-const history = require('connect-history-api-fallback')
-const util = require('node:util')
+/**
+ * @swagger
+ * tags:
+ *   name: API
+ *   description: API
+ * components:
+ *   responses:
+ *     UpdateError:
+ *       description: error accepting submitted data
+ *     Success:
+ *       description: success
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: string
+ */
 
-// Logger
-const logger = require('./configs/logger')
+// Import required libraries
+import express from 'express';
 
-// Default Environment
-process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+// Import middleware
+import token from './middlewares/token.js';
+import { dbAudit } from './middlewares/db-audit.js';
+import requestLogger from './middlewares/request-logger.js';
 
-// Load Environment Variable
-require('dotenv').config()
-debug('Environment:\n' + process.env)
+// Import the main router
+import apiRouter from './routes/index.js'; // Adjust path accordingly
 
-// Configure Timezone
-process.env.TZ = 'UTC'
+// Create an instance of the Express application
+const app = express();
 
-// Load Configs
-const session = require('./configs/session')
+app.use(express.json());
+app.use(token);
+app.use(dbAudit);
+app.use(requestLogger);
+app.use('/api/v1/users', apiRouter);
+app.use('/api/v1/profile', apiRouter);
+app.use('/api/v1/roles', apiRouter);
+app.use('/api/v1/districts', apiRouter);
+app.use('/api/v1/teachers', apiRouter);
+app.use('/api/v1/cohorts', apiRouter);
+app.use('/api/v1/courses', apiRouter);
+app.use('/api/v1/dashboard', apiRouter);
 
-// Load Routers
-const indexRouter = require('./routes/index')
-const authRouter = require('./routes/auth')
-const apiRouter = require('./routes/api')
+// Define a route for API version and user info
+app.get('/', (req, res) => {
+  res.json({
+    version: 1.0,
+    user_id: req.user_id,
+    is_admin: req.is_admin ? 1 : 0,
+  });
+});
 
-// Create Express Application
-const app = express()
-
-// Set up Sessions
-app.use(session)
-
-// Enable CORS in development
-if (process.env.NODE_ENV === 'development') {
-  app.use(
-    cors({
-      origin: 'http://localhost:3001',
-      credentials: true,
-    })
-  )
-}
-
-// View engine setup
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'pug')
-
-// Logging middleware is added in routers
-// to capture user ID information from token
-
-// JSON Middleware
-app.use(express.json())
-
-// Handle URLEncoded Bodies
-app.use(express.urlencoded({ extended: false }))
-
-// Parse Cookies
-app.use(cookieParser())
-
-// Enable Compression
-app.use(compression())
-
-// Add Helmet Protection
-app.use(helmet())
-
-// Add Index router and OpenAPI spec in development
-if (process.env.NODE_ENV == 'development') {
-  app.use('/', indexRouter)
-
-  const openapi = require('./configs/openapi')
-  const swaggerUi = require('swagger-ui-express')
-  app.use(
-    '/docs',
-    swaggerUi.serve,
-    swaggerUi.setup(openapi, { explorer: true })
-  )
-}
-
-// Routers
-// Auth routes must come first
-app.use('/auth', authRouter)
-
-// Redirect other requests to Vue app
-app.use(history())
-
-// Serve Static Resources
-app.use(express.static(path.join(__dirname, 'public')))
-
-// Handle any API routes last
-app.use('/api/v1', apiRouter)
-
-// Catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404))
-})
-
-// Error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  logger.error(util.inspect(err))
-  res.locals.message = err.message
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
-
-  // render the error page
-  res.status(err.status || 500)
-  res.render('error')
-})
-
-module.exports = app
+// Export the app instance
+export default app;

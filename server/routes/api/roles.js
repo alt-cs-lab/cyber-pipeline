@@ -6,17 +6,14 @@
  */
 
 // Load Libraries
-const express = require('express')
-const router = express.Router()
+import express from 'express';
+import adminOnly from '../../middlewares/admin-only.js'; // Ensure you include .js extension
+import Role from '../../models/role.js'; // Ensure you include .js extension
 
-// Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
-
-// Load Models
-const Role = require('../../models/role')
+const router = express.Router();
 
 // Require Admin Role on All Routes
-router.use(adminOnly)
+router.use(adminOnly);
 
 /**
  * @swagger
@@ -36,9 +33,9 @@ router.use(adminOnly)
  *               items:
  *                 $ref: '#/components/schemas/Role'
  */
-router.get('/', async function (req, res, next) {
-  let roles = await Role.query().select('id', 'name')
-  res.json(roles)
-})
+router.get('/', async (req, res, next) => {
+  let roles = await Role.query().select('id', 'name');
+  res.json(roles);
+});
 
-module.exports = router
+export default router;
