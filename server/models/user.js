@@ -2,10 +2,11 @@ import Model from './base.js'
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
 import logger from '../configs/logger.js'
-import axio from 'axios'
+import axios from 'axios'
 import { parseStringPromise } from 'xml2js'
 import util from 'node:util'
 import objection from 'objection'
+import Role from './role.js'
 
 /**
  * @swagger
@@ -179,8 +180,6 @@ class User extends Model {
   // This object defines the relations to other models.
   static get relationMappings() {
     // Importing models here is one way to avoid require loops.
-    return import('./role').then((roleModule) => {
-      const Role = roleModule.default
       return {
         roles: {
           relation: Model.ManyToManyRelation,
@@ -201,7 +200,6 @@ class User extends Model {
           filter: (builder) => builder.select('id', 'name'),
         }, 
       }
-    })
   }
 
   async $beforeInsert() {
