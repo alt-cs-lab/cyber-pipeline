@@ -1,5 +1,5 @@
 // https://levelup.gitconnected.com/better-logs-for-expressjs-using-winston-and-morgan-with-typescript-1c31c1ab9342
-const winston = require('winston')
+import winston from 'winston'
 
 const levels = {
   error: 0,
@@ -53,4 +53,4 @@ const logger = winston.createLogger({
   transports,
 })
 
-module.exports = logger
+export default logger

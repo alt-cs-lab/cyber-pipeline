@@ -1,35 +1,46 @@
+import 'dotenv/config'
+
 //Require Libraries
-const createError = require('http-errors')
-const express = require('express')
-const path = require('path')
-const cookieParser = require('cookie-parser')
-const debug = require('debug')('app')
-const cors = require('cors')
-const compression = require('compression')
-const helmet = require('helmet')
-const history = require('connect-history-api-fallback')
-const util = require('node:util')
+import createError from 'http-errors'
+import express from 'express'
+import path from 'path'
+import cookieParser from 'cookie-parser'
+import debugModule from 'debug'
+const debug = debugModule('app')
+import cors from 'cors'
+import compression from 'compression'
+import helmet from 'helmet'
+import history from 'connect-history-api-fallback'  
+import util from 'node:util'
+import dotenv from 'dotenv'
+import swaggerUI from 'swagger-ui-express'
+import openapi from './configs/openapi.js'
+
+// View engine setup
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Logger
-const logger = require('./configs/logger')
+import logger from './configs/logger.js'
 
 // Default Environment
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 // Load Environment Variable
-require('dotenv').config()
+dotenv.config()
 debug('Environment:\n' + process.env)
 
 // Configure Timezone
 process.env.TZ = 'UTC'
 
 // Load Configs
-const session = require('./configs/session')
+import session from './configs/session.js'
 
 // Load Routers
-const indexRouter = require('./routes/index')
-const authRouter = require('./routes/auth')
-const apiRouter = require('./routes/api')
+import indexRouter from './routes/index.js'
+import authRouter from './routes/auth.js'
+import apiRouter from './routes/api.js'
 
 // Create Express Application
 const app = express()
@@ -47,7 +58,6 @@ if (process.env.NODE_ENV === 'development') {
   )
 }
 
-// View engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
 
@@ -73,12 +83,11 @@ app.use(helmet())
 if (process.env.NODE_ENV == 'development') {
   app.use('/', indexRouter)
 
-  const openapi = require('./configs/openapi')
-  const swaggerUi = require('swagger-ui-express')
+  // Use dynamic import for ES6 modules
   app.use(
     '/docs',
-    swaggerUi.serve,
-    swaggerUi.setup(openapi, { explorer: true })
+    swaggerUI.serve,
+    swaggerUI.setup(openapi, {explorer: true})
   )
 }
 
@@ -112,4 +121,5 @@ app.use(function (err, req, res, next) {
   res.render('error')
 })
 
-module.exports = app
+export default app
+//module.exports = app

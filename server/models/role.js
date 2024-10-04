@@ -1,4 +1,4 @@
-const Model = require('./base')
+import Model from './base.js'
 
 /**
  * @swagger
@@ -62,29 +62,31 @@ class Role extends Model {
   // This object defines the relations to other models.
   static get relationMappings() {
     // Importing models here is one way to avoid require loops.
-    const User = require('./user')
-
-    return {
-      users: {
-        relation: Model.ManyToManyRelation,
-        modelClass: User,
-        join: {
-          from: 'role.id',
-          // ManyToMany relation needs the `through` object
-          // to describe the join table.
-          through: {
-            // If you have a model class for the join table
-            // you need to specify it like this:
-            // modelClass: PersonMovie,
-            from: 'user_roles.role_id',
-            to: 'user_roles.user_id',
+    //const User = require('./user')
+    return import('./user').then((UserModule) => {
+      const User = UserModule.default
+      return {
+        users: {
+          relation: Model.ManyToManyRelation,
+          modelClass: User,
+          join: {
+            from: 'role.id',
+            // ManyToMany relation needs the `through` object
+            // to describe the join table.
+            through: {
+              // If you have a model class for the join table
+              // you need to specify it like this:
+              // modelClass: PersonMovie,
+              from: 'user_roles.role_id',
+              to: 'user_roles.user_id',
+            },
+            to: 'users.id',
           },
-          to: 'users.id',
+          filter: (builder) => builder.select('id', 'eid', 'name'),
         },
-        filter: (builder) => builder.select('id', 'eid', 'name'),
-      },
-    }
+      }
+    })
   }
 }
 
-module.exports = Role
+export default Role

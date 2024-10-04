@@ -1,4 +1,4 @@
-const swaggerJsdoc = require('swagger-jsdoc')
+import swaggerJsdoc from 'swagger-jsdoc'
 
 // https://blog.logrocket.com/documenting-express-js-api-swagger/
 const options = {
@@ -27,4 +27,5 @@ const options = {
   apis: ['./routes/*.js', './routes/api/*.js', './models/*.js'],
 }
 
-module.exports = swaggerJsdoc(options)
+
+export default swaggerJsdoc(options)

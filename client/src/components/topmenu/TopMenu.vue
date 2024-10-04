@@ -4,6 +4,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
+// PrimeVue Components
+import Menubar from 'primevue/menubar'
+
+
 // Custom Components
 import ThemeToggle from '@/components/topmenu/ThemeToggle.vue'
 import LoginProfile from '@/components/topmenu/LoginProfile.vue'

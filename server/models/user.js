@@ -1,11 +1,12 @@
-const Model = require('./base')
-const crypto = require('crypto')
-const jwt = require('jsonwebtoken')
-const logger = require('../configs/logger')
-const axios = require('axios')
-const { parseStringPromise } = require('xml2js')
-const util = require('node:util')
-const objection = require('objection')
+import Model from './base.js'
+import crypto from 'crypto'
+import jwt from 'jsonwebtoken'
+import logger from '../configs/logger.js'
+import axios from 'axios'
+import { parseStringPromise } from 'xml2js'
+import util from 'node:util'
+import objection from 'objection'
+import Role from './role.js'
 
 /**
  * @swagger
@@ -179,28 +180,26 @@ class User extends Model {
   // This object defines the relations to other models.
   static get relationMappings() {
     // Importing models here is one way to avoid require loops.
-    const Role = require('./role')
-
-    return {
-      roles: {
-        relation: Model.ManyToManyRelation,
-        modelClass: Role,
-        join: {
-          from: 'users.id',
-          // ManyToMany relation needs the `through` object
-          // to describe the join table.
-          through: {
-            // If you have a model class for the join table
-            // you need to specify it like this:
-            // modelClass: PersonMovie,
-            from: 'user_roles.user_id',
-            to: 'user_roles.role_id',
+      return {
+        roles: {
+          relation: Model.ManyToManyRelation,
+          modelClass: Role,
+          join: {
+            from: 'users.id',
+            // ManyToMany relation needs the `through` object
+            // to describe the join table.
+            through: {
+              // If you have a model class for the join table
+              // you need to specify it like this:
+              // modelClass: PersonMovie,
+              from: 'user_roles.user_id',
+              to: 'user_roles.role_id',
+            },
+            to: 'roles.id',
           },
-          to: 'roles.id',
-        },
-        filter: (builder) => builder.select('id', 'name'),
-      },
-    }
+          filter: (builder) => builder.select('id', 'name'),
+        }, 
+      }
   }
 
   async $beforeInsert() {
@@ -222,4 +221,4 @@ class User extends Model {
   }
 }
 
-module.exports = User
+export default User

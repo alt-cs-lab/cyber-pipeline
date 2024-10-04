@@ -2,6 +2,7 @@
   "name": "server",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "nodemon ./bin/www --ignore vue",
     "start": "NODE_ENV=production node ./bin/www",
@@ -18,6 +19,7 @@
   "dependencies": {
     "ajv-formats": "^3.0.1",
     "axios": "^1.7.7",
+    "cjstoesm": "^2.1.2",
     "compression": "^1.7.4",
     "connect-history-api-fallback": "^2.0.0",
     "cookie-parser": "~1.4.6",
