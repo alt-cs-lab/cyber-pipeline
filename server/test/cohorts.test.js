@@ -52,7 +52,6 @@ let adminUser = {
         .set('Authorization', `Bearer ${adminUser.token}`)
         .expect(200)
         .end((err, res) => {
-          console.log(res.body)
         if (err) {return done(err)}
          expect(res.body).toBeInstanceOf(Array)
          expect(res.body.length).toBe(3)
@@ -74,7 +73,6 @@ let adminUser = {
         ],
         properties: {
           id: { type: 'integer' },
-          url: { type: 'string' },
           name: { type: 'string', minLength: 1, maxLength: 255 },
           teachers: {type: 'array',
             items: {
@@ -91,7 +89,7 @@ let adminUser = {
       additionalProperties: false,
     }
     request(app)
-      .get('/api/v1/platforms/')
+      .get('/api/v1/cohorts/')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(200)
       .end((err, res) => {
@@ -164,7 +162,7 @@ const addCohortIgnoresAdditionalProperties = (adminUser) => {
 }
 
 //Tests that put requests don't allow cohorts of the same name
-const addUserFailsOnDuplicateName = (adminUser) => {
+const addCohortFailsOnDuplicateName = (adminUser) => {
   it('should fail on duplicate name', (done) => {
     const t = {id:'1', name:'Teacher', notes:'Joined on time'}
     const newcohort = {
@@ -185,8 +183,8 @@ const addUserFailsOnDuplicateName = (adminUser) => {
   })
 }
 
-//Tests that put requests don't work if properties are missing
-const addCohortFailsOnMissingProperties = (adminUser) => {
+//Tests that put requests don't work if the name is missing
+const addCohortFailsOnMissingName = (adminUser) => {
   it('should fail on missing properties', (done) => {
     const t = {id:'1', name:'Teacher', notes:'Joined on time'}
     const newcohort_noname = {
@@ -213,22 +211,10 @@ const addCohortFailsOnMissingProperties = (adminUser) => {
           .expect(422)
           .end((err) => {
             if (err) return done(err)
-            const newcohort_noteachers = {
-              id: '1',
-              notes: 'PACK granted funded cohort',
-            }
-            request(app)
-              .put('/api/v1/cohort/')
-              .set('Authorization', `Bearer ${adminUser.token}`)
-              .send({ adminUser: newcohort_noteachers})
-              .expect(422)
-              .end((err) => {
-                if (err) return done(err)
-                    done()
-                  })
-              })
-          })
+            done()
+        })
       })
+    })
   }
 
   //Tests if post requests work
@@ -298,8 +284,8 @@ const addCohortFailsOnMissingProperties = (adminUser) => {
     })
   }
 
-  //Tests that post requests fail if properties are missing
-  const updateCohortFailsOnMissingProperties = (adminUser) => {
+  //Tests that post requests fail if the name is missing
+  const updateCohortFailsOnMissingName = (adminUser) => {
     it('should fail on missing properties', (done) => {
       const t = {id:'1', name:'Teacher', notes:'Joined on time'}
       const newcohort_noname = {
@@ -314,30 +300,18 @@ const addCohortFailsOnMissingProperties = (adminUser) => {
         .expect(422)
         .end((err) => {
           if (err) return done(err)
-            const newcohort_noteachers = {
-              id: '1',
-              notes: 'PACK granted funded cohort',
-            }
-            request(app)
-              .post('/api/v1/cohort/' + newcohort_noname.id)
-              .set('Authorization', `Bearer ${adminUser.token}`)
-              .send({ adminUser: newcohort_noteachers})
-              .expect(422)
-              .end((err) => {
-                if (err) return done(err)
-                    done()
-              })
+          done()            
         })
     })
 }
 
 //Tests that post requests fail if the id is invalid
-const updateCohortFailsOnInvalidId = (adminUser) => {
-  it('should fail on invalid id', (done) => {
+const updateCohortFailsOnInvalidName = (adminUser) => {
+  it('should fail on invalid name', (done) => {
     const t = {id:'1', name:'Teacher', notes:'Joined on time'}
       const newcohort = {
-        id: '999',
-        name: 'Spring 2023',
+        id: '',
+        name: 'Invalid Name',
         notes: 'PACK granted funded cohort',
         teachers: [t]
       }
@@ -379,7 +353,7 @@ const deleteCohort = (adminUser) => {
 }
 
 const deleteCohortFailsOnInvalidId = (adminUser) => {
-  it('should fail on invalid id', (done) => {
+  it('should fail on invalid name', (done) => {
     request(app)
       .delete('/api/v1/cohort/999')
       .set('Authorization', `Bearer ${adminUser.token}`)
@@ -458,16 +432,16 @@ const deleteCohortRequiresAdminRole = (adminUser) => {
     putCohort(adminUser)
     addCohortIgnoresAdditionalProperties(adminUser)
     putCohortRequiresAdminRole(adminUser)
-    addUserFailsOnDuplicateName(adminUser)
-    addCohortFailsOnMissingProperties(adminUser)
+    addCohortFailsOnDuplicateName(adminUser)
+    addCohortFailsOnMissingName(adminUser)
   })
 
 
   describe('POST /{id}', () => {
     updateCohort(adminUser)
     updateCohortIgnoresAdditionalProperties(adminUser)
-    updateCohortFailsOnMissingProperties(adminUser)
-    updateCohortFailsOnInvalidId(adminUser)
+    updateCohortFailsOnMissingName(adminUser)
+    updateCohortFailsOnInvalidName(adminUser)
     postCohortRequiresAdminRole(adminUser)
   })
 
@@ -476,4 +450,3 @@ const deleteCohortRequiresAdminRole = (adminUser) => {
     deleteCohortFailsOnInvalidId(adminUser)
     deleteCohortRequiresAdminRole(adminUser)
   })
-

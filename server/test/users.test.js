@@ -4,13 +4,14 @@ import { describe, it, beforeEach, beforeAll} from 'vitest'
 import 'dotenv/config'
 import db from '../configs/db.js'
 
+// Set up environment variables
 process.env.FORCE_AUTH = 'true'
 
 
 //Creates a mock user
-const adminUser = {
-  eid: 'test-admin',
-  name: 'Test Administrator',
+let adminUser = {
+  eid:'test-admin',
+  name:'Test Administrator',
   created_by: 'test-admin',
   updated_by: 'test-admin',
   id: 1, 
@@ -24,46 +25,47 @@ const adminUser = {
   
   beforeEach(async () => {
     db.seed.run()
+    
   })
 
-  //Tests that get requests return a list of all courses
-  const getAllCourses = (adminUser) => {
-    it('should list all courses', (done) => {
+  //Tests that get requests return a list of all users
+  const getAllUsers = (adminUser) => {
+    it('should list all users', (done) => {
       request(app)
-        .get('/api/v1/courses/')
+        .get('/api/v1/users/')
         .set('Authorization', `Bearer ${adminUser.token}`)
         .expect(200)
         .end((err, res) => {
         if (err) {return done(err)}
          expect(res.body).toBeInstanceOf(Array)
-         expect(res.body.length).toBe(3)
+         expect(res.body.length).toBe(2)
          done(err)
         })
     })
   }
   
 
-  //Tests that all courses' schema are correct
-  const getAllCoursesSchemaMatch = (adminUser) => {
-  it('all courses should match schema', (done) => {
+  //Tests that all users' schema are correct
+  const getAllUsersSchemaMatch = (adminUser) => {
+  it('all users should match schema', (done) => {
     const schema = {
       type: 'array',
       items: {
         type: 'object',
         required: [
+          'eid',
           'name'
         ],
         properties: {
           id: { type: 'integer' },
+          eid: {type: 'string', minLength: 3, maxLength: 20},
           name: { type: 'string', minLength: 1, maxLength: 255 },
-          teachers: {type: 'array',
+          roles: {type: 'array',
             items: {
               type: 'object',
               properties: {
                 id: { type: 'integer'},
-                name: { type: 'string'},
-                notes: { type: 'string'},
-                status: {type: 'integer'}
+                name: { type: 'string'}
               }
             }
           }
@@ -72,7 +74,7 @@ const adminUser = {
       additionalProperties: false,
     }
     request(app)
-      .get('/api/v1/courses/')
+      .get('/api/v1/users/')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(200)
       .end((err, res) => {
@@ -83,52 +85,52 @@ const adminUser = {
   })
 }
 //Tests that put requests work
-const putCourse = (adminUser) => {
-  it('should create a course', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0' }
-    const newcourse = {
+const putUser = (adminUser) => {
+  it('should create a user', (done) => {
+    const r = {id: '1', name: 'admin'}
+    const newuser = {
       id: '1',
-      name: 'test course',
-      notes: 'new course',
-      teachers: [t]
+      eid: 'testeid',
+      name: 'test user',
+      roles: [r]
     }
     request(app)
-      .put('/api/v1/courses/')
+      .put('/api/v1/users/')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .send({
-        course: newcourse,
+        user: newuser,
       })
       .expect(200)
       .end((err, res) => {
         if (err) return done(err)
         res.body.should.be.an('array')
-        res.body.should.have.lengthOf(4)
+        res.body.should.have.lengthOf(3)
         done()
       })
   })
 }
 
 
-//Tests whta put requests ignore any additional properties 
-const addCourseIgnoresAdditionalProperties = (adminUser) => {
-  it('should ignore additional properties on new course', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-    const newcourse = {
+//Tests what put requests ignore any additional properties 
+const addUserIgnoresAdditionalProperties = (adminUser) => {
+  it('should ignore additional properties on new user', (done) => {
+    const r = {id: '1', name: 'admin'}
+    const newuser = {
       id: '1',
-      name: 'test course',
-      notes: 'new course',
-      extraProperty: 'This should be ignored',
-      teachers: [t]
+      eid: 'testeid',
+      name: 'test user',
+      extraProperty: "extraProperty",
+      roles: [r]
     }
     request(app)
-      .put('/api/v1/course/')
+      .put('/api/v1/users/')
       .set('Authorization', `Bearer ${adminUser.token}`)
-      .send({ adminUser: newcourse })
+      .send({ adminUser: newuser })
       .end((err, res) => {
         if (err) return done(err)
         res.status.should.equal(201)
         request(app)
-          .get('/api/v1/course/')
+          .get('/api/v1/users/')
           .set('Authorization', `Bearer ${adminUser.token}`)
           .expect(200)
           .end((err, res) => {
@@ -144,20 +146,20 @@ const addCourseIgnoresAdditionalProperties = (adminUser) => {
   })
 }
 
-//Tests that put requests don't allow courses of the same name
-const addCourseFailsOnDuplicateName = (adminUser) => {
+//Tests that put requests don't allow users of the same Eid
+const addUserFailsOnDuplicateEid = (adminUser) => {
   it('should fail on duplicate name', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-    const newcourse = {
+    const r = {id: '1', name: 'admin'}
+    const newuser = {
       id: '1',
-      name: 'test course',
-      notes: 'new course',
-      teachers: [t]
+      eid: 'test-admin',
+      name: 'test user',
+      roles: [r]
     }
     request(app)
-      .put('/api/v1/course/')
+      .put('/api/v1/users/')
       .set('Authorization', `Bearer ${adminUser.token}`)
-      .send({ adminUser: newcourse })
+      .send({ adminUser: newuser })
       .expect(422)
       .end((err) => {
         if (err) return done(err)
@@ -166,86 +168,102 @@ const addCourseFailsOnDuplicateName = (adminUser) => {
   })
 }
 
-//Tests that put requests don't work if the name is missing
-const addCourseFailsOnMissingName = (adminUser) => {
-  it('should fail on missing name', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-    const newcourse_noname = {
+//Tests that put requests don't work if the name or eid is missing
+const addUserFailsOnMissingProperties = (adminUser) => {
+  it('should fail on missing properties', (done) => {
+    const r = {id: '1', name: 'admin'}
+    const newuser_noeid = {
       id: '1',
-      notes: 'new course',
-      teachers: [t]
+      name: 'test user',
+      roles: [r]
     }
     request(app)
-      .put('/api/v1/course/')
+      .put('/api/v1/users/')
       .set('Authorization', `Bearer ${adminUser.token}`)
-      .send({ adminUser: newcourse_noname })
+      .send({ adminUser: newuser_noeid })
       .expect(422)
       .end((err) => {
-        done()
+        if (err) return done(err)
+          const r = {id: '1', name: 'admin'}
+        const newuser_noname = {
+          id: '1',
+          eid: 'testeid',
+          roles: [r]
+        }
+        request(app)
+          .put('/api/v1/users/')
+          .set('Authorization', `Bearer ${adminUser.token}`)
+          .send({ adminUser: newuser_noname })
+          .expect(422)
+          .end((err) => {
+            if (err) return done(err)
+            done()
+        })
       })
-  })
-}
+    })
+  }
 
   //Tests if post requests work
-  const updateCourse = (adminUser) => {
-    it('should update a course', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-    const newcourse = {
-      id: '1',
-      notes: 'test',
-      teachers: [t]
-    }
+  const updateUser = (adminUser) => {
+    it('should update a user', (done) => {
+      const r = {id: '1', name: 'admin'}
+      const newuser = {
+        id: '1',
+        eid: 'testeid',
+        name: 'test user',
+        roles: [r]
+      }
       request(app)
-        .post('/api/v1/course/' + newcourse.id)
+        .post('/api/v1/users/' + newuser.id)
         .set('Authorization', `Bearer ${adminUser.token}`)
-        .send({ adminUser: newcourse })
+        .send({ adminUser: newuser })
         .end((err, res) => {
           if (err) return done(err)
           res.status.should.equal(200)
           request(app)
-            .get('/api/v1/course/')
+            .get('/api/v1/users/')
             .set('Authorization', `Bearer ${adminUser.token}`)
             .expect(200)
             .end((err, res) => {
               if (err) return done(err)
               res.body.should.be.an('array')
               res.body.should.have.lengthOf(3)
-              const addeduser = res.body.find((u) => u.id === newcourse.id)
-              addeduser.should.shallowDeepEqual(newcourse)
+              const addeduser = res.body.find((u) => u.id === newuser.id)
+              addeduser.should.shallowDeepEqual(newuser)
               done()
             })
         })
     })
   }
   //Tests that post requests ignore any additional properties
-  const updateCourseIgnoresAdditionalProperties = (adminUser) => {
+  const updateUserIgnoresAdditionalProperties = (adminUser) => {
     it('should ignore additional properties on updated user', (done) => {
-      const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-      const newcourse = {
-        id: '2',
-        name: 'test course',
-        notes: 'new course',
-        extraProperty: 'This should be ignored',
-        teachers: [t]
-      }
+      const r = {id: '1', name: 'admin'}
+    const newuser = {
+      id: '1',
+      eid: 'testeid',
+      name: 'test user',
+      extraProperty: 'extra property',
+      roles: [r]
+    }
       request(app)
-        .post('/api/v1/course/' + newcourse.id)
+        .post('/api/v1/users/' + newuser.id)
         .set('Authorization', `Bearer ${adminUser.token}`)
-        .send({ adminUser: newcourse })
+        .send({ adminUser: newuser })
         .end((err, res) => {
           if (err) return done(err)
           res.status.should.equal(200)
           request(app)
-            .get('/api/v1/course/')
+            .get('/api/v1/users/')
             .set('Authorization', `Bearer ${adminUser.token}`)
             .expect(200)
             .end((err, res) => {
               if (err) return done(err)
               res.body.should.be.an('array')
               res.body.should.have.lengthOf(3)
-              const addeduser = res.body.find((u) => u.id == newcourse.id)
+              const addeduser = res.body.find((u) => u.id == newuser.id)
               addeduser.should.not.have.property('extraProperty')
-              addeduser.should.have.property('name').eql('test course')
+              addeduser.should.have.property('name').eql('test user')
               addeduser.roles[0].should.not.have.property('extraProperty')
               done()
             })
@@ -253,41 +271,55 @@ const addCourseFailsOnMissingName = (adminUser) => {
     })
   }
 
-  //Tests that post requests fail if the name is missing
-  const updateCourseFailsOnMissingName = (adminUser) => {
-    it('should fail on missing name', (done) => {
-      const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-      const newcourse_noname = {
-        id: '1',
-        notes: 'new course',
-        teachers: [t]
-      }
+  //Tests that post requests fail if the name or eid is missing
+  const updateUserFailsOnMissingProperties = (adminUser) => {
+    it('should fail on missing properties', (done) => {
+      const r = {id: '1', name: 'admin'}
+    const newuser_noeid = {
+      id: '1',
+      name: 'test user',
+      roles: [r]
+    }
       request(app)
-        .post('/api/v1/course/' + newcourse_noname.id)
+        .post('/api/v1/users/' + newuser_noeid.id)
         .set('Authorization', `Bearer ${adminUser.token}`)
-        .send({ adminUser: newcourse_noname })
+        .send({ adminUser: newuser_noeid })
         .expect(422)
         .end((err) => {
           if (err) return done(err)
-           done()
+            const r = {id: '1', name: 'admin'}
+          const newuser_noname = {
+            id: '1',
+            eid: 'testeid',
+            roles: [r]
+          } 
+          request(app)
+        .post('/api/v1/users/' + newuser_noname.id)
+        .set('Authorization', `Bearer ${adminUser.token}`)
+        .send({ adminUser: newuser_noeid })
+        .expect(422)
+        .end((err) => {
+          if (err) return done(err) 
+          done()         
         })
     })
+  })
 }
 
 //Tests that post requests fail if the id is invalid
-const updateCourseFailsOnInvalidId = (adminUser) => {
-  it('should fail on invalid id', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-      const newcourse = {
-        id: '999',
-        name: 'test course',
-        notes: 'new course',
-        teachers: [t]
+const updateUserFailsOnInvalidName = (adminUser) => {
+  it('should fail on invalid name', (done) => {
+    const r = {id: '1', name: 'admin'}
+      const newuser = {
+        id: '1',
+        eid: 'testeid',
+        name: 'Invalid Name',
+        roles: [r]
       }
     request(app)
-      .post('/api/v1/course/' + newcourse.id)
+      .post('/api/v1/users/' + newuser.id)
       .set('Authorization', `Bearer ${adminUser.token}`)
-      .send({ adminUser: newcourse })
+      .send({ adminUser: newuser })
       .expect(422)
       .end((err) => {
         if (err) return done(err)
@@ -297,34 +329,34 @@ const updateCourseFailsOnInvalidId = (adminUser) => {
 }
 
 
-const deleteCourse = (adminUser) => {
-  it('should delete a course', (done) => {
+const deleteUser = (adminUser) => {
+  it('should delete a user', (done) => {
     request(app)
-      .delete('/api/v1/course/2')
+      .delete('/api/v1/users/1')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(200)
       .end((err) => {
         if (err) return done(err)
         request(app)
-          .get('/api/v1/course/')
+          .get('/api/v1/users/')
           .set('Authorization', `Bearer ${adminUser.token}`)
           .expect(200)
           .end((err, res) => {
             if (err) return done(err)
             res.body.should.be.an('array')
             res.body.should.have.lengthOf(2)
-            const deletedcourse = res.body.find((u) => u.id === 2)
-            assert.isUndefined(deletedcourse)
+            const deleteduser = res.body.find((u) => u.id === 2)
+            assert.isUndefined(deleteduser)
             done()
           })
       })
   })
 }
 
-const deleteCourseFailsOnInvalidId = (adminUser) => {
+const deleteUserFailsOnInvalidId = (adminUser) => {
   it('should fail on invalid id', (done) => {
     request(app)
-      .delete('/api/v1/course/999')
+      .delete('/api/v1/users/999')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(422)
       .end((err) => {
@@ -336,10 +368,10 @@ const deleteCourseFailsOnInvalidId = (adminUser) => {
 
 
 //Test that get requests only work for users with admin role
-const getAllCoursesRequiresAdminRole = (adminUser) => {
+const getAllUsersRequiresAdminRole = (adminUser) => {
   it('should require the admin role', (done) => {
     request(app)
-      .get('/api/v1/courses/')
+      .get('/api/v1/users/')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(403)
       .end((err) => {
@@ -350,10 +382,10 @@ const getAllCoursesRequiresAdminRole = (adminUser) => {
 }
 
 //Tests that put requests only work for users with admin role
-const putCourseRequiresAdminRole = (adminUser) => {
+const putUserRequiresAdminRole = (adminUser) => {
   it('should require the admin role', (done) => {
     request(app)
-      .put('/api/v1/courses/')
+      .put('/api/v1/users/')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(403)
       .end((err) => {
@@ -364,10 +396,10 @@ const putCourseRequiresAdminRole = (adminUser) => {
 }
 
 //Tests that post requests are only allowed for users with admin role
-const postCourseRequiresAdminRole = (adminUser) => {
+const postUserRequiresAdminRole = (adminUser) => {
   it('should require the admin role', (done) => {
     request(app)
-      .post('/api/v1/course/1')
+      .post('/api/v1/users/1')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(403)
       .end((err) => {
@@ -378,10 +410,10 @@ const postCourseRequiresAdminRole = (adminUser) => {
 }
 
 
-const deleteCourseRequiresAdminRole = (adminUser) => {
+const deleteUserRequiresAdminRole = (adminUser) => {
   it('should require the admin role', (done) => {
     request(app)
-      .delete('/api/v1/course/2')
+      .delete('/api/v1/users/1')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(403)
       .end((err) => {
@@ -392,31 +424,30 @@ const deleteCourseRequiresAdminRole = (adminUser) => {
 }
 
   describe('GET /', () => {
-    getAllCourses(adminUser)
-    getAllCoursesSchemaMatch(adminUser)
-    getAllCoursesRequiresAdminRole(adminUser)
+    getAllUsers(adminUser)
+    getAllUsersSchemaMatch(adminUser)
+    getAllUsersRequiresAdminRole(adminUser)
   })
 
   describe('PUT /', () => {
-    putCourse(adminUser)
-    addCourseIgnoresAdditionalProperties(adminUser)
-    putCourseRequiresAdminRole(adminUser)
-    addCourseFailsOnDuplicateName(adminUser)
-    addCourseFailsOnMissingName(adminUser)
+    putUser(adminUser)
+    addUserIgnoresAdditionalProperties(adminUser)
+    putUserRequiresAdminRole(adminUser)
+    addUserFailsOnDuplicateEid(adminUser)
+    addUserFailsOnMissingProperties(adminUser)
   })
 
 
   describe('POST /{id}', () => {
-    updateCourse(adminUser)
-    updateCourseIgnoresAdditionalProperties(adminUser)
-    updateCourseFailsOnMissingName(adminUser)
-    updateCourseFailsOnInvalidId(adminUser)
-    postCourseRequiresAdminRole(adminUser)
+    updateUser(adminUser)
+    updateUserIgnoresAdditionalProperties(adminUser)
+    updateUserFailsOnMissingProperties(adminUser)
+    updateUserFailsOnInvalidName(adminUser)
+    postUserRequiresAdminRole(adminUser)
   })
 
   describe('DELETE /{id}', () => {
-    deleteCourse(adminUser)
-    deleteCourseFailsOnInvalidId(adminUser)
-    deleteCourseRequiresAdminRole(adminUser)
+    deleteUser(adminUser)
+    deleteUserFailsOnInvalidId(adminUser)
+    deleteUserRequiresAdminRole(adminUser)
   })
-

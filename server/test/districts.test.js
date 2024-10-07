@@ -4,13 +4,14 @@ import { describe, it, beforeEach, beforeAll} from 'vitest'
 import 'dotenv/config'
 import db from '../configs/db.js'
 
+// Set up environment variables
 process.env.FORCE_AUTH = 'true'
 
 
 //Creates a mock user
-const adminUser = {
-  eid: 'test-admin',
-  name: 'Test Administrator',
+let adminUser = {
+  eid:'test-admin',
+  name:'Test Administrator',
   created_by: 'test-admin',
   updated_by: 'test-admin',
   id: 1, 
@@ -24,28 +25,29 @@ const adminUser = {
   
   beforeEach(async () => {
     db.seed.run()
+    
   })
 
-  //Tests that get requests return a list of all courses
-  const getAllCourses = (adminUser) => {
-    it('should list all courses', (done) => {
+  //Tests that get requests return a list of all districts
+  const getAllDistricts = (adminUser) => {
+    it('should list all districts', (done) => {
       request(app)
-        .get('/api/v1/courses/')
+        .get('/api/v1/districts/')
         .set('Authorization', `Bearer ${adminUser.token}`)
         .expect(200)
         .end((err, res) => {
         if (err) {return done(err)}
          expect(res.body).toBeInstanceOf(Array)
-         expect(res.body.length).toBe(3)
+         expect(res.body.length).toBe(2)
          done(err)
         })
     })
   }
   
 
-  //Tests that all courses' schema are correct
-  const getAllCoursesSchemaMatch = (adminUser) => {
-  it('all courses should match schema', (done) => {
+  //Tests that all districts' schema are correct
+  const getAllDistrictsSchemaMatch = (adminUser) => {
+  it('all districts should match schema', (done) => {
     const schema = {
       type: 'array',
       items: {
@@ -56,6 +58,10 @@ const adminUser = {
         properties: {
           id: { type: 'integer' },
           name: { type: 'string', minLength: 1, maxLength: 255 },
+          usd: {type: 'integer'},
+          url: {type: 'string'},
+          locale: {type: 'integer'},
+          notes: {type: 'string'},
           teachers: {type: 'array',
             items: {
               type: 'object',
@@ -63,7 +69,7 @@ const adminUser = {
                 id: { type: 'integer'},
                 name: { type: 'string'},
                 notes: { type: 'string'},
-                status: {type: 'integer'}
+                primary: {type: 'boolean'}
               }
             }
           }
@@ -72,7 +78,7 @@ const adminUser = {
       additionalProperties: false,
     }
     request(app)
-      .get('/api/v1/courses/')
+      .get('/api/v1/districts/')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(200)
       .end((err, res) => {
@@ -83,20 +89,20 @@ const adminUser = {
   })
 }
 //Tests that put requests work
-const putCourse = (adminUser) => {
-  it('should create a course', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0' }
-    const newcourse = {
+const putDistrict = (adminUser) => {
+  it('should create a district', (done) => {
+    const t = {id:'1', name:'Teacher', notes:'Joined on time', primary: 'true'}
+    const newdistrict = {
       id: '1',
-      name: 'test course',
-      notes: 'new course',
+      name: 'test district',
+      notes: 'new district',
       teachers: [t]
     }
     request(app)
-      .put('/api/v1/courses/')
+      .put('/api/v1/districts/')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .send({
-        course: newcourse,
+        district: newdistrict,
       })
       .expect(200)
       .end((err, res) => {
@@ -110,25 +116,25 @@ const putCourse = (adminUser) => {
 
 
 //Tests whta put requests ignore any additional properties 
-const addCourseIgnoresAdditionalProperties = (adminUser) => {
-  it('should ignore additional properties on new course', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-    const newcourse = {
+const addDistrictIgnoresAdditionalProperties = (adminUser) => {
+  it('should ignore additional properties on new district', (done) => {
+    const t = {id:'1', name:'Teacher', notes:'Joined on time', primary: 'true'}
+    const newdistrict = {
       id: '1',
-      name: 'test course',
-      notes: 'new course',
+      name: 'test district',
+      notes: 'new district',
       extraProperty: 'This should be ignored',
       teachers: [t]
     }
     request(app)
-      .put('/api/v1/course/')
+      .put('/api/v1/district/')
       .set('Authorization', `Bearer ${adminUser.token}`)
-      .send({ adminUser: newcourse })
+      .send({ adminUser: newdistrict })
       .end((err, res) => {
         if (err) return done(err)
         res.status.should.equal(201)
         request(app)
-          .get('/api/v1/course/')
+          .get('/api/v1/district/')
           .set('Authorization', `Bearer ${adminUser.token}`)
           .expect(200)
           .end((err, res) => {
@@ -144,20 +150,20 @@ const addCourseIgnoresAdditionalProperties = (adminUser) => {
   })
 }
 
-//Tests that put requests don't allow courses of the same name
-const addCourseFailsOnDuplicateName = (adminUser) => {
+//Tests that put requests don't allow districts of the same name
+const addDistrictFailsOnDuplicateName = (adminUser) => {
   it('should fail on duplicate name', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-    const newcourse = {
+    const t = {id:'1', name:'Teacher', notes:'Joined on time', primary: 'true'}
+    const newdistrict = {
       id: '1',
-      name: 'test course',
-      notes: 'new course',
+      name: 'test district',
+      notes: 'new district',
       teachers: [t]
     }
     request(app)
-      .put('/api/v1/course/')
+      .put('/api/v1/district/')
       .set('Authorization', `Bearer ${adminUser.token}`)
-      .send({ adminUser: newcourse })
+      .send({ adminUser: newdistrict })
       .expect(422)
       .end((err) => {
         if (err) return done(err)
@@ -167,85 +173,99 @@ const addCourseFailsOnDuplicateName = (adminUser) => {
 }
 
 //Tests that put requests don't work if the name is missing
-const addCourseFailsOnMissingName = (adminUser) => {
-  it('should fail on missing name', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-    const newcourse_noname = {
+const addDistrictFailsOnMissingName = (adminUser) => {
+  it('should fail on missing properties', (done) => {
+    const t = {id:'1', name:'Teacher', notes:'Joined on time', primary: 'true'}
+    const newdistrict_noname = {
       id: '1',
-      notes: 'new course',
+      notes: 'new district',
       teachers: [t]
     }
     request(app)
-      .put('/api/v1/course/')
+      .put('/api/v1/district/')
       .set('Authorization', `Bearer ${adminUser.token}`)
-      .send({ adminUser: newcourse_noname })
+      .send({ adminUser: newdistrict_noname })
       .expect(422)
       .end((err) => {
-        done()
+        if (err) return done(err)
+        const t = {id:'1', name:'Teacher', notes:'Joined on time', primary: 'true'}
+        const newdistrict_noid = {
+          notes: 'new district',
+          teachers: [t]
+        }
+        request(app)
+          .put('/api/v1/district/')
+          .set('Authorization', `Bearer ${adminUser.token}`)
+          .send({ adminUser: newdistrict_noid })
+          .expect(422)
+          .end((err) => {
+            if (err) return done(err)
+            done()
+        })
       })
-  })
-}
+    })
+  }
 
   //Tests if post requests work
-  const updateCourse = (adminUser) => {
-    it('should update a course', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-    const newcourse = {
+  const updateDistrict = (adminUser) => {
+    it('should update a district', (done) => {
+    const t = {id:'1', name:'Teacher', notes:'Joined on time', primary: 'true'}
+    const newdistrict = {
       id: '1',
       notes: 'test',
       teachers: [t]
     }
       request(app)
-        .post('/api/v1/course/' + newcourse.id)
+        .post('/api/v1/district/' + newdistrict.id)
         .set('Authorization', `Bearer ${adminUser.token}`)
-        .send({ adminUser: newcourse })
+        .send({ adminUser: newdistrict })
         .end((err, res) => {
           if (err) return done(err)
           res.status.should.equal(200)
           request(app)
-            .get('/api/v1/course/')
+            .get('/api/v1/district/')
             .set('Authorization', `Bearer ${adminUser.token}`)
             .expect(200)
             .end((err, res) => {
               if (err) return done(err)
               res.body.should.be.an('array')
               res.body.should.have.lengthOf(3)
-              const addeduser = res.body.find((u) => u.id === newcourse.id)
-              addeduser.should.shallowDeepEqual(newcourse)
+              const addeduser = res.body.find((u) => u.id === newdistrict.id)
+              addeduser.should.shallowDeepEqual(newdistrict)
               done()
             })
         })
     })
   }
   //Tests that post requests ignore any additional properties
-  const updateCourseIgnoresAdditionalProperties = (adminUser) => {
+  const updateDistrictIgnoresAdditionalProperties = (adminUser) => {
     it('should ignore additional properties on updated user', (done) => {
-      const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-      const newcourse = {
+      const t = {id:'1', name:'Teacher', notes:'Joined on time', primary: 'true'}
+      const newdistrict = {
         id: '2',
-        name: 'test course',
-        notes: 'new course',
+        name: 'test district',
+        notes: 'new district',
         extraProperty: 'This should be ignored',
         teachers: [t]
       }
       request(app)
-        .post('/api/v1/course/' + newcourse.id)
+        .post('/api/v1/district/' + newdistrict.id)
         .set('Authorization', `Bearer ${adminUser.token}`)
-        .send({ adminUser: newcourse })
+        .send({ adminUser: newdistrict })
         .end((err, res) => {
           if (err) return done(err)
           res.status.should.equal(200)
           request(app)
-            .get('/api/v1/course/')
+            .get('/api/v1/district/')
             .set('Authorization', `Bearer ${adminUser.token}`)
             .expect(200)
             .end((err, res) => {
               if (err) return done(err)
               res.body.should.be.an('array')
               res.body.should.have.lengthOf(3)
-              const addeduser = res.body.find((u) => u.id == newcourse.id)
+              const addeduser = res.body.find((u) => u.id == newdistrict.id)
               addeduser.should.not.have.property('extraProperty')
-              addeduser.should.have.property('name').eql('test course')
+              addeduser.should.have.property('name').eql('test district')
               addeduser.roles[0].should.not.have.property('extraProperty')
               done()
             })
@@ -254,40 +274,40 @@ const addCourseFailsOnMissingName = (adminUser) => {
   }
 
   //Tests that post requests fail if the name is missing
-  const updateCourseFailsOnMissingName = (adminUser) => {
-    it('should fail on missing name', (done) => {
-      const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-      const newcourse_noname = {
+  const updateDistrictFailsOnMissingName = (adminUser) => {
+    it('should fail on missing properties', (done) => {
+      const t = {id:'1', name:'Teacher', notes:'Joined on time', primary: 'true'}
+      const newdistrict_noname = {
         id: '1',
-        notes: 'new course',
+        notes: 'new district',
         teachers: [t]
       }
       request(app)
-        .post('/api/v1/course/' + newcourse_noname.id)
+        .post('/api/v1/district/' + newdistrict_noname.id)
         .set('Authorization', `Bearer ${adminUser.token}`)
-        .send({ adminUser: newcourse_noname })
+        .send({ adminUser: newdistrict_noname })
         .expect(422)
         .end((err) => {
           if (err) return done(err)
-           done()
+          done()            
         })
     })
 }
 
 //Tests that post requests fail if the id is invalid
-const updateCourseFailsOnInvalidId = (adminUser) => {
-  it('should fail on invalid id', (done) => {
-    const t = {id:'1', name:'Teacher', notes:'Joined on time', status: '0'}
-      const newcourse = {
-        id: '999',
-        name: 'test course',
-        notes: 'new course',
+const updateDistrictFailsOnInvalidName = (adminUser) => {
+  it('should fail on invalid name', (done) => {
+    const t = {id:'1', name:'Teacher', notes:'Joined on time', primary: 'true'}
+      const newdistrict = {
+        id: '',
+        name: 'Invalid Name',
+        notes: 'new district',
         teachers: [t]
       }
     request(app)
-      .post('/api/v1/course/' + newcourse.id)
+      .post('/api/v1/district/' + newdistrict.id)
       .set('Authorization', `Bearer ${adminUser.token}`)
-      .send({ adminUser: newcourse })
+      .send({ adminUser: newdistrict })
       .expect(422)
       .end((err) => {
         if (err) return done(err)
@@ -297,34 +317,34 @@ const updateCourseFailsOnInvalidId = (adminUser) => {
 }
 
 
-const deleteCourse = (adminUser) => {
-  it('should delete a course', (done) => {
+const deleteDistrict = (adminUser) => {
+  it('should delete a district', (done) => {
     request(app)
-      .delete('/api/v1/course/2')
+      .delete('/api/v1/district/2')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(200)
       .end((err) => {
         if (err) return done(err)
         request(app)
-          .get('/api/v1/course/')
+          .get('/api/v1/district/')
           .set('Authorization', `Bearer ${adminUser.token}`)
           .expect(200)
           .end((err, res) => {
             if (err) return done(err)
             res.body.should.be.an('array')
             res.body.should.have.lengthOf(2)
-            const deletedcourse = res.body.find((u) => u.id === 2)
-            assert.isUndefined(deletedcourse)
+            const deleteddistrict = res.body.find((u) => u.id === 2)
+            assert.isUndefined(deleteddistrict)
             done()
           })
       })
   })
 }
 
-const deleteCourseFailsOnInvalidId = (adminUser) => {
-  it('should fail on invalid id', (done) => {
+const deleteDistrictFailsOnInvalidId = (adminUser) => {
+  it('should fail on invalid name', (done) => {
     request(app)
-      .delete('/api/v1/course/999')
+      .delete('/api/v1/district/999')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(422)
       .end((err) => {
@@ -336,10 +356,10 @@ const deleteCourseFailsOnInvalidId = (adminUser) => {
 
 
 //Test that get requests only work for users with admin role
-const getAllCoursesRequiresAdminRole = (adminUser) => {
+const getAllDistrictsRequiresAdminRole = (adminUser) => {
   it('should require the admin role', (done) => {
     request(app)
-      .get('/api/v1/courses/')
+      .get('/api/v1/districts/')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(403)
       .end((err) => {
@@ -350,10 +370,10 @@ const getAllCoursesRequiresAdminRole = (adminUser) => {
 }
 
 //Tests that put requests only work for users with admin role
-const putCourseRequiresAdminRole = (adminUser) => {
+const putDistrictRequiresAdminRole = (adminUser) => {
   it('should require the admin role', (done) => {
     request(app)
-      .put('/api/v1/courses/')
+      .put('/api/v1/districts/')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(403)
       .end((err) => {
@@ -364,10 +384,10 @@ const putCourseRequiresAdminRole = (adminUser) => {
 }
 
 //Tests that post requests are only allowed for users with admin role
-const postCourseRequiresAdminRole = (adminUser) => {
+const postDistrictRequiresAdminRole = (adminUser) => {
   it('should require the admin role', (done) => {
     request(app)
-      .post('/api/v1/course/1')
+      .post('/api/v1/district/1')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(403)
       .end((err) => {
@@ -378,10 +398,10 @@ const postCourseRequiresAdminRole = (adminUser) => {
 }
 
 
-const deleteCourseRequiresAdminRole = (adminUser) => {
+const deleteDistrictRequiresAdminRole = (adminUser) => {
   it('should require the admin role', (done) => {
     request(app)
-      .delete('/api/v1/course/2')
+      .delete('/api/v1/district/2')
       .set('Authorization', `Bearer ${adminUser.token}`)
       .expect(403)
       .end((err) => {
@@ -392,31 +412,30 @@ const deleteCourseRequiresAdminRole = (adminUser) => {
 }
 
   describe('GET /', () => {
-    getAllCourses(adminUser)
-    getAllCoursesSchemaMatch(adminUser)
-    getAllCoursesRequiresAdminRole(adminUser)
+    getAllDistricts(adminUser)
+    getAllDistrictsSchemaMatch(adminUser)
+    getAllDistrictsRequiresAdminRole(adminUser)
   })
 
   describe('PUT /', () => {
-    putCourse(adminUser)
-    addCourseIgnoresAdditionalProperties(adminUser)
-    putCourseRequiresAdminRole(adminUser)
-    addCourseFailsOnDuplicateName(adminUser)
-    addCourseFailsOnMissingName(adminUser)
+    putDistrict(adminUser)
+    addDistrictIgnoresAdditionalProperties(adminUser)
+    putDistrictRequiresAdminRole(adminUser)
+    addDistrictFailsOnDuplicateName(adminUser)
+    addDistrictFailsOnMissingName(adminUser)
   })
 
 
   describe('POST /{id}', () => {
-    updateCourse(adminUser)
-    updateCourseIgnoresAdditionalProperties(adminUser)
-    updateCourseFailsOnMissingName(adminUser)
-    updateCourseFailsOnInvalidId(adminUser)
-    postCourseRequiresAdminRole(adminUser)
+    updateDistrict(adminUser)
+    updateDistrictIgnoresAdditionalProperties(adminUser)
+    updateDistrictFailsOnMissingName(adminUser)
+    updateDistrictFailsOnInvalidName(adminUser)
+    postDistrictRequiresAdminRole(adminUser)
   })
 
   describe('DELETE /{id}', () => {
-    deleteCourse(adminUser)
-    deleteCourseFailsOnInvalidId(adminUser)
-    deleteCourseRequiresAdminRole(adminUser)
+    deleteDistrict(adminUser)
+    deleteDistrictFailsOnInvalidId(adminUser)
+    deleteDistrictRequiresAdminRole(adminUser)
   })
-
