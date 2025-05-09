@@ -8,4 +8,4 @@ const userOrAdminOnly = (req, res, next) => {
   }
 }
 
-module.exports = userOrAdminOnly
+export default userOrAdminOnly

@@ -1,5 +1,5 @@
 // https://levelup.gitconnected.com/better-logs-for-expressjs-using-winston-and-morgan-with-typescript-1c31c1ab9342
-const winston = require('winston')
+import winston from 'winston'
 
 const levels = {
   error: 0,
@@ -8,7 +8,8 @@ const levels = {
   http: 3,
   socket: 4,
   presence: 5,
-  debug: 6,
+  email: 6,
+  debug: 7,
 }
 
 const level = () => {
@@ -24,6 +25,7 @@ const colors = {
   http: 'magenta',
   socket: 'blue',
   presence: 'grey',
+  email: 'cyan',
   debug: 'white',
 }
 
@@ -53,4 +55,4 @@ const logger = winston.createLogger({
   transports,
 })
 
-module.exports = logger
+export default logger

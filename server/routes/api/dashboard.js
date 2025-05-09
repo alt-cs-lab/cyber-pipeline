@@ -6,16 +6,16 @@
  */
 
 // Load Libraries
-const express = require('express')
+import express from 'express'
 const router = express.Router()
 
 // Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
+import adminOnly from '../../middlewares/admin-only.js'
 
 // Load Models
-const Cohort = require('../../models/cohort')
-const Course = require('../../models/course')
-const District = require('../../models/district')
+import Cohort from '../../models/cohort.js'
+import Course from '../../models/course.js'
+import District from '../../models/district.js'
 
 /**
  * @swagger
@@ -167,4 +167,4 @@ router.get('/district/teacher', adminOnly, async function (req, res, next) {
   res.json(districts)
 })
 
-module.exports = router
+export default router

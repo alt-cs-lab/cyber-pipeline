@@ -1,4 +1,5 @@
-const Model = require('./base')
+import Model from './base.js'
+import Teacher from './teacher.js'
 
 /**
  * @swagger
@@ -86,55 +87,55 @@ class Course extends Model {
 
   // This object defines the relations to other models.
   static get relationMappings() {
-    // Importing models here is one way to avoid require loops.
-    const Teacher = require('./teacher')
-
-    return {
-      teachers: {
-        relation: Model.ManyToManyRelation,
-        modelClass: Teacher,
-        join: {
-          from: 'courses.id',
-          // ManyToMany relation needs the `through` object
-          // to describe the join table.
-          through: {
-            // If you have a model class for the join table
-            // you need to specify it like this:
-            // modelClass: PersonMovie,
-            from: 'teacher_courses.course_id',
-            to: 'teacher_courses.teacher_id',
-            extra: ['notes', 'status'],
+    // Importing models here is one way to avoid require loops.    
+    
+      //const Teacher = teacherModule.default
+      return {
+        teachers: {
+          relation: Model.ManyToManyRelation,
+          modelClass: Teacher,
+          join: {
+            from: 'courses.id',
+            // ManyToMany relation needs the `through` object
+            // to describe the join table.
+            through: {
+              // If you have a model class for the join table
+              // you need to specify it like this:
+              // modelClass: PersonMovie,
+              from: 'teacher_courses.course_id',
+              to: 'teacher_courses.teacher_id',
+              extra: ['notes', 'status'],
+            },
+            to: 'teachers.id',
           },
-          to: 'teachers.id',
+          filter: (builder) =>
+            builder.select(
+              'id',
+              'name',
+              'teacher_courses.notes',
+              'teacher_courses.status'
+            ),
         },
-        filter: (builder) =>
-          builder.select(
-            'id',
-            'name',
-            'teacher_courses.notes',
-            'teacher_courses.status'
-          ),
-      },
-      teachers_raw: {
-        relation: Model.ManyToManyRelation,
-        modelClass: Teacher,
-        join: {
-          from: 'courses.id',
-          // ManyToMany relation needs the `through` object
-          // to describe the join table.
-          through: {
-            // If you have a model class for the join table
-            // you need to specify it like this:
-            // modelClass: PersonMovie,
-            from: 'teacher_courses.course_id',
-            to: 'teacher_courses.teacher_id',
-            extra: ['notes', 'status'],
+        teachers_raw: {
+          relation: Model.ManyToManyRelation,
+          modelClass: Teacher,
+          join: {
+            from: 'courses.id',
+            // ManyToMany relation needs the `through` object
+            // to describe the join table.
+            through: {
+              // If you have a model class for the join table
+              // you need to specify it like this:
+              // modelClass: PersonMovie,
+              from: 'teacher_courses.course_id',
+              to: 'teacher_courses.teacher_id',
+              extra: ['notes', 'status'],
+            },
+            to: 'teachers.id',
           },
-          to: 'teachers.id',
         },
-      },
-    }
+      }
   }
 }
 
-module.exports = Course
+export default Course

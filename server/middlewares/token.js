@@ -1,12 +1,10 @@
 // https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
-
-const jwt = require('jsonwebtoken')
-
+import jwt from 'jsonwebtoken'
 // Load Models
 // const User = require('../models/user')
 
 // Load Logger
-const logger = require('../configs/logger')
+import logger from '../configs/logger.js'
 
 async function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization']
@@ -38,14 +36,15 @@ async function authenticateToken(req, res, next) {
     //   .select('name')
     // //Roles for current user
     // //console.log(roles)
-    // if (roles.some((r) => r.name === 'admin')) {
-    //   req.is_admin = true
-    // } else {
-    //   req.is_admin = false
-    // }
+    if (user.roles.some((r) => r === 'admin')) {
+       req.is_admin = true
+       console.log("is_admin is true")
+     } else {
+       req.is_admin = false
+     }
 
     next()
   })
 }
 
-module.exports = authenticateToken
+export default authenticateToken

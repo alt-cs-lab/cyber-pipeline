@@ -4,6 +4,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
+// PrimeVue Components
+import Menu from 'primevue/menu'
+import Avatar from 'primevue/avatar'
+
 // Stores
 import { useTokenStore } from '@/stores/Token'
 const tokenStore = useTokenStore()
@@ -35,6 +39,8 @@ const menu = ref()
 const toggle = (event) => {
   menu.value.toggle(event)
 }
+
+const visible = ref(false);
 </script>
 
 <template>
@@ -44,13 +50,7 @@ const toggle = (event) => {
       v-if="tokenStore.token == ''"
       class="p-menuitem-content"
     >
-      <a
-        class="p-menuitem-link"
-        @click="tokenStore.getToken()"
-      >
-        <span class="p-menuitem-icon pi pi-sign-in" />
-        <span class="p-menuitem-text">Login</span>
-      </a>
+      <Button @click="visible = true" label="Login" icon="pi pi-sign-in text-lg" variant="outlined"/>
     </div>
 
     <!-- If token present, assume user is logged in -->
@@ -77,4 +77,16 @@ const toggle = (event) => {
       />
     </div>
   </div>
+
+  <!-- <Dialog :draggable="false" v-model:visible="visible" modal header="Log-in/Sign-up" :style="{ width: '25rem' }">
+      <div class="flex items-center gap-12 mb-12">
+          <Button label="Log-in" @click="tokenStore.getToken()" />
+      </div>
+      <div class="flex items-center gap-12 mb-12">
+          <Button label="Create an account"/>
+      </div>
+  </Dialog> -->
+
+  <LoginDialog v-model:visible="visible">
+  </LoginDialog>
 </template>

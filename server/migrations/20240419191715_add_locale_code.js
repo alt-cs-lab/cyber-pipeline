@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = function (knex) {
+export function up (knex) {
   return knex.schema.alterTable('districts', function (table) {
     table.integer('locale').unsigned().nullable()
     table.dropColumn('town')
@@ -16,7 +16,7 @@ exports.up = function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function (knex) {
+export function down (knex) {
   return knex.schema.alterTable('districts', function (table) {
     table.dropColumn('locale')
     table.boolean('rural').defaultTo(false)

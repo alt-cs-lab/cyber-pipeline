@@ -6,14 +6,17 @@
  */
 
 // Load Libraries
-const express = require('express')
+//const express = require('express')
+//const router = express.Router()
+import express from 'express'
 const router = express.Router()
 
 // Load Middleware
-const adminOnly = require('../../middlewares/admin-only')
-
+//const adminOnly = require('../../middlewares/admin-only')
+import adminOnly from '../../middlewares/admin-only.js'
 // Load Models
-const Cohort = require('../../models/cohort')
+//const Cohort = require('../../models/cohort')
+import Cohort from '../../models/cohort.js'
 
 /**
  * @swagger
@@ -200,4 +203,4 @@ router.delete('/:id', adminOnly, async function (req, res, next) {
   }
 })
 
-module.exports = router
+export default router

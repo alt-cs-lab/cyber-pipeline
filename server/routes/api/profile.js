@@ -6,11 +6,11 @@
  */
 
 // Load Libraries
-const express = require('express')
+import express from 'express'
 const router = express.Router()
 
 // Load Models
-const User = require('../../models/user')
+import User from '../../models/user.js'
 
 /**
  * @swagger
@@ -69,4 +69,4 @@ router.post('/', async function (req, res, next) {
   }
 })
 
-module.exports = router
+export default router

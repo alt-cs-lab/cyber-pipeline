@@ -21,10 +21,7 @@ console.log('Log Level: ' + Logger.getLevel().name)
 // CSS
 import 'primeicons/primeicons.css'
 
-// Themes are controlled in ThemeToggle.vue
-// import 'primevue/resources/themes/aura-light-purple/theme.css'
-// import 'primevue/resources/themes/aura-dark-purple/theme.css'
-import 'primeflex/primeflex.css'
+import Aura from '@primevue/themes/aura'
 
 // App and Vue Router
 import App from './App.vue'
@@ -44,6 +41,14 @@ app.use(router)
 
 // Configure PrimeVue
 app.use(PrimeVue, {
+  theme: {
+    preset: Aura,
+    options: {
+      prefix: 'p',
+      darkModeSelector: '.app-dark',
+      cssLayer: false
+    },
+  },
   ripple: true,
   inputStyle: 'filled'
 })

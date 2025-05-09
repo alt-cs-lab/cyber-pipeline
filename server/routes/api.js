@@ -19,23 +19,29 @@
  */
 
 // Load Libraries
-const express = require('express')
+//const express = require('express')
+//const router = express.Router()
+import express from 'express'
 const router = express.Router()
 
+
 // Load Middleware
-var token = require('../middlewares/token')
-var { dbAudit } = require('../middlewares/db-audit')
-const requestLogger = require('../middlewares/request-logger')
+import token from '../middlewares/token.js'
+import { dbAudit } from '../middlewares/db-audit.js'
+import requestLogger from '../middlewares/request-logger.js'
 
 // Load Routers
-const usersRouter = require('./api/users')
-const profileRouter = require('./api/profile')
-const roleRouter = require('./api/roles')
-const districtRouter = require('./api/districts')
-const teacherRouter = require('./api/teachers')
-const cohortRouter = require('./api/cohorts')
-const courseRouter = require('./api/courses')
-const dashboardRouter = require('./api/dashboard')
+import usersRouter from './api/users.js'
+import profileRouter from './api/profile.js'
+import roleRouter from './api/roles.js'
+import districtRouter from './api/districts.js'
+import teacherRouter from './api/teachers.js'
+import cohortRouter from './api/cohorts.js'
+import courseRouter from './api/courses.js'
+import dashboardRouter from './api/dashboard.js'
+import emailRouter from './api/emails.js'
+import canvasRouter from './api/canvas.js'
+import logger from '../configs/logger.js'
 
 // Load Token Middleware
 router.use(token)
@@ -54,6 +60,14 @@ router.use('/teachers', teacherRouter)
 router.use('/cohorts', cohortRouter)
 router.use('/courses', courseRouter)
 router.use('/dashboard', dashboardRouter)
+router.use('/emails', emailRouter)
+
+if(process.env.CANVAS_ENABLED === 'true'){
+  router.use('/canvas', canvasRouter)
+}
+else{
+  logger.warn('Canvas Token NOT defined in .env, Canvas API disabled')
+}
 
 /**
  * @swagger
@@ -86,6 +100,7 @@ router.use('/dashboard', dashboardRouter)
  *         $ref: '#/components/responses/UnauthorizedError'
  */
 router.get('/', function (req, res, next) {
+
   res.json({
     version: 1.0,
     user_id: req.user_id,
@@ -93,4 +108,5 @@ router.get('/', function (req, res, next) {
   })
 })
 
-module.exports = router
+export default router
+//module.exports = router

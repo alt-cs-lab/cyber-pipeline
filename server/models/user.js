@@ -1,11 +1,12 @@
-const Model = require('./base')
-const crypto = require('crypto')
-const jwt = require('jsonwebtoken')
-const logger = require('../configs/logger')
-const axios = require('axios')
-const { parseStringPromise } = require('xml2js')
-const util = require('node:util')
-const objection = require('objection')
+import Model from './base.js'
+import crypto from 'crypto'
+import jwt from 'jsonwebtoken'
+import logger from '../configs/logger.js'
+import axios from 'axios'
+import { parseStringPromise } from 'xml2js'
+import util from 'node:util'
+import objection from 'objection'
+import Role from './role.js'
 
 /**
  * @swagger
@@ -65,27 +66,36 @@ class User extends Model {
   //  return this.firstName + ' ' + this.lastName;
   //}
   static async findOrCreate(eid) {
+    // Removes the domain from the eID if present (when logging in with magic link)
+    if (eid.includes('@')){
+      const atIndex = eid.indexOf('@');
+      eid = eid.substring(0, atIndex);
+    }
+
     let user = await User.query().where('eid', eid).limit(1)
     // user not found - create user
     if (user.length === 0) {
+      console.log("eid: ",eid);
       var name = eid
-      try {
-        logger.debug('Looking up ' + eid + ' in K-State directory')
-        const response = await axios.get(
-          'https://k-state.edu/People/filter/eid=' + eid
-        )
-        const jsonstring = await parseStringPromise(response.data)
-        for (const result of jsonstring.results.result) {
-          if (eid == result.eid) {
-            name = result.fn + ' ' + result.ln
-            logger.debug('Match Found! ' + name)
-            break
-          }
-        }
-      } catch (error) {
-        logger.error('Unable to query name from K-State directory!')
-        logger.error(util.inspect(error))
-      }
+      // try {
+      //   logger.debug('Looking up ' + eid + ' in K-State directory')
+      //   const response = await axios.get(
+      //     'https://k-state.edu/People/filter/eid=' + eid
+      //   )
+      //   const jsonstring = await parseStringPromise(response.data)
+      //   for (const result of jsonstring.results.result) {
+      //     if (eid == result.eid) {
+      //       name = result.fn + ' ' + result.ln
+      //       logger.debug('Match Found! ' + name)
+      //       break
+      //     }
+      //   }
+      // } catch (error) {
+      //   logger.error('Unable to query name from K-State directory!')
+      //   logger.error(util.inspect(error))
+      // }
+
+      
       user = [
         await User.query().insert({
           eid: eid,
@@ -170,7 +180,7 @@ class User extends Model {
       required: ['eid', 'name'],
 
       properties: {
-        eid: { type: 'string', minLength: 3, maxLength: 20 },
+        eid: { type: 'string', minLength: 3, maxLength: 100 },
         name: { type: 'string', minLength: 1, maxLength: 255 },
       },
     }
@@ -179,28 +189,26 @@ class User extends Model {
   // This object defines the relations to other models.
   static get relationMappings() {
     // Importing models here is one way to avoid require loops.
-    const Role = require('./role')
-
-    return {
-      roles: {
-        relation: Model.ManyToManyRelation,
-        modelClass: Role,
-        join: {
-          from: 'users.id',
-          // ManyToMany relation needs the `through` object
-          // to describe the join table.
-          through: {
-            // If you have a model class for the join table
-            // you need to specify it like this:
-            // modelClass: PersonMovie,
-            from: 'user_roles.user_id',
-            to: 'user_roles.role_id',
+      return {
+        roles: {
+          relation: Model.ManyToManyRelation,
+          modelClass: Role,
+          join: {
+            from: 'users.id',
+            // ManyToMany relation needs the `through` object
+            // to describe the join table.
+            through: {
+              // If you have a model class for the join table
+              // you need to specify it like this:
+              // modelClass: PersonMovie,
+              from: 'user_roles.user_id',
+              to: 'user_roles.role_id',
+            },
+            to: 'roles.id',
           },
-          to: 'roles.id',
-        },
-        filter: (builder) => builder.select('id', 'name'),
-      },
-    }
+          filter: (builder) => builder.select('id', 'name'),
+        }, 
+      }
   }
 
   async $beforeInsert() {
@@ -222,4 +230,4 @@ class User extends Model {
   }
 }
 
-module.exports = User
+export default User

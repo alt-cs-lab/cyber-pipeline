@@ -3,6 +3,7 @@
 import FloatLabel from 'primevue/floatlabel'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import Textarea from 'primevue/textarea'
 
 // Props
 const props = defineProps({
@@ -66,7 +67,7 @@ const model = defineModel()
       <!-- Label -->
       <label
         :for="field"
-        class="ml-5"
+        class="ml-20"
         >{{ props.label }}</label
       >
     </FloatLabel>

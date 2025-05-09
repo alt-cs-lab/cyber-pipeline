@@ -1,7 +1,8 @@
 <script setup>
 // Libraries
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
+
 
 // PrimeVue Components
 import ConfirmDialog from 'primevue/confirmdialog'
@@ -9,9 +10,25 @@ import { useConfirm } from 'primevue/useconfirm'
 const confirm = useConfirm()
 import { useToast } from 'primevue/usetoast'
 const toast = useToast()
-import { FilterMatchMode } from 'primevue/api'
+import { FilterMatchMode } from '@primevue/core/api'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import Toolbar from 'primevue/toolbar'
+import Column from 'primevue/column'
+import DataTable from 'primevue/datatable'
+import Panel from 'primevue/panel'
+import Popover from 'primevue/popover'
+import Message from 'primevue/message'
+import Dialog from 'primevue/dialog'
+import Select from 'primevue/select'
+
+
+// Non-PrimeVue components
+import TextField from '@/components/forms/TextField.vue'
+import DropDownField from '@/components/forms/DropDownField.vue'
+import TextAreaField from '@/components/forms/TextAreaField.vue'
 
 // Custom Components
 // import AutocompleteMultiple from '../forms/AutocompleteMultiple.vue'
@@ -23,9 +40,9 @@ import { useTeachersStore } from '@/stores/Teachers'
 const teachersStore = useTeachersStore()
 
 // Setup Stores
-coursesStore.hydrate()
+// coursesStore.hydrate()
 const { courses } = storeToRefs(coursesStore)
-teachersStore.hydrate()
+// teachersStore.hydrate()
 const { teachers } = storeToRefs(teachersStore)
 
 // Variables
@@ -39,12 +56,29 @@ const dt = ref() // datatable reference
 const notesDialog = ref(false) // controls notes dialog
 const notes = ref('') // notes for selected item
 
+const currentYear = new Date().getFullYear()
+const academicYears = ref([
+    'All',
+    `${currentYear - 1}-${currentYear}`,
+    `${currentYear}-${currentYear + 1}`, 
+    `${currentYear + 1}-${currentYear + 2}`, 
+    `${currentYear + 2}-${currentYear + 3}`
+])
+  
+
 // Filters
 const filters = ref({
   global: {
     value: '',
     matchMode: FilterMatchMode.CONTAINS
   }
+})
+
+const selectedAcademicYear = ref(`All`)
+
+const filteredCourses = computed(() => {
+  if (!selectedAcademicYear.value || selectedAcademicYear.value === 'All') return courses.value
+  return courses.value.filter(course => course.academic_year === selectedAcademicYear.value)
 })
 
 /**
@@ -65,7 +99,8 @@ const newCourse = () => {
   course.value = {
     name: '',
     notes: '',
-    teachers: []
+    teachers: [],
+    academic_year: `${currentYear}-${currentYear + 1}`
   }
   courseDialogHeader.value = 'New Course'
   courseDialog.value = true
@@ -197,7 +232,7 @@ const exportFunction = (row) => {
   <Panel header="Manage Courses">
     <DataTable
       ref="dt"
-      :value="courses"
+      :value="filteredCourses"
       stripedRows
       sortField="usd"
       :sortOrder="1"
@@ -205,6 +240,7 @@ const exportFunction = (row) => {
       v-model:filters="filters"
       :globalFilterFields="['name']"
       :exportFunction="exportFunction"
+      paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50, 100]" :paginatorPosition="'top'"
     >
       <template #header>
         <Toolbar
@@ -227,15 +263,33 @@ const exportFunction = (row) => {
             />
           </template>
           <template #end>
-            <IconField iconPosition="left">
-              <InputIcon>
-                <i class="pi pi-search" />
-              </InputIcon>
-              <InputText
-                v-model="filters['global'].value"
-                placeholder="Keyword Search"
-              />
-            </IconField>
+            <div class="flex justify-end gap-12">
+              <IconField iconPosition="left">
+                <InputIcon>
+                  <i class="pi pi-search" />
+                </InputIcon>
+                <InputText
+                  v-model="filters['global'].value"
+                  placeholder="Keyword Search"
+                />
+              </IconField>
+
+              <div class="flex justify-content gap-2">
+                <label for="yearSelect" class="year-label">Academic Year:</label>
+                <IconField iconPosition="left">
+                  <InputIcon>
+                    <i class="pi pi-calendar"/>
+                  </InputIcon>
+                  <Select
+                    id="yearSelect"
+                    v-model="selectedAcademicYear"
+                    :options="academicYears"
+                    placeholder="Academic Year"
+                  />
+                </IconField>
+              </div>
+              
+            </div>
           </template>
         </Toolbar>
       </template>
@@ -249,6 +303,16 @@ const exportFunction = (row) => {
         sortable
         header="Name"
       ></Column>
+      <Column 
+        field="academic_year"
+        sortable
+        header="Academic Year"
+      />
+      <Column 
+        field="course_id"
+        sortable
+        header="Course ID"
+      />
       <!--
       <Column
         field="teachers"
@@ -303,15 +367,15 @@ const exportFunction = (row) => {
   </Panel>
 
   <!-- Notes dialog -->
-  <OverlayPanel ref="notesDialog">
-    <div class="flex flex-column gap-1 w-25rem">
+  <Popover ref="notesDialog">
+    <div class="flex flex-col gap-1 w-[25rem]">
       <div class="w-full">
         <span>Notes</span>
         <hr class="w-full" />
       </div>
       <span>{{ notes }}</span>
     </div>
-  </OverlayPanel>
+</Popover>
 
   <!-- Edit item dialog -->
   <Dialog
@@ -328,7 +392,7 @@ const exportFunction = (row) => {
       >{{ message }}</Message
     >
     <div
-      class="flex flex-column align-items-center row-gap-5 w-full pt-3 mt-1"
+      class="flex flex-col items-center gap-y-8 w-full pt-6 mt-1"
       v-focustrap
       v-on:keyup.enter="save"
     >
@@ -348,9 +412,9 @@ const exportFunction = (row) => {
         :values="teachers"
         valueLabel="name"
       />-->
-      <div class="w-full flex flex-column row-gap-5 -mt-3">
-        <div class="w-full flex flex-row align-items-center">
-          <label class="w-11 flex-grow-1 text-center">Teachers</label>
+      <div class="w-full flex flex-col gap-y-8 -mt-6">
+        <div class="w-full flex flex-row items-center">
+          <label class="w-11/12 grow text-center">Teachers</label>
           <div class="pl-1">
             <Button
               icon="pi pi-plus"
@@ -360,11 +424,11 @@ const exportFunction = (row) => {
           </div>
         </div>
         <div
-          class="w-full flex flex-row flex-wrap row-gap-5 align-items-center"
+          class="w-full flex flex-row flex-wrap gap-y-8 items-center"
           v-for="(item, index) in course.teachers"
           :key="item.id"
         >
-          <div class="w-4 pr-1">
+          <div class="w-4/12 pr-1">
             <DropDownField
               v-model="course.teachers[index].id"
               field="id"
@@ -375,7 +439,7 @@ const exportFunction = (row) => {
               valueLabel="name"
             />
           </div>
-          <div class="w-3 px-1">
+          <div class="w-3/12 px-1">
             <DropDownField
               v-model="course.teachers[index].status"
               field="status"
@@ -386,7 +450,7 @@ const exportFunction = (row) => {
               valueLabel="label"
             />
           </div>
-          <div class="w-4 flex-grow-1 px-1">
+          <div class="w-4/12 grow px-1">
             <TextField
               v-model="course.teachers[index].notes"
               field="notes"
@@ -404,6 +468,26 @@ const exportFunction = (row) => {
           </div>
         </div>
       </div>
+      <label class="w-11/12 grow text-center">Academic Year</label>
+      <Select 
+        v-model="course.academic_year"
+        field="academic_year"
+        label="Academic Year"
+        icon="pi pi-calendar"
+        :errors="errors"
+        :options="academicYears"
+        placeholder="Academic Year"
+      />
+      
+      <label class="w-11/12 grow text-center">Canvas Course ID</label>
+      <InputText 
+        v-model="course.course_id"
+        field="course_id"
+        label="Course ID"
+        icon="pi pi-id-card"
+        :errors="errors"
+        readonly
+      />
       <TextAreaField
         v-model="course.notes"
         field="notes"
@@ -411,6 +495,7 @@ const exportFunction = (row) => {
         icon="pi pi-file"
         :errors="errors"
       />
+      
       <Button
         label="Save"
         icon="pi pi-check"
@@ -424,5 +509,10 @@ const exportFunction = (row) => {
 <style scoped>
 :deep(.p-datatable-header) {
   padding: 0px !important;
+}
+
+.year-label{
+  font-size: 1.1rem;
+  line-height: 2;
 }
 </style>
