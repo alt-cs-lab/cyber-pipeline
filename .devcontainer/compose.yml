@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  app:
+  pipeline-app:
     build: 
       context: .
       dockerfile: Dockerfile
@@ -21,11 +21,9 @@ services:
     # Networks
     networks:
       # External Network
-      # - traefik
+      - traefik
       # Internal Network
       - pipeline
-      # Default network
-      - default
 
     # Container Labels
     labels:
@@ -89,6 +87,6 @@ networks:
   pipeline:
     name: pipeline
     internal: true
-  # traefik:
-  #   name: traefik
-  #   external: true
+  traefik:
+    name: traefik
+    external: true
